@@ -1,2 +1,2 @@
-microsoftbi_framework
+Microsoft Bi Framework
 =====================
