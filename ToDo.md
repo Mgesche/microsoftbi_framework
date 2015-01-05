@@ -1,5 +1,9 @@
 ToDo List
 =====================
+##General
+###To Do
+Compile on one file the components taht we want to install
+###Done
 ##SSIS
 ##SSAS
 ###To Do
