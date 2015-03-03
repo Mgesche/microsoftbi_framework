@@ -1,0 +1,13 @@
+DECLARE @DB     VARCHAR(50)
+DECLARE @Schema VARCHAR(50)
+DECLARE @Table  VARCHAR(50)
+
+SET @DB = 'BotanicDW_MEC'
+SET @Schema = 'dbo'
+SET 
+
+select top 10 *
+from INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_CATALOG = 'BotanicDW_MEC'
+  AND TABLE_SCHEMA = 'dbo'
+  AND TABLE_NAME = 

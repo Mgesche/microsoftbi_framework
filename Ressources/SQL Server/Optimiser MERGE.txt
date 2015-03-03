@@ -1,0 +1,7 @@
+http://technet.microsoft.com/en-us/library/cc879317(v=sql.105).aspx
+
+Index : 
+* unique ou primary key index (clustered ou non) sur la source
+* unique clustered index sut la target
+
+

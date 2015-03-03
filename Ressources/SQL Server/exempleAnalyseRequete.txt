@@ -1,0 +1,21 @@
+/* Apres index */
+
+(1000 ligne(s) affectée(s))
+Table 'F_PMSI_MCO_RSA_DIAG_INT'. Nombre d'analyses 7, lectures logiques 154, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+Table 'F_PMSI_MCO_RSA'. Nombre d'analyses 7, lectures logiques 72039, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+Table 'F_PMSI_MCO_DIAG'. Nombre d'analyses 7, lectures logiques 48163, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+Table 'Worktable'. Nombre d'analyses 0, lectures logiques 0, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+
+ SQL Server \endash Temps d'exécution : 
+, Temps UC = 88923 ms, temps écoulé = 22015 ms.
+
+/* Avant index */
+
+(1000 ligne(s) affectée(s))
+Table 'F_PMSI_MCO_RSA_DIAG_INT'. Nombre d'analyses 7, lectures logiques 154, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+Table 'F_PMSI_MCO_RSA'. Nombre d'analyses 7, lectures logiques 354409, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+Table 'F_PMSI_MCO_DIAG'. Nombre d'analyses 7, lectures logiques 48191, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+Table 'Worktable'. Nombre d'analyses 0, lectures logiques 0, lectures physiques 0, lectures anticipées 0, lectures logiques de données d'objets volumineux 0, lectures physiques de données d'objets volumineux 0, lectures anticipées de données d'objets volumineux 0.
+
+ SQL Server \endash Temps d'exécution : 
+, Temps UC = 103592 ms, temps écoulé = 32203 ms.

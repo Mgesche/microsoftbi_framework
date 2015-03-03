@@ -1,0 +1,4 @@
+SELECT 'insert into Admin.dbo.NbLignes
+select '''+TABLE_CATALOG+''', '''+TABLE_SCHEMA+''', '''+TABLE_NAME+''', COUNT(*), GETDATE()
+FROM '+TABLE_CATALOG+'.'+TABLE_SCHEMA+'.'+TABLE_NAME
+from INFORMATION_SCHEMA.TABLES

@@ -1,0 +1,4 @@
+http://msdn.microsoft.com/en-us/library/ff647793.aspx#scalenetchapt14 _topic10
+
+Use Set NOCOUNT ON in stored procedures.
+Do not use the sp_ prefix for custom stored procedures.

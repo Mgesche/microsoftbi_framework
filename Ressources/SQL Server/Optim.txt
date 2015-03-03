@@ -1,0 +1,20 @@
+Index
+statistiques d'indiex
+D’où l’importance de réindexer une table, ce qui a pour effet de défragmenter (suppressions d’enregistrements, pointeurs avant …) mais aussi de mettre à jour les statistiques (forcément).
+DBCC SHOWSTATISTICS donne les stats
+Auto Update Statistics à Vrai sur vos bases de données.
+
+Lister les requêtes les plus couteuses (TEMPS * NB EXEC)
+Lister les index manquants
+Lister les statistiques d'index manquantes
+Lister les statistiques d'index non a jour
+Lister les index fragmenté
+
+Optimisation cube :
+
+Process
+SQL Profiler en captant sqlend
+Lancement complet du cube
+
+
+http://www.codeproject.com/Articles/35665/Top-10-steps-to-optimize-data-access-in-SQL-Serv-2

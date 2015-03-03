@@ -1,0 +1,194 @@
+--DBCC UPDATEUSAGE (0)
+
+/* Size all tables in database */
+
+DECLARE @TableSizeBase TABLE
+ (
+	[TableName] nvarchar(255)
+,	[RowCount] int
+,	[Reserved] nvarchar(255)
+,	[Data] nvarchar(255)
+,	[Index Size] nvarchar(255)
+,	[Unused] nvarchar(255)
+)
+
+DECLARE @TableSize TABLE
+ (
+	[SchemaName] nvarchar(255)
+,	[TableName] nvarchar(255)
+,	[RowCount] int
+,	[Reserved] int
+,	[Data] int
+,	[Index Size] int
+,	[Unused] int
+)
+
+/* Estimate compression on all tables in database */
+
+DECLARE @TableCompressionBase TABLE
+ (
+	[TableName] nvarchar(255)
+,	[SchemaName] nvarchar(255)
+,	[index_id] int
+,	[partition_number] int
+,	[size_with_current_compression_setting(KB)] int
+,	[size_with_requested_compression_setting(KB)] int
+,	[sample_size_with_current_compression_setting(KB)] int
+,	[sample_size_with_requested_compression_setting(KB)] int
+ )
+
+DECLARE @TableCompression TABLE
+ (
+	[TableName] nvarchar(255)
+,	[SchemaName] nvarchar(255)
+,	[CompressionType] nvarchar(255)
+,	[CompressedSize] int
+ )
+
+
+DECLARE @CurrentTable nvarchar(255)
+DECLARE @CurrentSchema nvarchar(255)
+
+DECLARE TableCursor CURSOR FOR
+SELECT	t.[Name] as TableName
+,		s.[name] as SchemaName
+
+FROM	sys.tables t
+JOIN	sys.schemas s
+
+ON		t.schema_id = s.schema_id
+
+OPEN TableCursor
+
+FETCH NEXT FROM TableCursor INTO @CurrentTable, @CurrentSchema
+
+WHILE @@FETCH_STATUS = 0
+
+BEGIN
+
+INSERT INTO @TableSizeBase
+exec sp_spaceused @CurrentTable
+
+INSERT INTO @TableSize
+SELECT	@CurrentSchema
+,	[TableName]
+,	[RowCount]
+,	CAST(REPLACE([Reserved],' KB','') AS int)
+,	CAST(REPLACE([Data],' KB','') AS int)
+,	CAST(REPLACE([Index Size],' KB','') AS int)
+,	CAST(REPLACE([Unused],' KB','') AS int)
+FROM @TableSizeBase
+
+DELETE FROM @TableSizeBase
+
+-- PAGE compression
+INSERT INTO @TableCompressionBase
+exec sp_estimate_data_compression_savings @CurrentSchema, @CurrentTable ,NULL,NULL,'PAGE'
+
+INSERT INTO @TableCompression
+
+SELECT	[TableName]
+,		[SchemaName]
+,		'PAGE'
+,		SUM(CAST(REPLACE([size_with_requested_compression_setting(KB)],' KB','') AS int))
+FROM	@TableCompressionBase
+GROUP BY	[TableName]
+,			[SchemaName]
+
+DELETE FROM @TableCompressionBase
+
+-- ROW compression
+-- PAGE compression
+INSERT INTO @TableCompressionBase
+exec sp_estimate_data_compression_savings @CurrentSchema, @CurrentTable ,NULL,NULL,'ROW'
+
+INSERT INTO @TableCompression
+
+SELECT	[TableName]
+,		[SchemaName]
+,		'ROW'
+,		SUM(CAST(REPLACE([size_with_requested_compression_setting(KB)],' KB','') AS int))
+FROM	@TableCompressionBase
+GROUP BY	[TableName]
+,			[SchemaName]
+
+DELETE FROM @TableCompressionBase
+
+
+
+FETCH NEXT FROM TableCursor INTO  @CurrentTable, @CurrentSchema
+
+END
+
+CLOSE TableCursor
+DEALLOCATE TableCursor;
+
+-- Connect results and report stats
+WITH	CompressionOptions	(	[TableName] 
+							,	[SchemaName] 
+							,	[PageCompressedSize] 
+							,	[RowCompressedSize] )
+
+AS	(
+		SELECT	[TableName] 
+		,		[SchemaName]
+		,		[Page]
+		,		[Row]			
+
+		FROM
+
+		(
+			SELECT	*
+			FROM	@TableCompression
+		)	AS SourceTable
+		
+		PIVOT
+		(
+			SUM([CompressedSize])
+			FOR [CompressionType] IN ([Page], [Row])
+		)	AS PivotTable
+
+	)
+
+
+SELECT	ts.SchemaName
+,		ts.TableName
+,		ts.[RowCount]
+,		ts.Reserved
+,		ts.Data
+,		ts.[Index Size]
+,		CASE
+		WHEN ts.Data != 0
+		THEN CAST(ts.[Index Size] AS decimal(12,2)) / CAST(ts.Data AS decimal(12,2))
+		ELSE CAST(0 AS decimal(12,2))
+		END		AS IndexToDataRatio
+,		ts.Unused
+,		CASE
+		WHEN	[PageCompressedSize] > ts.Data AND [RowCompressedSize] > ts.Data THEN 'NONE'
+		WHEN	[PageCompressedSize] <= [RowCompressedSize] THEN 'PAGE'
+		ELSE	'ROW'
+		END		AS [RecommendedCompressionType]
+,		tc.[PageCompressedSize]
+,		ts.Data - tc.[PageCompressedSize] AS PageCompressionSpaceSaving
+,		CASE
+		WHEN tc.[PageCompressedSize] != 0
+		THEN CAST(1 AS decimal(12,2)) - (CAST(tc.[PageCompressedSize] AS decimal(12,2)) / CAST(ts.Data AS decimal(12,2))) 
+		ELSE CAST(0 AS decimal(12,2))
+		END		AS PageCompressionSpaceSavingPct
+,		tc.[RowCompressedSize]
+,		ts.Data - tc.[RowCompressedSize] AS RowCompressionSpaceSaving
+,		CASE
+		WHEN tc.[RowCompressedSize] != 0
+		THEN CAST(1 AS decimal(12,2)) - (CAST(tc.[RowCompressedSize] AS decimal(12,2)) / CAST(ts.Data AS decimal(12,2))) 
+		ELSE CAST(0 AS decimal(12,2))
+		END		AS RowCompressionSpaceSavingPct
+
+FROM		@TableSize ts
+LEFT JOIN	CompressionOptions tc
+
+ON	ts.SchemaName = tc.SchemaName
+AND	ts.TableName = tc.TableName
+
+order by CAST(REPLACE(ts.[Data],' KB','') as int) desc
+
+
