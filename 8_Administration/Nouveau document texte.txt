@@ -1,0 +1,7 @@
+Simple : Gestion dynamique des packages. Créer un flux ODS en quelques cliques depuis une base de données ou en un simple glisser / déposer depuis un fichier
+Sécurisé : Peur 
+Efficace : 
+Chiffrage BI
+Rapports :
+
+Lister les outils a coté avec une map et un didacticiel de choix

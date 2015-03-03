@@ -1,0 +1,16 @@
+Detecter les fichiers 
+	python pour lister tout les fichiers
+	SSIS pour voir ceux qui ne sont pas présent, les insérer en bases
+	Retour interface pour 
+	SSIS pour créer les packages correspondants
+
+Passage en test
+	Backup de la DEV
+	Pour chaque table, truncate, insert des data de DEV
+	Pour chaque fichier, truncate, lancement package
+
+Package ODS
+	Tout les chargement et enable / disable suivant parametres
+
+Package Passage Test / Dev / PréProd
+	Chargement / Restauration ou recalcul depuis test
