@@ -1,0 +1,222 @@
+/* Referencement Hub */
+SELECT 'HUB' as Type_Objet, TABLE_NAME AS Nom
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'hub'
+  AND TABLE_TYPE = 'BASE TABLE'
+ORDER BY Nom
+
+/* Referencement Link */
+SELECT Type_Objet, Nom, FromCol AS "From", ToCol AS "To" FROM (
+SELECT 'LNK' as Type_Objet, TABLE_NAME AS Nom,
+SUBSTRING(REPLACE(REPLACE(TABLE_NAME, 'HLNK_', ''), 'LNK_', ''), 1, CHARINDEX('_', 
+REPLACE(REPLACE(TABLE_NAME, 'HLNK_', ''), 'LNK_', ''))-1) as FromCol,
+SUBSTRING(REPLACE(REPLACE(TABLE_NAME, 'HLNK_', ''), 'LNK_', ''), CHARINDEX('_', 
+REPLACE(REPLACE(TABLE_NAME, 'HLNK_', ''), 'LNK_', ''))+1, LEN(REPLACE(REPLACE(TABLE_NAME, 'HLNK_', ''), 'LNK_', ''))-
+CHARINDEX('_', REPLACE(REPLACE(TABLE_NAME, 'HLNK_', ''), 'LNK_', ''))) as ToCol
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'lnk'
+  AND TABLE_TYPE = 'BASE TABLE'
+  /* Cas de deux objets lies */
+  AND LEN(TABLE_NAME) - LEN(REPLACE(TABLE_NAME,'_', '')) = 2
+UNION
+SELECT 'LNK' as Type_Objet, TABLE_NAME AS Nom, '' as FromCol, '' as ToCol
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'lnk'
+  AND TABLE_TYPE = 'BASE TABLE'
+  /* Cas de plus de deux objets lies */
+  AND LEN(TABLE_NAME) - LEN(REPLACE(TABLE_NAME,'_', '')) <> 2
+) RES
+ORDER BY Type_Objet, Nom
+  
+/* Liste des cles */
+SELECT *
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'lnk'
+  AND TABLE_NAME = 'LNK_CCTE_CCTT_CCTV_CCT_Beneficiary_CoverType_Product'
+  AND COLUMN_NAME LIKE '%_SK'
+  AND COLUMN_NAME <> REPLACE(TABLE_NAME, 'LNK_', '')+'_SK'
+	/* exclure vues, jointure */
+  AND TABLE_TYPE = 'BASE TABLE'
+
+SELECT *
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'sat_src'
+  AND TABLE_NAME = 'SAT_CURR_Account_SF'
+
+/* Generation des hub */
+SELECT 'HUB' as Type_Objet, TABLE_NAME AS Nom, TABLE_NAME+': new uml.State({position: {x:100, y:100},size: {width:200, height:100},name: "'+TABLE_NAME+'"}),'
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'hub'
+  AND TABLE_TYPE = 'BASE TABLE'
+  -- AND TABLE_NAME LIKE '%ACCOUNT%'
+ORDER BY TABLE_NAME
+
+/* Generation des satellites */
+SELECT 'SAT' as Type_Objet, TABLE_NAME AS Nom, TABLE_NAME+': new uml.State({position: {x:100, y:100},size: {width:200, height:100},name: "'+TABLE_NAME+'"}),'
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA LIKE 'sat%'
+  AND TABLE_TYPE = 'BASE TABLE'
+  -- AND TABLE_NAME LIKE '%ACCOUNT%'
+ORDER BY TABLE_NAME
+
+/* Generation d'un hub specifique */
+SELECT HUB.TABLE_NAME AS Hub, SAT.TABLE_NAME AS Satellite,
+'new uml.Transition({ source: { id: states.'+HUB.TABLE_NAME+'.id }, target: { id: states.'+SAT.TABLE_NAME+'.id }}),'
+
+FROM (
+SELECT TAB.TABLE_NAME AS TABLE_NAME, COL.COLUMN_NAME AS FK
+FROM INFORMATION_SCHEMA.COLUMNS COL
+/* Restriction sur les tables */
+JOIN INFORMATION_SCHEMA.TABLES TAB
+  ON COL.TABLE_CATALOG = TAB.TABLE_CATALOG
+ AND COL.TABLE_SCHEMA = TAB.TABLE_SCHEMA
+ AND COL.TABLE_NAME = TAB.TABLE_NAME
+ AND TAB.TABLE_TYPE = 'BASE TABLE'
+WHERE COL.TABLE_SCHEMA LIKE 'hub'
+  AND COL.COLUMN_NAME LIKE '%_SK') HUB
+
+/* Recherche de satellites */
+LEFT JOIN (
+SELECT TAB.TABLE_NAME AS TABLE_NAME, COL.COLUMN_NAME AS FK
+FROM INFORMATION_SCHEMA.COLUMNS COL
+/* Restriction sur les tables */
+JOIN INFORMATION_SCHEMA.TABLES TAB
+  ON COL.TABLE_CATALOG = TAB.TABLE_CATALOG
+ AND COL.TABLE_SCHEMA = TAB.TABLE_SCHEMA
+ AND COL.TABLE_NAME = TAB.TABLE_NAME
+ AND TAB.TABLE_TYPE = 'BASE TABLE'
+WHERE COL.TABLE_SCHEMA LIKE 'sat%'
+  AND COL.COLUMN_NAME LIKE '%_SK'
+) SAT
+  ON SAT.FK = HUB.FK
+  
+-- WHERE HUB.TABLE_NAME LIKE '%ACCOUNT%'
+
+/* Generation Hub specifique avec placement */
+DECLARE @Hub VARCHAR(50)
+DECLARE @Satellite VARCHAR(50)
+DECLARE @Id INT
+DECLARE @xpos INT
+DECLARE @ypos INT
+DECLARE @Champ VARCHAR(100)
+DECLARE @ListeChamps VARCHAR(500)
+
+SET @Id = 0
+
+DECLARE sat_cursor CURSOR FOR 
+SELECT HUB.TABLE_NAME AS Hub, SAT.TABLE_NAME AS Satellite
+
+FROM (
+SELECT TAB.TABLE_NAME AS TABLE_NAME, COL.COLUMN_NAME AS FK
+FROM INFORMATION_SCHEMA.COLUMNS COL
+/* Restriction sur les tables */
+JOIN INFORMATION_SCHEMA.TABLES TAB
+  ON COL.TABLE_CATALOG = TAB.TABLE_CATALOG
+ AND COL.TABLE_SCHEMA = TAB.TABLE_SCHEMA
+ AND COL.TABLE_NAME = TAB.TABLE_NAME
+ AND TAB.TABLE_TYPE = 'BASE TABLE'
+WHERE COL.TABLE_SCHEMA LIKE 'hub'
+  AND COL.COLUMN_NAME LIKE '%_SK') HUB
+
+/* Recherche de satellites */
+LEFT JOIN (
+SELECT TAB.TABLE_NAME AS TABLE_NAME, COL.COLUMN_NAME AS FK
+FROM INFORMATION_SCHEMA.COLUMNS COL
+/* Restriction sur les tables */
+JOIN INFORMATION_SCHEMA.TABLES TAB
+  ON COL.TABLE_CATALOG = TAB.TABLE_CATALOG
+ AND COL.TABLE_SCHEMA = TAB.TABLE_SCHEMA
+ AND COL.TABLE_NAME = TAB.TABLE_NAME
+ AND TAB.TABLE_TYPE = 'BASE TABLE'
+WHERE COL.TABLE_SCHEMA LIKE 'sat%'
+  AND COL.COLUMN_NAME LIKE '%_SK'
+) SAT
+  ON SAT.FK = HUB.FK
+  
+WHERE HUB.TABLE_NAME LIKE '%ACCOUNT%'
+
+OPEN sat_cursor
+
+FETCH NEXT FROM sat_cursor 
+INTO @Hub, @Satellite
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	
+	SET @Id = @Id + 1
+	
+	IF @Id = 1
+	BEGIN
+		SET @xpos = 400
+		SET @ypos = 100
+	END
+	
+	IF @Id = 2
+	BEGIN
+		SET @xpos = 400
+		SET @ypos = 300
+	END
+	
+	IF @Id = 3
+	BEGIN
+		SET @xpos = 100
+		SET @ypos = 300
+	END
+	
+	IF @Id = 4
+	BEGIN
+		SET @xpos = 400
+		SET @ypos = 500
+	END
+	
+	SET @ListeChamps = ''
+	
+	DECLARE champs_cursor CURSOR FOR 
+	SELECT COLUMN_NAME AS Attribut
+	FROM INFORMATION_SCHEMA.COLUMNS
+	WHERE TABLE_NAME = @Satellite
+	  AND COLUMN_NAME NOT LIKE '%_SK%'
+	  AND COLUMN_NAME NOT IN ('HASHID', 'LoadNr')
+	ORDER BY ORDINAL_POSITION
+	
+	OPEN champs_cursor
+
+	FETCH NEXT FROM champs_cursor 
+	INTO @Champ
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		IF @ListeChamps = ''
+		BEGIN
+			SET @ListeChamps = '"'+@Champ+'"'
+		END
+		ELSE
+		BEGIN
+			SET @ListeChamps = @ListeChamps + ',"'+@Champ+'"'
+		END
+		
+		FETCH NEXT FROM champs_cursor 
+		INTO @Champ
+	END
+
+	CLOSE champs_cursor;
+	DEALLOCATE champs_cursor;
+	
+	PRINT @Satellite+': new uml.State({position: {x:'+CAST(@xpos as varchar)+', y:'+CAST(@ypos as varchar)+'},size: {width:200, height:100},name: "'+@Satellite+'",events: ['+@ListeChamps+']}),'
+
+    FETCH NEXT FROM sat_cursor 
+	INTO @Hub, @Satellite
+END 
+CLOSE sat_cursor;
+DEALLOCATE sat_cursor;
+
+/* Liste des champs hors champs techniques des satellites */
+SELECT COLUMN_NAME AS Attribut, '' As Description
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'SAT_CURR_CustomerProductH3_SF'
+  AND COLUMN_NAME NOT LIKE '%_SK%'
+  AND COLUMN_NAME NOT IN ('HASHID', 'LoadNr')
+ORDER BY ORDINAL_POSITION
+
+

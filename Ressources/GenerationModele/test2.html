@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <link rel="canonical" href="http://www.jointjs.com/" />
+        <meta name="description" content="Create interactive diagrams in JavaScript easily. JointJS plugins for ERD, Org chart, FSA, UML, PN, DEVS, LDM diagrams are ready to use." />
+        <meta name="keywords" content="JointJS, JavaScript, diagrams, diagramming library, UML, charts" />
+
+        <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="css/joint.min.css" />
+        <link rel="stylesheet" href="css/tutorial.css" />
+
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+        <title>JointJS - JavaScript diagramming library - Demos.</title>
+        
+    </head>
+    <body>
+        <header>
+    <nav>
+        <ul>
+            <li><a href="/"><img class="logo small" src="/images/logo-transparent.png" alt="Logo."/>JointJS</a></li>
+            <li ><a href="/download">Download</a></li>
+            <li class="active"><a href="/demos">Demos</a></li>
+            <li ><a href="/license">License</a></li>
+            <li ><a href="/tutorial">Tutorials</a></li>
+            <li ><a href="/api">JointJS API</a></li>
+            <li ><a href="/rappid/docs">Rappid API</a></li>
+            <li ><a href="/support">Support</a></li>
+            <li ><a href="/about-rappid">Rappid</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+        <section id="demos">
+
+          <div id="demos-sidebar" class="content-sidebar">
+  <ul>
+    <li><a href="/about-rappid">Rappid Demos</a>
+      <ul>
+        <li><a href="/rappid">Rappid Example App</a></li>
+        <li><a href="/demos/charts">Charts</a></li>
+        <li><a href="/rappid/bpmn">Business Process Model and Notation</a></li>
+        <li><a href="/demos/javascript-ast">JavaScript AST visualizer</a></li>
+        <li><a href="/demos/shortest-path">Shortest Path Finder</a></li>
+        <li><a href="/demos/orgchart">Orgchart</a></li>
+      </ul>
+    </li>
+    <li><a href="/demos">Demos</a>
+      <ul>
+        <li><a href="/demos/fsa">Finite State Machines</a></li>
+        <li><a href="/demos/org">Organizational Charts</a></li>
+        <li><a href="/demos/erd">ER Diagrams</a></li>
+        <li><a href="/demos/devs">Discrete Event System Specification</a></li>
+        <li><a href="/demos/chess">Chess</a></li>
+        <li><a href="/demos/pn">Petri Nets</a></li>
+        <li><a href="/demos/links">Links</a></li>
+        <li><a href="/demos/umlcd">UML Class Diagrams</a></li>
+        <li><a href="/demos/umlsc">UML Statechart Diagrams</a></li>
+        <li><a href="/demos/logic">Logic Circuits</a></li>
+        <li><a href="/demos/transition">Transition & Custom Views</a></li>
+        <li><a href="/demos/routing">Smart Routing</a></li>
+        <li><a href="/demos/paper">Paper Attributes</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+
+          <div id="pn" class="content-container">
+  <h1>Unified Modeling Language</h1>
+  <h2>The Statechart Diagram</h2>
+  <div id="paper" class="paper"/>
+</div>
+<div class="code-link">
+    <a target="_blank" href="/js/umlsc.js">source code to this demo</a>
+</div>
+<script src="js/joint.min.js"></script>
+<script src="js/joint.shapes.uml.js"></script>
+<script src="js/GraphDef.js"></script>
+
+<pre data-src="/js/umlsc.js" class="demo-source"></pre>
+
+
+        </section>
+
+        <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-5029684-2']);
+    _gaq.push(['_setAllowLinker', true]);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+        <link rel="stylesheet" href="/vendor/prism/prism.css">
+        <script src="/vendor/prism/prism.js"></script>
+    </body>
+</html>

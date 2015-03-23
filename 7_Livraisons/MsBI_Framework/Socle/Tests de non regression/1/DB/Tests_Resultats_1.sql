@@ -4,10 +4,16 @@ IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES
 BEGIN
 
 CREATE TABLE [Adm].[Tests_Resultats](
-	[idChargement] [int] IDENTITY(1,1) NOT NULL,
-	[idOrigine] [int] NULL,
-	[dtChargement] [datetime] NULL,
-	[strFichierArchive] [varchar](100) NULL
+	idResultat	int IDENTITY(1,1) NOT NULL,
+	Domaine		varchar(50), 
+	Colonne		varchar(50), 
+	Ecart		varchar(50),
+	DtResultat	datetime,
+	isCurrent   int,
+	ValeurCle1	varchar(255), 
+	ValeurCle2	varchar(255),
+	ValeurCle3	varchar(255),
+	ValeurCle4	varchar(255)
 ) ON [PRIMARY]
 
 END

@@ -1,0 +1,1 @@
+EXEC sp_RENAME 'Adm.Tests_Resultats.Domaine' , 'Table_Cible', 'COLUMN'
