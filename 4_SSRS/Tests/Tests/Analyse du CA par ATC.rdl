@@ -1,0 +1,1308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="Base_SSAS">
+      <DataSourceReference>Base_SSAS</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>0e860326-c850-4a88-a075-91175fe0366d</rd:DataSourceID>
+    </DataSource>
+    <DataSource Name="Datawarehouse">
+      <DataSourceReference>Datawarehouse</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>d2d13361-e2dd-47a1-a852-2167e2d02331</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="Dts_ReportLabel">
+      <SharedDataSet>
+        <SharedDataSetReference>Dts_ReportLabel</SharedDataSetReference>
+        <QueryParameters>
+          <QueryParameter Name="@pReport">
+            <Value>=Globals!ReportName</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+          <QueryParameter Name="@pLanguage">
+            <Value>=User!Language</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+        </QueryParameters>
+      </SharedDataSet>
+      <Fields>
+        <Field Name="Label">
+          <DataField>Label</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Traduction">
+          <DataField>Traduction</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Year">
+      <Query>
+        <DataSourceName>Base_SSAS</DataSourceName>
+        <CommandText>WITH
+MEMBER [MemberCaption] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Key
+MEMBER [MemberUN] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Unique_Name
+
+SET [IntervalYear] AS 
+	StrToMember("[Date mouvement comptable].[Année-Mois-Jour].[Année].&amp;[" + Format(Now(), "yyyy") + "]").Lead(-5):
+	StrToMember("[Date mouvement comptable].[Année-Mois-Jour].[Année].&amp;[" + Format(Now(), "yyyy") + "]")
+
+SELECT {[MemberValue], [MemberCaption], [MemberKey], [MemberUN]} ON 0,
+ [IntervalYear] ON 1
+FROM [Compta]</CommandText>
+        <rd:DesignerState><QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition"><CommandType>MDX</CommandType><Type>Query</Type><QuerySpecification xsi:type="MDXQuerySpecification"><Select><Items><Item><ID xsi:type="Level"><DimensionName>Date mouvement comptable</DimensionName><HierarchyName>Année-Mois-Jour</HierarchyName><HierarchyUniqueName>[Date mouvement comptable].[Année-Mois-Jour]</HierarchyUniqueName><LevelName>Année</LevelName><UniqueName>[Date mouvement comptable].[Année-Mois-Jour].[Année]</UniqueName></ID><ItemCaption>Year</ItemCaption></Item><Item><ID xsi:type="Measure"><MeasureName>MemberValue</MeasureName><UniqueName>[Measures].[MemberValue]</UniqueName></ID><ItemCaption>MemberValue</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberCaption</MeasureName><UniqueName>[Measures].[MemberCaption]</UniqueName></ID><ItemCaption>MemberCaption</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberKey</MeasureName><UniqueName>[Measures].[MemberKey]</UniqueName></ID><ItemCaption>MemberKey</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberUN</MeasureName><UniqueName>[Measures].[MemberUN]</UniqueName></ID><ItemCaption>MemberUN</ItemCaption><FormattedValue>true</FormattedValue></Item></Items></Select><From>Compta</From><Filter><FilterItems /></Filter><Calculations /><Aggregates /><QueryProperties /></QuerySpecification><Query><Statement>WITH
+MEMBER [MemberCaption] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Key
+MEMBER [MemberUN] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Unique_Name
+
+SET [IntervalYear] AS 
+	StrToMember("[Date mouvement comptable].[Année-Mois-Jour].[Année].&amp;[" + Format(Now(), "yyyy") + "]").Lead(-5):
+	StrToMember("[Date mouvement comptable].[Année-Mois-Jour].[Année].&amp;[" + Format(Now(), "yyyy") + "]")
+
+SELECT {[MemberValue], [MemberCaption], [MemberKey], [MemberUN]} ON 0,
+ [IntervalYear] ON 1
+FROM [Compta]</Statement><ParameterDefinitions /></Query></QueryDefinition></rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Year">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Date mouvement comptable].[Année-Mois-Jour].[Année]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MemberValue">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberValue]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberCaption">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberCaption]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberKey">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberKey]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberUN">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberUN]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Month">
+      <Query>
+        <DataSourceName>Base_SSAS</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="pYear">
+            <Value>=Parameters!pYear.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>WITH
+MEMBER [MemberCaption] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Key
+MEMBER [MemberUN] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Unique_Name
+
+SELECT {[MemberValue], [MemberCaption], [MemberKey], [MemberUN]} ON 0,
+       [Date mouvement comptable].[Année-Mois-Jour].[Mois] ON 1
+FROM (
+SELECT  StrToSet(@pYear) ON 0
+FROM [Compta])</CommandText>
+        <rd:DesignerState><QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition"><CommandType>MDX</CommandType><Type>Query</Type><QuerySpecification xsi:type="MDXQuerySpecification"><Select><Items><Item><ID xsi:type="Level"><DimensionName>Date mouvement comptable</DimensionName><HierarchyName>Année-Mois-Jour</HierarchyName><HierarchyUniqueName>[Date mouvement comptable].[Année-Mois-Jour]</HierarchyUniqueName><LevelName>Année</LevelName><UniqueName>[Date mouvement comptable].[Année-Mois-Jour].[Année]</UniqueName></ID><ItemCaption>Year</ItemCaption></Item><Item><ID xsi:type="Level"><DimensionName>Date mouvement comptable</DimensionName><HierarchyName>Année-Mois-Jour</HierarchyName><HierarchyUniqueName>[Date mouvement comptable].[Année-Mois-Jour]</HierarchyUniqueName><LevelName>Mois</LevelName><UniqueName>[Date mouvement comptable].[Année-Mois-Jour].[Mois]</UniqueName></ID><ItemCaption>Month</ItemCaption></Item><Item><ID xsi:type="Measure"><MeasureName>MemberValue</MeasureName><UniqueName>[Measures].[MemberValue]</UniqueName></ID><ItemCaption>MemberValue</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberCaption</MeasureName><UniqueName>[Measures].[MemberCaption]</UniqueName></ID><ItemCaption>MemberCaption</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberKey</MeasureName><UniqueName>[Measures].[MemberKey]</UniqueName></ID><ItemCaption>MemberKey</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberUN</MeasureName><UniqueName>[Measures].[MemberUN]</UniqueName></ID><ItemCaption>MemberUN</ItemCaption><FormattedValue>true</FormattedValue></Item></Items></Select><From>Compta</From><Filter><FilterItems /></Filter><Calculations /><Aggregates /><QueryProperties /></QuerySpecification><Query><Statement>WITH
+MEMBER [MemberCaption] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Key
+MEMBER [MemberUN] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Unique_Name
+
+SELECT {[MemberValue], [MemberCaption], [MemberKey], [MemberUN]} ON 0,
+       [Date mouvement comptable].[Année-Mois-Jour].[Mois] ON 1
+FROM (
+SELECT  StrToSet(@pYear) ON 0
+FROM [Compta])</Statement><ParameterDefinitions><ParameterDefinition><Name>pYear</Name><DefaultValues><DefaultValue>[Date mouvement comptable].[Année-Mois-Jour].[Année].&amp;[2000]</DefaultValue></DefaultValues><Caption>pYear</Caption><HierarchyUniqueName>[Date mouvement comptable].[Année-Mois-Jour]</HierarchyUniqueName><ParameterValuesQuery><Statement>WITH MEMBER [Measures].[ParameterCaption] AS [Date mouvement comptable].[Année-Mois-Jour].CURRENTMEMBER.Member_Caption MEMBER [Measures].[ParameterValue] AS [Date mouvement comptable].[Année-Mois-Jour].CURRENTMEMBER.UNIQUENAME MEMBER [Measures].[ParameterLevel] AS [Date mouvement comptable].[Année-Mois-Jour].CURRENTMEMBER.LEVEL.ORDINAL SELECT {[Measures].[ParameterCaption], [Measures].[ParameterValue], [Measures].[ParameterLevel]} ON COLUMNS , [Date mouvement comptable].[Année-Mois-Jour].ALLMEMBERS ON ROWS FROM [Compta]</Statement><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery></ParameterDefinition></ParameterDefinitions></Query></QueryDefinition></rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Year">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Date mouvement comptable].[Année-Mois-Jour].[Année]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Month">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Date mouvement comptable].[Année-Mois-Jour].[Mois]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MemberValue">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberValue]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberCaption">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberCaption]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberKey">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberKey]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberUN">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberUN]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_PeriodType">
+      <SharedDataSet>
+        <SharedDataSetReference>Dts_ReportParameters</SharedDataSetReference>
+      </SharedDataSet>
+      <Fields>
+        <Field Name="EnumItemValue">
+          <DataField>EnumItemValue</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="EnumItemLabel">
+          <DataField>EnumItemLabel</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EnumItemName">
+          <DataField>EnumItemName</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+      </Fields>
+      <Filters>
+        <Filter>
+          <FilterExpression>=Fields!EnumItemName.Value</FilterExpression>
+          <Operator>Equal</Operator>
+          <FilterValues>
+            <FilterValue>Periode</FilterValue>
+          </FilterValues>
+        </Filter>
+      </Filters>
+    </DataSet>
+    <DataSet Name="Dts_SelectedMonths">
+      <Query>
+        <DataSourceName>Base_SSAS</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="pMonth">
+            <Value>=Parameters!pMonth.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="pPeriodType">
+            <Value>=Parameters!pPeriodType.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>WITH
+MEMBER [MemberCaption] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Key
+MEMBER [MemberUN] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Unique_Name
+
+SET [Period] AS 
+	CASE @pPeriodType
+		WHEN '1' THEN StrToMember(@pMonth).Lead(-11)
+		WHEN '0' THEN StrToMember(@pMonth).Parent.FirstChild
+	END : StrToMember(@pMonth)
+ 
+SELECT {[MemberValue], [MemberCaption], [MemberKey], [MemberUN]} ON 0,
+       [Period] ON 1
+FROM [Compta]</CommandText>
+        <rd:DesignerState><QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition"><CommandType>MDX</CommandType><Type>Query</Type><QuerySpecification xsi:type="MDXQuerySpecification"><Select><Items><Item><ID xsi:type="Level"><DimensionName>Date mouvement comptable</DimensionName><HierarchyName>Année-Mois-Jour</HierarchyName><HierarchyUniqueName>[Date mouvement comptable].[Année-Mois-Jour]</HierarchyUniqueName><LevelName>Année</LevelName><UniqueName>[Date mouvement comptable].[Année-Mois-Jour].[Année]</UniqueName></ID><ItemCaption>Year</ItemCaption></Item><Item><ID xsi:type="Level"><DimensionName>Date mouvement comptable</DimensionName><HierarchyName>Année-Mois-Jour</HierarchyName><HierarchyUniqueName>[Date mouvement comptable].[Année-Mois-Jour]</HierarchyUniqueName><LevelName>Mois</LevelName><UniqueName>[Date mouvement comptable].[Année-Mois-Jour].[Mois]</UniqueName></ID><ItemCaption>Month</ItemCaption></Item><Item><ID xsi:type="Measure"><MeasureName>MemberValue</MeasureName><UniqueName>[Measures].[MemberValue]</UniqueName></ID><ItemCaption>MemberValue</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberCaption</MeasureName><UniqueName>[Measures].[MemberCaption]</UniqueName></ID><ItemCaption>MemberCaption</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberKey</MeasureName><UniqueName>[Measures].[MemberKey]</UniqueName></ID><ItemCaption>MemberKey</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberUN</MeasureName><UniqueName>[Measures].[MemberUN]</UniqueName></ID><ItemCaption>MemberUN</ItemCaption><FormattedValue>true</FormattedValue></Item></Items></Select><From>Compta</From><Filter><FilterItems /></Filter><Calculations /><Aggregates /><QueryProperties /></QuerySpecification><Query><Statement>WITH
+MEMBER [MemberCaption] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Member_Key
+MEMBER [MemberUN] AS [Date mouvement comptable].[Année-Mois-Jour].Currentmember.Unique_Name
+
+SET [Period] AS 
+	CASE @pPeriodType
+		WHEN '1' THEN StrToMember(@pMonth).Lead(-11)
+		WHEN '0' THEN StrToMember(@pMonth).Parent.FirstChild
+	END : StrToMember(@pMonth)
+ 
+SELECT {[MemberValue], [MemberCaption], [MemberKey], [MemberUN]} ON 0,
+       [Period] ON 1
+FROM [Compta]</Statement><ParameterDefinitions><ParameterDefinition><Name>pMonth</Name><DefaultValues><DefaultValue>[Date mouvement comptable].[Année-Mois-Jour].[Mois].&amp;[200001]</DefaultValue></DefaultValues><Caption>pMonth</Caption><HierarchyUniqueName>[Date mouvement comptable].[Année-Mois-Jour]</HierarchyUniqueName><ParameterValuesQuery><Statement>WITH MEMBER [Measures].[ParameterCaption] AS [Date mouvement comptable].[Année-Mois-Jour].CURRENTMEMBER.Member_Caption MEMBER [Measures].[ParameterValue] AS [Date mouvement comptable].[Année-Mois-Jour].CURRENTMEMBER.UNIQUENAME MEMBER [Measures].[ParameterLevel] AS [Date mouvement comptable].[Année-Mois-Jour].CURRENTMEMBER.LEVEL.ORDINAL SELECT {[Measures].[ParameterCaption], [Measures].[ParameterValue], [Measures].[ParameterLevel]} ON COLUMNS , [Date mouvement comptable].[Année-Mois-Jour].ALLMEMBERS ON ROWS FROM [Compta]</Statement><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery></ParameterDefinition><ParameterDefinition><Name>pPeriodType</Name><DefaultValues><DefaultValue>"0"</DefaultValue></DefaultValues><Caption>pPeriodType</Caption><ParameterValuesQuery><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery></ParameterDefinition></ParameterDefinitions></Query></QueryDefinition></rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Year">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Date mouvement comptable].[Année-Mois-Jour].[Année]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Month">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Date mouvement comptable].[Année-Mois-Jour].[Mois]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MemberValue">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberValue]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberCaption">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberCaption]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberKey">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberKey]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberUN">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberUN]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_UserCompanies">
+      <SharedDataSet>
+        <SharedDataSetReference>Dts_ReportUser</SharedDataSetReference>
+        <QueryParameters>
+          <QueryParameter Name="@pUserID">
+            <Value>=User!UserID</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+        </QueryParameters>
+      </SharedDataSet>
+      <Fields>
+        <Field Name="UserID">
+          <DataField>UserID</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="NetworkAlias">
+          <DataField>NetworkAlias</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyID">
+          <DataField>CompanyID</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CompanyID_MDX">
+          <DataField>CompanyID_MDX</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Division">
+      <Query>
+        <DataSourceName>Base_SSAS</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="pUserCompanies">
+            <Value>=Parameters!pUserCompanies.Value</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>WITH	
+MEMBER [MemberCaption] AS [Société].[_Division].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Société].[_Division].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Société].[_Division].Currentmember.Member_Key
+MEMBER [MemberUN] As [Société].[_Division].Currentmember.Unique_Name
+
+SET [Indicateurs] AS {
+	[MemberCaption],
+	[MemberValue],
+	[MemberKey],
+                [MemberUN] 
+}
+
+SELECT [Indicateurs] ON 0,
+      [Société].[_Division].[_Division] ON 1
+FROM [Compta]
+WHERE StrToSet(@pUserCompanies)</CommandText>
+        <rd:DesignerState><QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition"><CommandType>MDX</CommandType><Type>Query</Type><QuerySpecification xsi:type="MDXQuerySpecification"><Select><Items><Item><ID xsi:type="Level"><DimensionName>Société</DimensionName><HierarchyName>_Division</HierarchyName><HierarchyUniqueName>[Société].[_Division]</HierarchyUniqueName><LevelName>_Division</LevelName><UniqueName>[Société].[_Division].[_Division]</UniqueName></ID><ItemCaption>_Division</ItemCaption></Item><Item><ID xsi:type="Measure"><MeasureName>MemberCaption</MeasureName><UniqueName>[Measures].[MemberCaption]</UniqueName></ID><ItemCaption>MemberCaption</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberValue</MeasureName><UniqueName>[Measures].[MemberValue]</UniqueName></ID><ItemCaption>MemberValue</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberKey</MeasureName><UniqueName>[Measures].[MemberKey]</UniqueName></ID><ItemCaption>MemberKey</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberUN</MeasureName><UniqueName>[Measures].[MemberUN]</UniqueName></ID><ItemCaption>MemberUN</ItemCaption><FormattedValue>true</FormattedValue></Item></Items></Select><From>Compta</From><Filter><FilterItems /></Filter><Calculations /><Aggregates /><QueryProperties /></QuerySpecification><Query><Statement>WITH	
+MEMBER [MemberCaption] AS [Société].[_Division].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Société].[_Division].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Société].[_Division].Currentmember.Member_Key
+MEMBER [MemberUN] As [Société].[_Division].Currentmember.Unique_Name
+
+SET [Indicateurs] AS {
+	[MemberCaption],
+	[MemberValue],
+	[MemberKey],
+                [MemberUN] 
+}
+
+SELECT [Indicateurs] ON 0,
+      [Société].[_Division].[_Division] ON 1
+FROM [Compta]
+WHERE StrToSet(@pUserCompanies)</Statement><ParameterDefinitions><ParameterDefinition><Name>pUserCompanies</Name><DefaultValues><DefaultValue>[Société].[_Société].&amp;[112]</DefaultValue></DefaultValues><Caption>pUserCompanies</Caption><ParameterValuesQuery><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery><MultipleValues>true</MultipleValues></ParameterDefinition></ParameterDefinitions></Query></QueryDefinition></rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="MemberCaption">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberCaption]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ID_Division">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Société].[_Division].[_Division]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MemberValue">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberValue]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberKey">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberKey]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberUN">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberUN]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Company">
+      <Query>
+        <DataSourceName>Base_SSAS</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="pDivision">
+            <Value>=Parameters!pDivision.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="pUserCompanies">
+            <Value>=Parameters!pUserCompanies.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>WITH 	
+SET [UserCompanies] AS StrToSet(@pUserCompanies)
+SET [Companies] AS 
+	CASE 
+		WHEN [UserCompanies].Count = 1 
+		THEN [UserCompanies]
+		ELSE {[Société].[_Société].[All],  [UserCompanies]}
+	END
+
+MEMBER [MemberCaption] AS [Société].[_Société].CurrentMember.Member_Caption
+MEMBER [MemberValue] AS [Société].[_Société].CurrentMember.Member_Value
+MEMBER [MemberKey] AS [Société].[_Société].CurrentMember.Member_Key
+MEMBER [MemberUN] As [Société].[_Société].CurrentMember.UniqueName
+
+SET [Indicateurs] AS {
+	[MemberCaption],
+	[MemberValue],
+	[MemberKey],
+	[MemberUN]
+}
+
+SELECT [Indicateurs] ON 0,
+	ORDER([Companies],[Société].[_Société].Currentmember.Member_Caption) ON 1
+FROM (
+	SELECT StrToSet(@pDivision) ON 0
+	FROM [Compta]
+)</CommandText>
+        <rd:DesignerState><QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition"><CommandType>MDX</CommandType><Type>Query</Type><QuerySpecification xsi:type="MDXQuerySpecification"><Select><Items><Item><ID xsi:type="Level"><DimensionName>Société</DimensionName><HierarchyName>_Société</HierarchyName><HierarchyUniqueName>[Société].[_Société]</HierarchyUniqueName><LevelName>_Société</LevelName><UniqueName>[Société].[_Société].[_Société]</UniqueName></ID><ItemCaption>Company</ItemCaption></Item><Item><ID xsi:type="Measure"><MeasureName>MemberCaption</MeasureName><UniqueName>[Measures].[MemberCaption]</UniqueName></ID><ItemCaption>MemberCaption</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberValue</MeasureName><UniqueName>[Measures].[MemberValue]</UniqueName></ID><ItemCaption>MemberValue</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberKey</MeasureName><UniqueName>[Measures].[MemberKey]</UniqueName></ID><ItemCaption>MemberKey</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberUN</MeasureName><UniqueName>[Measures].[MemberUN]</UniqueName></ID><ItemCaption>MemberUN</ItemCaption><FormattedValue>true</FormattedValue></Item></Items></Select><From>Compta</From><Filter><FilterItems /></Filter><Calculations /><Aggregates /><QueryProperties /></QuerySpecification><Query><Statement>WITH 	
+SET [UserCompanies] AS StrToSet(@pUserCompanies)
+SET [Companies] AS 
+	CASE 
+		WHEN [UserCompanies].Count = 1 
+		THEN [UserCompanies]
+		ELSE {[Société].[_Société].[All],  [UserCompanies]}
+	END
+
+MEMBER [MemberCaption] AS [Société].[_Société].CurrentMember.Member_Caption
+MEMBER [MemberValue] AS [Société].[_Société].CurrentMember.Member_Value
+MEMBER [MemberKey] AS [Société].[_Société].CurrentMember.Member_Key
+MEMBER [MemberUN] As [Société].[_Société].CurrentMember.UniqueName
+
+SET [Indicateurs] AS {
+	[MemberCaption],
+	[MemberValue],
+	[MemberKey],
+	[MemberUN]
+}
+
+SELECT [Indicateurs] ON 0,
+	ORDER([Companies],[Société].[_Société].Currentmember.Member_Caption) ON 1
+FROM (
+	SELECT StrToSet(@pDivision) ON 0
+	FROM [Compta]
+)</Statement><ParameterDefinitions><ParameterDefinition><Name>pDivision</Name><DefaultValues><DefaultValue>[Société].[_Division].[All]</DefaultValue></DefaultValues><Caption>pDivision</Caption><ParameterValuesQuery><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery></ParameterDefinition><ParameterDefinition><Name>pUserCompanies</Name><DefaultValues><DefaultValue>[Société].[_Société].&amp;[111]</DefaultValue></DefaultValues><Caption>pUserCompanies</Caption><ParameterValuesQuery><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery></ParameterDefinition></ParameterDefinitions></Query></QueryDefinition></rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Company">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Société].[_Société].[_Société]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MemberCaption">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberCaption]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberValue">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberValue]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberKey">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberKey]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberUN">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberUN]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_User">
+      <Query>
+        <DataSourceName>Base_SSAS</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="pDivision">
+            <Value>=Parameters!pDivision.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="pSelectedCompanies">
+            <Value>=Iif(Parameters!pCompany.Value = "[Société].[_Société].[All]",
+	Parameters!pUserCompanies.Value,
+	Parameters!pCompany.Value)</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>WITH	
+MEMBER [MemberCaption] AS [Resp des ventes - Commande].[Nom].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Resp des ventes - Commande].[Nom].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Resp des ventes - Commande].[Nom].Currentmember.Member_Key
+MEMBER [MemberUN] As [Resp des ventes - Commande].[Nom].Currentmember.Unique_Name
+MEMBER [MemberDefault] AS [Resp des ventes - Commande].[Nom].[All].Unique_Name
+
+SET [Indicateurs] AS {
+	[MemberCaption],
+	[MemberValue],
+	[MemberKey],
+                [MemberUN], 
+                [MemberDefault]
+}
+
+SELECT [Indicateurs] ON 0,
+	ORDER(
+		NonEmpty([Resp des ventes - Commande].[Nom].AllMembers,[Measures].[Montant]),
+		[Resp des ventes - Commande].[Nom].Currentmember.Member_Caption
+	) ON 1
+FROM (
+SELECT (StrToSet(@pDivision),StrToSet(@pSelectedCompanies)) ON 0
+FROM [Compta])</CommandText>
+        <rd:DesignerState><QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition"><CommandType>MDX</CommandType><Type>Query</Type><QuerySpecification xsi:type="MDXQuerySpecification"><Select><Items><Item><ID xsi:type="Level"><DimensionName>Resp des ventes - Commande</DimensionName><HierarchyName>Nom</HierarchyName><HierarchyUniqueName>[Resp des ventes - Commande].[Nom]</HierarchyUniqueName><LevelName>Nom</LevelName><UniqueName>[Resp des ventes - Commande].[Nom].[Nom]</UniqueName></ID><ItemCaption>Name</ItemCaption></Item><Item><ID xsi:type="Measure"><MeasureName>MemberCaption</MeasureName><UniqueName>[Measures].[MemberCaption]</UniqueName></ID><ItemCaption>MemberCaption</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberValue</MeasureName><UniqueName>[Measures].[MemberValue]</UniqueName></ID><ItemCaption>MemberValue</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberKey</MeasureName><UniqueName>[Measures].[MemberKey]</UniqueName></ID><ItemCaption>MemberKey</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberUN</MeasureName><UniqueName>[Measures].[MemberUN]</UniqueName></ID><ItemCaption>MemberUN</ItemCaption><FormattedValue>true</FormattedValue></Item><Item><ID xsi:type="Measure"><MeasureName>MemberDefault</MeasureName><UniqueName>[Measures].[MemberDefault]</UniqueName></ID><ItemCaption>MemberDefault</ItemCaption><FormattedValue>true</FormattedValue></Item></Items></Select><From>Compta</From><Filter><FilterItems /></Filter><Calculations /><Aggregates /><QueryProperties /></QuerySpecification><Query><Statement>WITH	
+MEMBER [MemberCaption] AS [Resp des ventes - Commande].[Nom].Currentmember.Member_Caption
+MEMBER [MemberValue] AS [Resp des ventes - Commande].[Nom].Currentmember.Member_Value
+MEMBER [MemberKey] AS [Resp des ventes - Commande].[Nom].Currentmember.Member_Key
+MEMBER [MemberUN] As [Resp des ventes - Commande].[Nom].Currentmember.Unique_Name
+MEMBER [MemberDefault] AS [Resp des ventes - Commande].[Nom].[All].Unique_Name
+
+SET [Indicateurs] AS {
+	[MemberCaption],
+	[MemberValue],
+	[MemberKey],
+                [MemberUN], 
+                [MemberDefault]
+}
+
+SELECT [Indicateurs] ON 0,
+	ORDER(
+		NonEmpty([Resp des ventes - Commande].[Nom].AllMembers,[Measures].[Montant]),
+		[Resp des ventes - Commande].[Nom].Currentmember.Member_Caption
+	) ON 1
+FROM (
+SELECT (StrToSet(@pDivision),StrToSet(@pSelectedCompanies)) ON 0
+FROM [Compta])</Statement><ParameterDefinitions><ParameterDefinition><Name>pDivision</Name><DefaultValues><DefaultValue>[Société].[_Division].[All]</DefaultValue></DefaultValues><Caption>pDivision</Caption><ParameterValuesQuery><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery></ParameterDefinition><ParameterDefinition><Name>pSelectedCompanies</Name><DefaultValues><DefaultValue>[Société].[_Société].[All]</DefaultValue></DefaultValues><Caption>pSelectedCompanies</Caption><ParameterValuesQuery><ParameterizedStatement><ReferencedParameters /></ParameterizedStatement></ParameterValuesQuery></ParameterDefinition></ParameterDefinitions></Query></QueryDefinition></rd:DesignerState>
+      </Query>
+      <Fields>
+        <Field Name="Name">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Level" UniqueName="[Resp des ventes - Commande].[Nom].[Nom]" /&gt;</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MemberCaption">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberCaption]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberValue">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberValue]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberKey">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberKey]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberUN">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberUN]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="MemberDefault">
+          <DataField>&lt;?xml version="1.0" encoding="utf-8"?&gt;&lt;Field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="Measure" UniqueName="[Measures].[MemberDefault]" /&gt;</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Rectangle Name="Rct_Rappel">
+            <ReportItems>
+              <Rectangle Name="Rct_Parametres">
+                <ReportItems>
+                  <Rectangle Name="Rct_ParamDivision">
+                    <ReportItems>
+                      <Textbox Name="Txt_LstDivision">
+                        <CanGrow>true</CanGrow>
+                        <ToggleImage>
+                          <InitialState>true</InitialState>
+                        </ToggleImage>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=Join(Parameters!pDivision.Label, " / ")</Value>
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <Color>#ee5d39</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <Left>5.5cm</Left>
+                        <Height>0.5cm</Height>
+                        <Width>22.2cm</Width>
+                        <Style>
+                          <Border>
+                            <Color>Orange</Color>
+                            <Style>None</Style>
+                          </Border>
+                          <BackgroundColor>#f1f1f1</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                      <Textbox Name="Txt_Division">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=Lookup("Txt_Division", Fields!Label.Value, Fields!Traduction.Value, "Dts_ReportLabel")</Value>
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <Color>#f1f1f1</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <Height>0.5cm</Height>
+                        <Width>5.25cm</Width>
+                        <ZIndex>1</ZIndex>
+                        <Style>
+                          <Border>
+                            <Style>None</Style>
+                          </Border>
+                          <BackgroundColor>#ee5d39</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </ReportItems>
+                    <DataElementOutput>ContentsOnly</DataElementOutput>
+                    <Height>0.5cm</Height>
+                    <Width>27.7cm</Width>
+                    <Style />
+                  </Rectangle>
+                  <Rectangle Name="Rct_ParamCompany">
+                    <ReportItems>
+                      <Textbox Name="Txt_LstCompany">
+                        <CanGrow>true</CanGrow>
+                        <ToggleImage>
+                          <InitialState>true</InitialState>
+                        </ToggleImage>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=iif(Parameters!pCompany.Label="All",
+	Lookup("Txt_AllCompany", Fields!Label.Value, Fields!Traduction.Value, "Dts_ReportLabel"),
+	Parameters!pCompany.Label)</Value>
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <Color>#ee5d39</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <Left>5.5cm</Left>
+                        <Height>0.5cm</Height>
+                        <Width>22.2cm</Width>
+                        <Style>
+                          <Border>
+                            <Color>Orange</Color>
+                            <Style>None</Style>
+                          </Border>
+                          <BackgroundColor>#f1f1f1</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                      <Textbox Name="Txt_Company">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=Lookup("Txt_Company", Fields!Label.Value, Fields!Traduction.Value, "Dts_ReportLabel")</Value>
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <Color>#f1f1f1</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <Height>0.5cm</Height>
+                        <Width>5.25cm</Width>
+                        <ZIndex>1</ZIndex>
+                        <Style>
+                          <Border>
+                            <Style>None</Style>
+                          </Border>
+                          <BackgroundColor>#ee5d39</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </ReportItems>
+                    <DataElementOutput>ContentsOnly</DataElementOutput>
+                    <Top>0.75cm</Top>
+                    <Height>0.5cm</Height>
+                    <Width>27.7cm</Width>
+                    <ZIndex>1</ZIndex>
+                    <Style />
+                  </Rectangle>
+                  <Rectangle Name="Rct_ParamUser">
+                    <ReportItems>
+                      <Textbox Name="Txt_LstUser">
+                        <CanGrow>true</CanGrow>
+                        <ToggleImage>
+                          <InitialState>true</InitialState>
+                        </ToggleImage>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=iif(Parameters!pUser.Label="All",
+	Lookup("Txt_AllUser", Fields!Label.Value, Fields!Traduction.Value, "Dts_ReportLabel"),
+	Parameters!pUser.Label)</Value>
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <Color>#ee5d39</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <Left>5.5cm</Left>
+                        <Height>0.5cm</Height>
+                        <Width>22.2cm</Width>
+                        <Style>
+                          <Border>
+                            <Color>Orange</Color>
+                            <Style>None</Style>
+                          </Border>
+                          <BackgroundColor>#f1f1f1</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                      <Textbox Name="Txt_User">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=Lookup("Txt_User", Fields!Label.Value, Fields!Traduction.Value, "Dts_ReportLabel")</Value>
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <Color>#f1f1f1</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <Height>0.5cm</Height>
+                        <Width>5.25cm</Width>
+                        <ZIndex>1</ZIndex>
+                        <Style>
+                          <Border>
+                            <Style>None</Style>
+                          </Border>
+                          <BackgroundColor>#ee5d39</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </ReportItems>
+                    <DataElementOutput>ContentsOnly</DataElementOutput>
+                    <Top>1.5cm</Top>
+                    <Height>0.5cm</Height>
+                    <Width>27.7cm</Width>
+                    <ZIndex>2</ZIndex>
+                    <Style />
+                  </Rectangle>
+                </ReportItems>
+                <DataElementOutput>ContentsOnly</DataElementOutput>
+                <Top>1cm</Top>
+                <Height>2cm</Height>
+                <Width>27.7cm</Width>
+                <Visibility>
+                  <Hidden>true</Hidden>
+                  <ToggleItem>Txt_Parametres</ToggleItem>
+                </Visibility>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                </Style>
+              </Rectangle>
+              <Textbox Name="Txt_Parametres">
+                <CanGrow>true</CanGrow>
+                <KeepTogether>true</KeepTogether>
+                <Paragraphs>
+                  <Paragraph>
+                    <TextRuns>
+                      <TextRun>
+                        <Value>=Lookup("Txt_Parametres", Fields!Label.Value, Fields!Traduction.Value, "Dts_ReportLabel")</Value>
+                        <Style>
+                          <FontWeight>Bold</FontWeight>
+                          <Color>Gray</Color>
+                        </Style>
+                      </TextRun>
+                    </TextRuns>
+                    <Style />
+                  </Paragraph>
+                </Paragraphs>
+                <Height>0.75cm</Height>
+                <Width>27.7cm</Width>
+                <ZIndex>1</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                  <PaddingLeft>2pt</PaddingLeft>
+                  <PaddingRight>2pt</PaddingRight>
+                  <PaddingTop>2pt</PaddingTop>
+                  <PaddingBottom>2pt</PaddingBottom>
+                </Style>
+              </Textbox>
+            </ReportItems>
+            <DataElementOutput>ContentsOnly</DataElementOutput>
+            <Height>3cm</Height>
+            <Width>27.7cm</Width>
+            <Visibility>
+              <Hidden>=Parameters!pRappel.Value</Hidden>
+            </Visibility>
+            <Style />
+          </Rectangle>
+          <Rectangle Name="Rct_TabReport">
+            <ReportItems>
+              <Subreport Name="Rpt_Tab">
+                <ReportName>../SubReports/CA_ATC_Tab</ReportName>
+                <Parameters>
+                  <Parameter Name="pYear">
+                    <Value>=Parameters!pYear.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pMonth">
+                    <Value>=Parameters!pMonth.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pPeriodType">
+                    <Value>=Parameters!pPeriodType.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pDivision">
+                    <Value>=Parameters!pDivision.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pCompany">
+                    <Value>=Parameters!pCompany.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pUser">
+                    <Value>=Parameters!pUser.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pRappel">
+                    <Value>True</Value>
+                  </Parameter>
+                </Parameters>
+                <Height>3cm</Height>
+                <Width>27.7cm</Width>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                </Style>
+              </Subreport>
+            </ReportItems>
+            <KeepTogether>true</KeepTogether>
+            <Top>3cm</Top>
+            <Height>3cm</Height>
+            <Width>27.7cm</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Rectangle>
+          <Rectangle Name="Rct_Graph">
+            <ReportItems>
+              <Subreport Name="Rpt_Pie">
+                <ReportName>../SubReports/CA_ATC_Pie</ReportName>
+                <Parameters>
+                  <Parameter Name="pYear">
+                    <Value>=Parameters!pYear.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pMonth">
+                    <Value>=Parameters!pMonth.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pPeriodType">
+                    <Value>=Parameters!pPeriodType.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pDivision">
+                    <Value>=Parameters!pDivision.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pCompany">
+                    <Value>=Parameters!pCompany.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pUser">
+                    <Value>=Parameters!pUser.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pRappel">
+                    <Value>True</Value>
+                  </Parameter>
+                </Parameters>
+                <Height>3cm</Height>
+                <Width>12cm</Width>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                </Style>
+              </Subreport>
+              <Subreport Name="Rpt_LineChart">
+                <ReportName>../SubReports/CA_ATC_LineChart</ReportName>
+                <Parameters>
+                  <Parameter Name="pYear">
+                    <Value>=Parameters!pYear.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pMonth">
+                    <Value>=Parameters!pMonth.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pPeriodType">
+                    <Value>=Parameters!pPeriodType.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pDivision">
+                    <Value>=Parameters!pDivision.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pCompany">
+                    <Value>=Parameters!pCompany.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pUser">
+                    <Value>=Parameters!pUser.Value</Value>
+                  </Parameter>
+                  <Parameter Name="pRappel">
+                    <Value>True</Value>
+                  </Parameter>
+                </Parameters>
+                <Left>12.5cm</Left>
+                <Height>3cm</Height>
+                <Width>13.5cm</Width>
+                <ZIndex>1</ZIndex>
+                <Style>
+                  <Border>
+                    <Style>None</Style>
+                  </Border>
+                </Style>
+              </Subreport>
+            </ReportItems>
+            <KeepTogether>true</KeepTogether>
+            <Top>6cm</Top>
+            <Height>3cm</Height>
+            <Width>26cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Rectangle>
+        </ReportItems>
+        <Height>9cm</Height>
+        <Style />
+      </Body>
+      <Width>27.7cm</Width>
+      <Page>
+        <PageHeader>
+          <Height>1.5cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Image Name="Img_Logo">
+              <Source>External</Source>
+              <Value>=switch(Parameters!pCompany.Value="[Société].[_Société].&amp;[101]", "../Images/logo_MONTELIMAR-SP.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[102]", "../Images/logo_MONTELIMAR-CS.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[106]", "../Images/logo_HAUBTMANN.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[107]", "../Images/logo_LANDERER.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[108]", "../Images/logo_AE-MEDITERRANEE.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[109]", "../Images/logo_SAUBERLIN-PFEIFFER.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[111]", "../Images/logo_CLERMONT-FERRAND.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[112]", "../Images/logo_AE-BOURGOGNE.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[113]", "../Images/logo_AE-EPERNAY.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[114]", "../Images/logo_AE-ATLANTIQUE.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[115]", "../Images/logo_AE-LOIRE.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[117]", "../Images/logo_CULTECH.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[119]", "../Images/logo_DURERO.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[122]", "../Images/logo_AP-BELGIUM.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[127]", "../Images/logo_SINEL.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[131]", "../Images/logo_ROUEN.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[133]", "../Images/logo_STRASBOURG.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[136]", "../Images/logo_NEDERLAND.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[137]", "../Images/logo_LORIENT.jpg",
+Parameters!pCompany.Value="[Société].[_Société].&amp;[139]", "../Images/logo_BELGIUM.jpg",
+Parameters!pCompany.Value="[Société].[_Société].[All]", 
+	switch(Parameters!pDivision.Count &gt; 1, "../Images/logo_rouge_AUTAJON-GROUPE.jpg",
+	Parameters!pDivision.Value(0)="[Société].[_Division].&amp;[Etiquettes - Vins et spiritueux]", "../Images/logo_division_ETIQUETTES.jpg",
+	Parameters!pDivision.Value(0)="[Société].[_Division].&amp;[Etiquettes industrielles]", "../Images/logo_division_LABELS.jpg",
+	Parameters!pDivision.Value(0)="[Société].[_Division].&amp;[Packaging - Etuis et coffrets]", "../Images/logo_division_PACKAGING.jpg")
+)</Value>
+              <MIMEType>image/jpeg</MIMEType>
+              <Sizing>FitProportional</Sizing>
+              <Height>1.5cm</Height>
+              <Width>2.3cm</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+              </Style>
+            </Image>
+            <Textbox Name="Txt_Title">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Lookup("Txt_Title", Fields!Label.Value, Fields!Traduction.Value, "Dts_ReportLabel")</Value>
+                      <Style>
+                        <FontFamily>Times New Roman</FontFamily>
+                        <FontSize>16pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Left>2.3cm</Left>
+              <Height>0.75cm</Height>
+              <Width>25.4cm</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <BottomBorder>
+                  <Style>Solid</Style>
+                </BottomBorder>
+                <VerticalAlign>Middle</VerticalAlign>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Txt_Period">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Parameters!pSelectedMonths.Label(0) + " - " + 
+Parameters!pSelectedMonths.Label(Parameters!pSelectedMonths.Count-1)</Value>
+                      <Style>
+                        <FontFamily>Times New Roman</FontFamily>
+                        <FontSize>16pt</FontSize>
+                        <Color>Tomato</Color>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Top>0.75cm</Top>
+              <Left>2.3cm</Left>
+              <Height>0.75cm</Height>
+              <Width>25.4cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <VerticalAlign>Middle</VerticalAlign>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageHeader>
+        <PageFooter>
+          <Height>0.5cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Txt_DateExecution">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Globals!ExecutionTime</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <Format>dd/MM/yyyy H:mm:ss</Format>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Height>0.5cm</Height>
+              <Width>4.75cm</Width>
+              <Style>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Txt_Page">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Page " &amp; Globals!PageNumber &amp; " / " &amp; Globals!TotalPages</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Left>23.7cm</Left>
+              <Height>0.5cm</Height>
+              <Width>4cm</Width>
+              <ZIndex>1</ZIndex>
+              <Style />
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <PageHeight>21cm</PageHeight>
+        <PageWidth>29.7cm</PageWidth>
+        <InteractiveHeight>21cm</InteractiveHeight>
+        <InteractiveWidth>29.7cm</InteractiveWidth>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
+        <TopMargin>1cm</TopMargin>
+        <BottomMargin>1cm</BottomMargin>
+        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="pYear">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="[Date mouvement comptable].[Année-Mois-Jour].[Année].&amp;[" &amp; 
+	Format( DateAdd(DateInterval.Month, -1, Now()), "yyyy") &amp; "]"</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Year</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_Year</DataSetName>
+          <ValueField>MemberUN</ValueField>
+          <LabelField>MemberCaption</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="pMonth">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="[Date mouvement comptable].[Année-Mois-Jour].[Mois].&amp;[" &amp; 
+	Format( DateAdd(DateInterval.Month, -1, Now()), "yyyyMM") &amp; "]"</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Month</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_Month</DataSetName>
+          <ValueField>MemberUN</ValueField>
+          <LabelField>MemberCaption</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="pPeriodType">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>1</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Period Type</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_PeriodType</DataSetName>
+          <ValueField>EnumItemValue</ValueField>
+          <LabelField>EnumItemLabel</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="pSelectedMonths">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_SelectedMonths</DataSetName>
+          <ValueField>MemberUN</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>pSelectedMonths</Prompt>
+      <Hidden>true</Hidden>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_SelectedMonths</DataSetName>
+          <ValueField>MemberUN</ValueField>
+          <LabelField>MemberCaption</LabelField>
+        </DataSetReference>
+      </ValidValues>
+      <MultiValue>true</MultiValue>
+    </ReportParameter>
+    <ReportParameter Name="pUserCompanies">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_UserCompanies</DataSetName>
+          <ValueField>CompanyID_MDX</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>pUserCompanies</Prompt>
+      <Hidden>true</Hidden>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_UserCompanies</DataSetName>
+          <ValueField>CompanyID_MDX</ValueField>
+          <LabelField>CompanyID</LabelField>
+        </DataSetReference>
+      </ValidValues>
+      <MultiValue>true</MultiValue>
+    </ReportParameter>
+    <ReportParameter Name="pDivision">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_Division</DataSetName>
+          <ValueField>MemberUN</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Division</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_Division</DataSetName>
+          <ValueField>MemberUN</ValueField>
+          <LabelField>MemberCaption</LabelField>
+        </DataSetReference>
+      </ValidValues>
+      <MultiValue>true</MultiValue>
+    </ReportParameter>
+    <ReportParameter Name="pCompany">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_Company</DataSetName>
+          <ValueField>MemberUN</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Company</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_Company</DataSetName>
+          <ValueField>MemberUN</ValueField>
+          <LabelField>MemberCaption</LabelField>
+        </DataSetReference>
+      </ValidValues>
+      <UsedInQuery>True</UsedInQuery>
+    </ReportParameter>
+    <ReportParameter Name="pUser">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_User</DataSetName>
+          <ValueField>MemberDefault</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>User</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_User</DataSetName>
+          <ValueField>MemberUN</ValueField>
+          <LabelField>MemberCaption</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="pRappel">
+      <DataType>Boolean</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>false</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Rappel</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+  </ReportParameters>
+  <Language>=User!Language</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>cabbdb15-8d2c-4d67-9b92-4544ea9b07d7</rd:ReportID>
+</Report>

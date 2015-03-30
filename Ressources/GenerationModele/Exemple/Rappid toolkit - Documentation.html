@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)http://jointjs.com/rappid/docs/layout/forceDirected -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <link rel="canonical" href="http://www.jointjs.com/">
+        <meta name="description" content="Create interactive diagrams in JavaScript easily. JointJS plugins for ERD, Org chart, FSA, UML, PN, DEVS, LDM diagrams are ready to use.">
+        <meta name="keywords" content="JointJS, JavaScript, diagrams, diagramming library, UML, charts">
+
+        <link href="./Rappid toolkit - Documentation_files/css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="http://jointjs.com/css/style.css">
+
+        <link rel="shortcut icon" href="http://jointjs.com/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="http://jointjs.com/favicon.ico" type="image/x-icon">
+
+        <title>Rappid toolkit - Documentation</title>
+        
+    </head>
+    <body>
+        <header>
+    <nav>
+        <ul>
+            <li><a href="http://jointjs.com/"><img class="logo small" src="./Rappid toolkit - Documentation_files/logo-transparent.png" alt="Logo.">JointJS</a></li>
+            <li><a href="http://jointjs.com/download">Download</a></li>
+            <li><a href="http://jointjs.com/demos">Demos</a></li>
+            <li><a href="http://jointjs.com/license">License</a></li>
+            <li><a href="http://jointjs.com/tutorial">Tutorials</a></li>
+            <li><a href="http://jointjs.com/api">JointJS API</a></li>
+            <li class="active"><a href="http://jointjs.com/rappid/docs">Rappid API</a></li>
+            <li><a href="http://jointjs.com/support">Support</a></li>
+            <li><a href="http://jointjs.com/about-rappid">Rappid</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+        <section id="rappid-docs">
+            <div class="content-sidebar">
+  <input id="api-search" type="search" placeholder="e.g. chart">
+    <ul class="searchable">
+        <li><a href="http://jointjs.com/rappid/docs">Home</a></li>
+        <li data-index="null /rappid/docs/ui/stencil#installation /rappid/docs/ui/stencil#loading /rappid/docs/ui/stencil#groups /rappid/docs/ui/stencil#searchable /rappid/docs/ui/stencil#methods /rappid/docs/ui/stencil#added-elements"><a href="http://jointjs.com/rappid/docs/ui/stencil">ui.Stencil</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/stencil#installation"><a href="http://jointjs.com/rappid/docs/ui/stencil#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/stencil#loading"><a href="http://jointjs.com/rappid/docs/ui/stencil#loading">Loading with elements</a>
+                </li><li data-index="/rappid/docs/ui/stencil#groups"><a href="http://jointjs.com/rappid/docs/ui/stencil#groups">Groups (Accordion)</a>
+                </li><li data-index="/rappid/docs/ui/stencil#searchable"><a href="http://jointjs.com/rappid/docs/ui/stencil#searchable">Searchable stencil</a>
+                </li><li data-index="/rappid/docs/ui/stencil#methods"><a href="http://jointjs.com/rappid/docs/ui/stencil#methods">Other methods</a>
+                </li><li data-index="/rappid/docs/ui/stencil#added-elements"><a href="http://jointjs.com/rappid/docs/ui/stencil#added-elements">React on added elements</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/halo#installation /rappid/docs/ui/halo#create /rappid/docs/ui/halo#configuration /rappid/docs/ui/halo#magnets /rappid/docs/ui/halo#disable-tools /rappid/docs/ui/halo#customize /rappid/docs/ui/halo#halo-api /rappid/docs/ui/halo#halo-events"><a href="http://jointjs.com/rappid/docs/ui/halo">ui.Halo</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/halo#installation"><a href="http://jointjs.com/rappid/docs/ui/halo#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/halo#create"><a href="http://jointjs.com/rappid/docs/ui/halo#create">Creating a Halo</a>
+                </li><li data-index="/rappid/docs/ui/halo#configuration"><a href="http://jointjs.com/rappid/docs/ui/halo#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/ui/halo#magnets"><a href="http://jointjs.com/rappid/docs/ui/halo#magnets">Halo &amp; magnets</a>
+                </li><li data-index="/rappid/docs/ui/halo#disable-tools"><a href="http://jointjs.com/rappid/docs/ui/halo#disable-tools">Disabling Halo tools</a>
+                </li><li data-index="/rappid/docs/ui/halo#customize"><a href="http://jointjs.com/rappid/docs/ui/halo#customize">Customizing Halo tools</a>
+                </li><li data-index="/rappid/docs/ui/halo#halo-api"><a href="http://jointjs.com/rappid/docs/ui/halo#halo-api">Halo API</a>
+                </li><li data-index="/rappid/docs/ui/halo#halo-events"><a href="http://jointjs.com/rappid/docs/ui/halo#halo-events">Halo Events</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/freetransform#installation /rappid/docs/ui/freetransform#create"><a href="http://jointjs.com/rappid/docs/ui/freeTransform">ui.FreeTransform</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/freetransform#installation"><a href="http://jointjs.com/rappid/docs/ui/freeTransform#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/freetransform#create"><a href="http://jointjs.com/rappid/docs/ui/freeTransform#create">Creating a FreeTransform</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/inspector#installation /rappid/docs/ui/inspector#create /rappid/docs/ui/inspector#configuration /rappid/docs/ui/inspector#expressions /rappid/docs/ui/inspector#inspector-remember-groups-state /rappid/docs/ui/inspector#inspector-events /rappid/docs/ui/inspector#inspector-methods"><a href="http://jointjs.com/rappid/docs/ui/inspector">ui.Inspector</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/inspector#installation"><a href="http://jointjs.com/rappid/docs/ui/inspector#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/inspector#create"><a href="http://jointjs.com/rappid/docs/ui/inspector#create">Creating an Inspector</a>
+                </li><li data-index="/rappid/docs/ui/inspector#configuration"><a href="http://jointjs.com/rappid/docs/ui/inspector#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/ui/inspector#expressions"><a href="http://jointjs.com/rappid/docs/ui/inspector#expressions">Expressions</a>
+                </li><li data-index="/rappid/docs/ui/inspector#inspector-remember-groups-state"><a href="http://jointjs.com/rappid/docs/ui/inspector#inspector-remember-groups-state">Remember groups state</a>
+                </li><li data-index="/rappid/docs/ui/inspector#inspector-events"><a href="http://jointjs.com/rappid/docs/ui/inspector#inspector-events">Inspector Events</a>
+                </li><li data-index="/rappid/docs/ui/inspector#inspector-methods"><a href="http://jointjs.com/rappid/docs/ui/inspector#inspector-methods">Inspector Methods</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/paperscroller#installation /rappid/docs/ui/paperscroller#center /rappid/docs/ui/paperscroller#zoom /rappid/docs/ui/paperscroller#auto-resize"><a href="http://jointjs.com/rappid/docs/ui/paperScroller">ui.PaperScroller</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/paperscroller#installation"><a href="http://jointjs.com/rappid/docs/ui/paperScroller#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/paperscroller#center"><a href="http://jointjs.com/rappid/docs/ui/paperScroller#center">Centering the paper content</a>
+                </li><li data-index="/rappid/docs/ui/paperscroller#zoom"><a href="http://jointjs.com/rappid/docs/ui/paperScroller#zoom">Zooming the paper</a>
+                </li><li data-index="/rappid/docs/ui/paperscroller#auto-resize"><a href="http://jointjs.com/rappid/docs/ui/paperScroller#auto-resize">Paper auto-resize/shrink</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/selectionview#installation /rappid/docs/ui/selectionview#create /rappid/docs/ui/selectionview#changes /rappid/docs/ui/selectionview#customization /rappid/docs/ui/selectionview#disable-tools /rappid/docs/ui/selectionview#customize-tools /rappid/docs/ui/selectionview#configuration /rappid/docs/ui/selectionview#selection-api /rappid/docs/ui/selectionview#selection-events /rappid/docs/ui/selectionview#common-setup"><a href="http://jointjs.com/rappid/docs/ui/selectionView">ui.SelectionView</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/selectionview#installation"><a href="http://jointjs.com/rappid/docs/ui/selectionView#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#create"><a href="http://jointjs.com/rappid/docs/ui/selectionView#create">Initializing SelectionView</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#changes"><a href="http://jointjs.com/rappid/docs/ui/selectionView#changes">Reacting on changes</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#customization"><a href="http://jointjs.com/rappid/docs/ui/selectionView#customization">Custmozing the look of SelectionView</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#disable-tools"><a href="http://jointjs.com/rappid/docs/ui/selectionView#disable-tools">Disabling Tools</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#customize-tools"><a href="http://jointjs.com/rappid/docs/ui/selectionView#customize-tools">Customizing tools</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#configuration"><a href="http://jointjs.com/rappid/docs/ui/selectionView#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#selection-api"><a href="http://jointjs.com/rappid/docs/ui/selectionView#selection-api">SelectionView API</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#selection-events"><a href="http://jointjs.com/rappid/docs/ui/selectionView#selection-events">SelectionView events</a>
+                </li><li data-index="/rappid/docs/ui/selectionview#common-setup"><a href="http://jointjs.com/rappid/docs/ui/selectionView#common-setup">Common Setup</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/clipboard#installation /rappid/docs/ui/clipboard#create"><a href="http://jointjs.com/rappid/docs/ui/clipboard">ui.Clipboard</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/clipboard#installation"><a href="http://jointjs.com/rappid/docs/ui/clipboard#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/clipboard#create"><a href="http://jointjs.com/rappid/docs/ui/clipboard#create">Creating a Clipboard</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/tooltip#installation /rappid/docs/ui/tooltip#create"><a href="http://jointjs.com/rappid/docs/ui/tooltip">ui.Tooltip</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/tooltip#installation"><a href="http://jointjs.com/rappid/docs/ui/tooltip#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/tooltip#create"><a href="http://jointjs.com/rappid/docs/ui/tooltip#create">Creating a Tooltip</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/snaplines#installation /rappid/docs/ui/snaplines#use /rappid/docs/ui/snaplines#configuration /rappid/docs/ui/snaplines#style"><a href="http://jointjs.com/rappid/docs/ui/snaplines">ui.Snaplines</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/snaplines#installation"><a href="http://jointjs.com/rappid/docs/ui/snaplines#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/snaplines#use"><a href="http://jointjs.com/rappid/docs/ui/snaplines#use">Usage</a>
+                </li><li data-index="/rappid/docs/ui/snaplines#configuration"><a href="http://jointjs.com/rappid/docs/ui/snaplines#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/ui/snaplines#style"><a href="http://jointjs.com/rappid/docs/ui/snaplines#style">Styling</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/dialog#installation /rappid/docs/ui/dialog#use /rappid/docs/ui/dialog#configuration /rappid/docs/ui/dialog#api /rappid/docs/ui/dialog#events"><a href="http://jointjs.com/rappid/docs/ui/dialog">ui.Dialog</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/dialog#installation"><a href="http://jointjs.com/rappid/docs/ui/dialog#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/dialog#use"><a href="http://jointjs.com/rappid/docs/ui/dialog#use">Usage</a>
+                </li><li data-index="/rappid/docs/ui/dialog#configuration"><a href="http://jointjs.com/rappid/docs/ui/dialog#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/ui/dialog#api"><a href="http://jointjs.com/rappid/docs/ui/dialog#api">API</a>
+                </li><li data-index="/rappid/docs/ui/dialog#events"><a href="http://jointjs.com/rappid/docs/ui/dialog#events">Events</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/navigator#installation /rappid/docs/ui/navigator#use /rappid/docs/ui/navigator#configuration /rappid/docs/ui/navigator#api"><a href="http://jointjs.com/rappid/docs/ui/navigator">ui.Navigator</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/navigator#installation"><a href="http://jointjs.com/rappid/docs/ui/navigator#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/navigator#use"><a href="http://jointjs.com/rappid/docs/ui/navigator#use">Usage</a>
+                </li><li data-index="/rappid/docs/ui/navigator#configuration"><a href="http://jointjs.com/rappid/docs/ui/navigator#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/ui/navigator#api"><a href="http://jointjs.com/rappid/docs/ui/navigator#api">API</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/texteditor#installation /rappid/docs/ui/texteditor#use /rappid/docs/ui/texteditor#configuration /rappid/docs/ui/texteditor#api /rappid/docs/ui/texteditor#events"><a href="http://jointjs.com/rappid/docs/ui/textEditor">ui.TextEditor</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/texteditor#installation"><a href="http://jointjs.com/rappid/docs/ui/textEditor#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/texteditor#use"><a href="http://jointjs.com/rappid/docs/ui/textEditor#use">Usage</a>
+                </li><li data-index="/rappid/docs/ui/texteditor#configuration"><a href="http://jointjs.com/rappid/docs/ui/textEditor#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/ui/texteditor#api"><a href="http://jointjs.com/rappid/docs/ui/textEditor#api">API</a>
+                </li><li data-index="/rappid/docs/ui/texteditor#events"><a href="http://jointjs.com/rappid/docs/ui/textEditor#events">Events</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/ui/treelayoutview#installation /rappid/docs/ui/treelayoutview#use /rappid/docs/ui/treelayoutview#configuration"><a href="http://jointjs.com/rappid/docs/ui/treeLayoutView">ui.TreeLayoutView</a>
+            <ul>
+                <li data-index="/rappid/docs/ui/treelayoutview#installation"><a href="http://jointjs.com/rappid/docs/ui/treeLayoutView#installation">Installation</a>
+                </li><li data-index="/rappid/docs/ui/treelayoutview#use"><a href="http://jointjs.com/rappid/docs/ui/treeLayoutView#use">Usage</a>
+                </li><li data-index="/rappid/docs/ui/treelayoutview#configuration"><a href="http://jointjs.com/rappid/docs/ui/treeLayoutView#configuration">Configuration</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/dia/commandmanager#installation /rappid/docs/dia/commandmanager#create /rappid/docs/dia/commandmanager#howitworks /rappid/docs/dia/commandmanager#methods"><a href="http://jointjs.com/rappid/docs/dia/commandManager">dia.CommandManager</a>
+            <ul>
+                <li data-index="/rappid/docs/dia/commandmanager#installation"><a href="http://jointjs.com/rappid/docs/dia/commandManager#installation">Installation</a>
+                </li><li data-index="/rappid/docs/dia/commandmanager#create"><a href="http://jointjs.com/rappid/docs/dia/commandManager#create">Creating a CommandManager</a>
+                </li><li data-index="/rappid/docs/dia/commandmanager#howitworks"><a href="http://jointjs.com/rappid/docs/dia/commandManager#howitworks">How CommandManager works</a>
+                </li><li data-index="/rappid/docs/dia/commandmanager#methods"><a href="http://jointjs.com/rappid/docs/dia/commandManager#methods">CommandManager API</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/dia/validator#installation /rappid/docs/dia/validator#create /rappid/docs/dia/validator#methods"><a href="http://jointjs.com/rappid/docs/dia/validator">dia.Validator</a>
+            <ul>
+                <li data-index="/rappid/docs/dia/validator#installation"><a href="http://jointjs.com/rappid/docs/dia/validator#installation">Installation</a>
+                </li><li data-index="/rappid/docs/dia/validator#create"><a href="http://jointjs.com/rappid/docs/dia/validator#create">Creating a Validator</a>
+                </li><li data-index="/rappid/docs/dia/validator#methods"><a href="http://jointjs.com/rappid/docs/dia/validator#methods">Validator API</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/dia/graphutils#installation /rappid/docs/dia/graphutils#methods"><a href="http://jointjs.com/rappid/docs/dia/graphUtils">dia.GraphUtils</a>
+            <ul>
+                <li data-index="/rappid/docs/dia/graphutils#installation"><a href="http://jointjs.com/rappid/docs/dia/graphUtils#installation">Installation</a>
+                </li><li data-index="/rappid/docs/dia/graphutils#methods"><a href="http://jointjs.com/rappid/docs/dia/graphUtils#methods">Methods</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/com/channel#installation /rappid/docs/com/channel#use /rappid/docs/com/channel#rooms /rappid/docs/com/channel#configuration"><a href="http://jointjs.com/rappid/docs/com/channel">com.Channel</a>
+            <ul>
+                <li data-index="/rappid/docs/com/channel#installation"><a href="http://jointjs.com/rappid/docs/com/channel#installation">Installation</a>
+                </li><li data-index="/rappid/docs/com/channel#use"><a href="http://jointjs.com/rappid/docs/com/channel#use">Usage</a>
+                </li><li data-index="/rappid/docs/com/channel#rooms"><a href="http://jointjs.com/rappid/docs/com/channel#rooms">Rooms</a>
+                </li><li data-index="/rappid/docs/com/channel#configuration"><a href="http://jointjs.com/rappid/docs/com/channel#configuration">Configuration</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/shapes/bpmn#installation /rappid/docs/shapes/bpmn#activity /rappid/docs/shapes/bpmn#annotation /rappid/docs/shapes/bpmn#choreography /rappid/docs/shapes/bpmn#conversation /rappid/docs/shapes/bpmn#data-object /rappid/docs/shapes/bpmn#event /rappid/docs/shapes/bpmn#flow /rappid/docs/shapes/bpmn#gateway /rappid/docs/shapes/bpmn#group /rappid/docs/shapes/bpmn#message /rappid/docs/shapes/bpmn#pool /rappid/docs/shapes/bpmn#icons /rappid/docs/shapes/bpmn#sub-process"><a href="http://jointjs.com/rappid/docs/shapes/bpmn">shapes.BPMN</a>
+            <ul>
+                <li data-index="/rappid/docs/shapes/bpmn#installation"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#installation">Installation</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#activity"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#activity">Activity</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#annotation"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#annotation">Annotation</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#choreography"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#choreography">Choreography</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#conversation"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#conversation">Conversation</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#data-object"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#data-object">Data Object</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#event"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#event">Event</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#flow"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#flow">Flow</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#gateway"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#gateway">Gateway</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#group"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#group">Group</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#message"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#message">Message</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#pool"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#pool">Pool</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#icons"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#icons">Icons</a>
+                </li><li data-index="/rappid/docs/shapes/bpmn#sub-process"><a href="http://jointjs.com/rappid/docs/shapes/bpmn#sub-process">Sub-process handling</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/shapes/chart#installation /rappid/docs/shapes/chart#types"><a href="http://jointjs.com/rappid/docs/shapes/chart">shapes.Chart</a>
+            <ul>
+                <li data-index="/rappid/docs/shapes/chart#installation"><a href="http://jointjs.com/rappid/docs/shapes/chart#installation">Installation</a>
+                </li><li data-index="/rappid/docs/shapes/chart#types"><a href="http://jointjs.com/rappid/docs/shapes/chart#types">Chart Types</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/shapes/chart/plot#create /rappid/docs/shapes/chart/plot#series-style /rappid/docs/shapes/chart/plot#multiple-series /rappid/docs/shapes/chart/plot#markings /rappid/docs/shapes/chart/plot#guidelines /rappid/docs/shapes/chart/plot#tooltips /rappid/docs/shapes/chart/plot#legend /rappid/docs/shapes/chart/plot#rt /rappid/docs/shapes/chart/plot#fixed-axis /rappid/docs/shapes/chart/plot#time-series /rappid/docs/shapes/chart/plot#bar-series /rappid/docs/shapes/chart/plot#bar-line-series /rappid/docs/shapes/chart/plot#chart-options /rappid/docs/shapes/chart/plot#chart-api /rappid/docs/shapes/chart/plot#chart-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot">shapes.chart.Plot</a>
+            <ul>
+              <li data-index="/rappid/docs/shapes/chart/plot#create"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#create">Basic Chart</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#series-style"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#series-style">Series Styling</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#multiple-series"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#multiple-series">Multiple Series</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#markings"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#markings">Markings</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#guidelines"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#guidelines">Guidelines</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#tooltips"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#tooltips">Tooltips</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#legend"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#legend">Legend</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#rt"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#rt">Real-time Data</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#fixed-axis"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#fixed-axis">Fixed Axis</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#time-series"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#time-series">Time Series</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#bar-series"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#bar-series">Bar Series</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#bar-line-series"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#bar-line-series">Bar &amp; Line Series</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#chart-options"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#chart-options">Chart Options</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#chart-api"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#chart-api">Chart API</a>
+              </li><li data-index="/rappid/docs/shapes/chart/plot#chart-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/plot#chart-structure">Chart SVG Structure</a>
+	    </li></ul>
+	</li>
+        <li data-index="null /rappid/docs/shapes/chart/pie#create /rappid/docs/shapes/chart/pie#slices-style /rappid/docs/shapes/chart/pie#multiple-series /rappid/docs/shapes/chart/pie#exploding /rappid/docs/shapes/chart/pie#donut /rappid/docs/shapes/chart/pie#tooltips /rappid/docs/shapes/chart/pie#legend /rappid/docs/shapes/chart/pie#animation /rappid/docs/shapes/chart/pie#effects /rappid/docs/shapes/chart/pie#chart-options /rappid/docs/shapes/chart/pie#chart-api /rappid/docs/shapes/chart/pie#chart-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie">shapes.chart.Pie</a>
+            <ul>
+              <li data-index="/rappid/docs/shapes/chart/pie#create"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#create">Basic Chart</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#slices-style"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#slices-style">Styling Slices</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#multiple-series"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#multiple-series">Multiple Series</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#exploding"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#exploding">Exploding Slices</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#donut"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#donut">Donut Chart</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#tooltips"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#tooltips">Tooltips</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#legend"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#legend">Legend</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#animation"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#animation">Animation</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#effects"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#effects">Effects</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#chart-options"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#chart-options">Chart Options</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#chart-api"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#chart-api">Chart API</a>
+              </li><li data-index="/rappid/docs/shapes/chart/pie#chart-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/pie#chart-structure">Chart SVG Structure</a>
+	    </li></ul>
+	</li>
+        <li data-index="null /rappid/docs/shapes/chart/knob#create /rappid/docs/shapes/chart/knob#knob-style /rappid/docs/shapes/chart/knob#multiple-series /rappid/docs/shapes/chart/knob#tooltips /rappid/docs/shapes/chart/knob#animation /rappid/docs/shapes/chart/knob#knob-options /rappid/docs/shapes/chart/knob#knob-api /rappid/docs/shapes/chart/knob#knob-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob">shapes.chart.Knob</a>
+            <ul>
+              <li data-index="/rappid/docs/shapes/chart/knob#create"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#create">Basic Knob</a>
+              </li><li data-index="/rappid/docs/shapes/chart/knob#knob-style"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#knob-style">Styling the Knob</a>
+              </li><li data-index="/rappid/docs/shapes/chart/knob#multiple-series"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#multiple-series">Multiple Values</a>
+              </li><li data-index="/rappid/docs/shapes/chart/knob#tooltips"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#tooltips">Tooltips</a>
+              </li><li data-index="/rappid/docs/shapes/chart/knob#animation"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#animation">Animation</a>
+              </li><li data-index="/rappid/docs/shapes/chart/knob#knob-options"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#knob-options">Knob Options</a>
+              </li><li data-index="/rappid/docs/shapes/chart/knob#knob-api"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#knob-api">Knob API</a>
+              </li><li data-index="/rappid/docs/shapes/chart/knob#knob-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/knob#knob-structure">Knob SVG Structure</a>
+	    </li></ul>
+	</li>
+        <li data-index="null /rappid/docs/shapes/chart/matrix#create /rappid/docs/shapes/chart/matrix#matrix-style /rappid/docs/shapes/chart/matrix#demo-hugo /rappid/docs/shapes/chart/matrix#conway /rappid/docs/shapes/chart/matrix#matrix-options /rappid/docs/shapes/chart/matrix#matrix-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/matrix">shapes.chart.Matrix</a>
+            <ul>
+              <li data-index="/rappid/docs/shapes/chart/matrix#create"><a href="http://jointjs.com/rappid/docs/shapes/chart/matrix#create">Create Matrix</a>
+              </li><li data-index="/rappid/docs/shapes/chart/matrix#matrix-style"><a href="http://jointjs.com/rappid/docs/shapes/chart/matrix#matrix-style">Styling Matrix</a>
+              </li><li data-index="/rappid/docs/shapes/chart/matrix#demo-hugo"><a href="http://jointjs.com/rappid/docs/shapes/chart/matrix#demo-hugo">Real-world example</a>
+              </li><li data-index="/rappid/docs/shapes/chart/matrix#conway"><a href="http://jointjs.com/rappid/docs/shapes/chart/matrix#conway">Conway's Game of Life</a>
+              </li><li data-index="/rappid/docs/shapes/chart/matrix#matrix-options"><a href="http://jointjs.com/rappid/docs/shapes/chart/matrix#matrix-options">Options</a>
+              </li><li data-index="/rappid/docs/shapes/chart/matrix#matrix-structure"><a href="http://jointjs.com/rappid/docs/shapes/chart/matrix#matrix-structure">Matrix SVG Structure</a>
+	    </li></ul>
+	</li>
+        <li data-index="null /rappid/docs/format/svg#installation /rappid/docs/format/svg#use /rappid/docs/format/svg#configuration"><a href="http://jointjs.com/rappid/docs/format/svg">format.SVG</a>
+            <ul>
+                <li data-index="/rappid/docs/format/svg#installation"><a href="http://jointjs.com/rappid/docs/format/svg#installation">Installation</a>
+                </li><li data-index="/rappid/docs/format/svg#use"><a href="http://jointjs.com/rappid/docs/format/svg#use">Usage</a>
+                </li><li data-index="/rappid/docs/format/svg#configuration"><a href="http://jointjs.com/rappid/docs/format/svg#configuration">Configuration</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/format/raster#installation /rappid/docs/format/raster#use"><a href="http://jointjs.com/rappid/docs/format/raster">format.Raster</a>
+            <ul>
+                <li data-index="/rappid/docs/format/raster#installation"><a href="http://jointjs.com/rappid/docs/format/raster#installation">Installation</a>
+                </li><li data-index="/rappid/docs/format/raster#use"><a href="http://jointjs.com/rappid/docs/format/raster#use">Usage</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/format/gexf#installation /rappid/docs/format/gexf#use"><a href="http://jointjs.com/rappid/docs/format/gexf">format.GEXF</a>
+            <ul>
+                <li data-index="/rappid/docs/format/gexf#installation"><a href="http://jointjs.com/rappid/docs/format/gexf#installation">Installation</a>
+                </li><li data-index="/rappid/docs/format/gexf#use"><a href="http://jointjs.com/rappid/docs/format/gexf#use">Usage</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/format/print#installation /rappid/docs/format/print#use /rappid/docs/format/print#logo"><a href="http://jointjs.com/rappid/docs/format/print">format.Print</a>
+            <ul>
+                <li data-index="/rappid/docs/format/print#installation"><a href="http://jointjs.com/rappid/docs/format/print#installation">Installation</a>
+                </li><li data-index="/rappid/docs/format/print#use"><a href="http://jointjs.com/rappid/docs/format/print#use">Usage</a>
+                </li><li data-index="/rappid/docs/format/print#logo"><a href="http://jointjs.com/rappid/docs/format/print#logo">Custom logo</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/storage/local#installation /rappid/docs/storage/local#use /rappid/docs/storage/local#api"><a href="http://jointjs.com/rappid/docs/storage/local">storage.Local</a>
+            <ul>
+                <li data-index="/rappid/docs/storage/local#installation"><a href="http://jointjs.com/rappid/docs/storage/local#installation">Installation</a>
+                </li><li data-index="/rappid/docs/storage/local#use"><a href="http://jointjs.com/rappid/docs/storage/local#use">Usage</a>
+                </li><li data-index="/rappid/docs/storage/local#api"><a href="http://jointjs.com/rappid/docs/storage/local#api">API</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/alg/dijkstra#installation /rappid/docs/alg/dijkstra#use /rappid/docs/alg/dijkstra#api"><a href="http://jointjs.com/rappid/docs/alg/dijkstra">alg.Dijkstra</a>
+            <ul>
+                <li data-index="/rappid/docs/alg/dijkstra#installation"><a href="http://jointjs.com/rappid/docs/alg/dijkstra#installation">Installation</a>
+                </li><li data-index="/rappid/docs/alg/dijkstra#use"><a href="http://jointjs.com/rappid/docs/alg/dijkstra#use">Usage</a>
+                </li><li data-index="/rappid/docs/alg/dijkstra#api"><a href="http://jointjs.com/rappid/docs/alg/dijkstra#api">API</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/alg/priorityqueue#installation /rappid/docs/alg/priorityqueue#use /rappid/docs/alg/priorityqueue#api"><a href="http://jointjs.com/rappid/docs/alg/priorityQueue">alg.PriorityQueue</a>
+            <ul>
+                <li data-index="/rappid/docs/alg/priorityqueue#installation"><a href="http://jointjs.com/rappid/docs/alg/priorityqueue#installation">Installation</a>
+                </li><li data-index="/rappid/docs/alg/priorityqueue#use"><a href="http://jointjs.com/rappid/docs/alg/priorityqueue#use">Usage</a>
+                </li><li data-index="/rappid/docs/alg/priorityqueue#api"><a href="http://jointjs.com/rappid/docs/alg/priorityqueue#api">API</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/layout/directedgraph#installation /rappid/docs/layout/directedgraph#use"><a href="http://jointjs.com/rappid/docs/layout/directedGraph">layout.DirectedGraph</a>
+            <ul>
+                <li data-index="/rappid/docs/layout/directedgraph#installation"><a href="http://jointjs.com/rappid/docs/layout/directedGraph#installation">Installation</a>
+                </li><li data-index="/rappid/docs/layout/directedgraph#use"><a href="http://jointjs.com/rappid/docs/layout/directedGraph#use">Usage</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/layout/gridlayout#installation /rappid/docs/layout/gridlayout#use"><a href="http://jointjs.com/rappid/docs/layout/gridLayout">layout.GridLayout</a>
+            <ul>
+                <li data-index="/rappid/docs/layout/gridlayout#installation"><a href="http://jointjs.com/rappid/docs/layout/gridLayout#installation">Installation</a>
+                </li><li data-index="/rappid/docs/layout/gridlayout#use"><a href="http://jointjs.com/rappid/docs/layout/gridLayout#use">Usage</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/layout/treelayout#installation /rappid/docs/layout/treelayout#use /rappid/docs/layout/treelayout#configuration /rappid/docs/layout/treelayout#api"><a href="http://jointjs.com/rappid/docs/layout/treeLayout">layout.TreeLayout</a>
+            <ul>
+                <li data-index="/rappid/docs/layout/treelayout#installation"><a href="http://jointjs.com/rappid/docs/layout/treeLayout#installation">Installation</a>
+                </li><li data-index="/rappid/docs/layout/treelayout#use"><a href="http://jointjs.com/rappid/docs/layout/treeLayout#use">Usage</a>
+                </li><li data-index="/rappid/docs/layout/treelayout#configuration"><a href="http://jointjs.com/rappid/docs/layout/treeLayout#configuration">Configuration</a>
+                </li><li data-index="/rappid/docs/layout/treelayout#api"><a href="http://jointjs.com/rappid/docs/layout/treeLayout#api">API</a>
+            </li></ul>
+        </li>
+        <li data-index="null /rappid/docs/layout/forcedirected#installation /rappid/docs/layout/forcedirected#use"><a href="./Rappid toolkit - Documentation_files/Rappid toolkit - Documentation.html">layout.ForceDirected</a>
+            <ul>
+                <li data-index="/rappid/docs/layout/forcedirected#installation"><a href="http://jointjs.com/rappid/docs/layout/forceDirected#installation">Installation</a>
+                </li><li data-index="/rappid/docs/layout/forcedirected#use"><a href="http://jointjs.com/rappid/docs/layout/forceDirected#use">Usage</a>
+            </li></ul>
+        </li>
+    </ul>
+</div>
+
+            
+            <link rel="stylesheet" href="http://jointjs.com/css/joint.all.min.css">
+            <script type="text/javascript" async="" src="./Rappid toolkit - Documentation_files/ga.js"></script><script src="./Rappid toolkit - Documentation_files/joint.all.min.js"></script>
+
+            <div class="content-container --">
+                <h2><img src="./Rappid toolkit - Documentation_files/forceDirected.png">layout.ForceDirected</h2>
+
+<p>ForceDirected plugin implements auto-layouting graphs using a <a href="http://en.wikipedia.org/wiki/Force-directed_graph_drawing">force-directed approach</a>. 
+This is useful for, usually larger, undirected graphs.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>Include the <code>joint.layout.ForceDirected.js</code> file into your HTML:</p>
+&lt;script src="joint.layout.ForceDirected.js" type="text/javascript" &gt;&lt;/script&gt;
+
+<h2 id="use">Usage</h2>
+
+<p>ForceDirected layout plugin auto-layouts graphs based on three forces: repulsive force (forces nodes to move out of each other), attractive force (tries to get nodes together like a spring) and a gravity force (tendency of the nodes to move to a certain point).</p>
+
+<p>The <code>ForceDirected</code> constructor accepts couple of parameters for configuring the layout.
+The <code>gravityCenter</code> parameter is the point the nodes tend to move to. 
+This is usually set to the center of the area where the nodes are to be layouted.
+<code>charge</code> parameter affects the repulsive force. Bigger the parameter is, bigger the repulsive force.
+<code>linkDistance</code> and <code>linkStrength</code> both affect the attractive force 
+(you can think of it as parameters of a spring that tights together two nodes). 
+Bigger the <code>linkStrength</code>, bigger the attractive force between two connected nodes. 
+On the other hand, smaller the <code>linkDistance</code>, shorter links you allow and so the attractive force is bigger between two connected nodes.
+<br>
+There is no one-fits-all set of parameters that would give great result for all possible graphs. 
+Therefore, it is suggested that you to play with the parameters, try to set different values so that it gives a good result for your use case.
+</p>
+
+<pre><code>
+var graphLayout = new joint.layout.ForceDirected({
+    graph: graph,
+    width: 600, height: 400,
+    gravityCenter: { x: 300, y: 200 },
+    charge: 180,
+    linkDistance: 30
+});
+
+graphLayout.start();
+
+_.each(_.range(100), function() { graphLayout.step(); });
+</code></pre>
+
+<p>Note: It is recommended to use the <a href="https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame">requestAnimationFrame</a>
+    for stepping the layout.</p>
+
+
+<br>
+<br>
+<div class="docs-demo">
+    <button class="btn" id="btn-layout">layout</button>
+    <br>
+    <div id="paper-holder" class="paper"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="v-3" width="400" height="300"><g id="v-4" class="viewport"><g id="j_19" model-id="3835d533-2809-4554-95f2-a60ce181fa6d" class="link"><line stroke="gray" fill="none" id="v-54" x1="168.29568957709535" y1="153.1366102812689" x2="182.69247857422738" y2="204.59304896439554"></line></g><g id="j_17" model-id="1c6bc2b4-37b6-4ba0-add1-d3d2990cab30" class="link"><line stroke="gray" fill="none" id="v-52" x1="237.01783909181626" y1="162.14623133282515" x2="256.80220811035133" y2="117.71247623504073"></line></g><g id="j_16" model-id="160c35a5-9ebd-4b95-97c0-397e2f0aabe9" class="link"><line stroke="gray" fill="none" id="v-51" x1="237.01783909181626" y1="162.14623133282515" x2="273.4028776647743" y2="162.44438313623252"></line></g><g id="j_15" model-id="2903cdd8-4007-4723-a791-b104cac882eb" class="link"><line stroke="gray" fill="none" id="v-50" x1="168.29568957709535" y1="153.1366102812689" x2="136.88312881784995" y2="183.0509076872094"></line></g><g id="j_14" model-id="e63a2301-def8-4dd7-a2ff-12295c7258f8" class="link"><line stroke="gray" fill="none" id="v-49" x1="168.29568957709535" y1="153.1366102812689" x2="159.28145065001755" y2="104.1561560630619"></line></g><g id="j_13" model-id="d446a12d-3f5c-4b1b-8066-e72732bdd35f" class="link"><line stroke="gray" fill="none" id="v-48" x1="168.29568957709535" y1="153.1366102812689" x2="134.69939688240714" y2="141.4130009272084"></line></g><g id="j_12" model-id="92e30eed-243c-4438-8c3c-c587122c7111" class="link"><line stroke="gray" fill="none" id="v-47" x1="168.29568957709535" y1="153.1366102812689" x2="200.00387236829047" y2="119.27008197130782"></line></g><g id="j_11" model-id="a9ca7c1a-bbf2-4ce2-944b-e7820242b82e" class="link"><line stroke="gray" fill="none" id="v-46" x1="168.29568957709535" y1="153.1366102812689" x2="237.01783909181626" y2="162.14623133282515"></line></g><g id="j_18" model-id="40340d2a-de89-4148-a7cf-a2c3c6682767" class="link"><line stroke="gray" fill="none" id="v-53" x1="237.01783909181626" y1="162.14623133282515" x2="250.92105826317018" y2="202.07710340144934"></line></g><g id="j_3" model-id="H" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(263.4028776647743,152.44438313623252)"><g class="rotatable" id="v-14" transform="rotate(0,10,10)"><g class="scalable" id="v-17" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-15" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-16" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">H</text></g></g><g id="j_9" model-id="B" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(227.01783909181626,152.14623133282515)"><g class="rotatable" id="v-38" transform="rotate(0,10,10)"><g class="scalable" id="v-41" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-39" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-40" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">B</text></g></g><g id="j_8" model-id="C" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(172.69247857422738,194.59304896439554)"><g class="rotatable" id="v-34" transform="rotate(0,10,10)"><g class="scalable" id="v-37" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-35" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-36" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">C</text></g></g><g id="j_7" model-id="D" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(190.00387236829047,109.27008197130782)"><g class="rotatable" id="v-30" transform="rotate(0,10,10)"><g class="scalable" id="v-33" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-31" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-32" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">D</text></g></g><g id="j_6" model-id="E" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(124.69939688240714,131.4130009272084)"><g class="rotatable" id="v-26" transform="rotate(0,10,10)"><g class="scalable" id="v-29" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-27" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-28" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">E</text></g></g><g id="j_5" model-id="F" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(149.28145065001755,94.1561560630619)"><g class="rotatable" id="v-22" transform="rotate(0,10,10)"><g class="scalable" id="v-25" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-23" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-24" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">F</text></g></g><g id="j_4" model-id="G" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(126.88312881784995,173.0509076872094)"><g class="rotatable" id="v-18" transform="rotate(0,10,10)"><g class="scalable" id="v-21" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-19" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-20" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">G</text></g></g><g id="j_2" model-id="I" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(246.80220811035133,107.71247623504073)"><g class="rotatable" id="v-10" transform="rotate(0,10,10)"><g class="scalable" id="v-13" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-11" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-12" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">I</text></g></g><g id="j_1" model-id="J" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(240.92105826317018,192.07710340144934)"><g class="rotatable" id="v-6" transform="rotate(0,10,10)"><g class="scalable" id="v-9" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-7" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-8" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">J</text></g></g><g id="j_10" model-id="A" class="element basic Circle" fill="#FFFFFF" stroke="none" transform="translate(158.29568957709535,143.1366102812689)"><g class="rotatable" id="v-42" transform="rotate(0,10,10)"><g class="scalable" id="v-45" transform="scale(0.3333333333333333,0.3333333333333333)"><circle id="v-43" fill="#E67E22" stroke="#D35400" r="30" transform="translate(30, 30)"></circle></g><text id="v-44" y="0.8em" display="null" xml:space="preserve" font-size="14" text-anchor="middle" fill="white" font-family="Arial, helvetica, sans-serif" transform="translate(10,2)">A</text></g></g></g><defs id="v-5"></defs></svg></div>
+    <div class="code-link">
+        <a target="_blank" href="./Rappid toolkit - Documentation_files/forceDirected.js">source code to this demo</a>
+    </div>
+</div>
+<script src="./Rappid toolkit - Documentation_files/forceDirected.js"></script>
+
+
+                <br>
+                <br>
+                <br>
+                <hr>
+                Copyright © 2009 - 2015 <strong>client IO</strong> (<a href="http://client.io/">http://client.io</a>, <a href="mailto:org@client.io">org@client.io</a>)
+            </div>
+        </section>
+
+        <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-5029684-2']);
+    _gaq.push(['_setAllowLinker', true]);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+
+        <link rel="stylesheet" href="http://jointjs.com/vendor/prism/prism.css">
+        <script src="./Rappid toolkit - Documentation_files/prism.js"></script>
+
+        <script src="./Rappid toolkit - Documentation_files/client-search.js"></script><style></style>
+        <script src="./Rappid toolkit - Documentation_files/rappid-docs.js"></script>
+    
+
+</body></html>

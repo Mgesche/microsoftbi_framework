@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "Tests", "Tests\Tests.rptproj", "{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		DebugLocal|Default = DebugLocal|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.Debug|Default.ActiveCfg = Debug
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.Debug|Default.Build.0 = DebugLocal
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.Debug|Default.Deploy.0 = DebugLocal
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.DebugLocal|Default.ActiveCfg = DebugLocal
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.DebugLocal|Default.Build.0 = DebugLocal
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.Release|Default.ActiveCfg = Release
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.Release|Default.Build.0 = Release
+		{4614E6AD-F75A-4C3F-8EC6-58CB78DEED4D}.Release|Default.Deploy.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

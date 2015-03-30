@@ -1,0 +1,22 @@
+section {
+   width: 80%;
+}
+
+.paper {
+   border: 1px solid lightgray;
+   display: inline-block;
+   overflow: hidden;
+}
+
+pre {
+   padding-left: 20px;
+   border-left: 4px solid lightgray;
+}
+
+#paper-multiple-papers-small {
+   width: 300px;
+}
+
+#tutorial .content-container p {
+   max-width: 1200px;
+}

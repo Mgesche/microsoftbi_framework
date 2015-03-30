@@ -156,5 +156,15 @@ join [File].Struct_Table_V_Campagne_Client_VALID_MGE cib
   on res.valeurcle = cib.COLUMN_NAME
 where res.colonne = 'COLUMN_NAME'
 
+/* Tailles de varchar differentes */
+select res.colonne, res.valeurcle, cib.CHARACTER_MAXIMUM_LENGTH as attendu,
+		CMP.CHARACTER_MAXIMUM_LENGTH as actuel
+from ASuppr_Resultat_Structure res
+join [File].Struct_Table_V_Campagne_Client CMP
+  on res.valeurcle = cMP.COLUMN_NAME
+join [File].Struct_Table_V_Campagne_Client_VALID_MGE cib
+  on res.valeurcle = cib.COLUMN_NAME
+where res.colonne = 'CHARACTER_MAXIMUM_LENGTH'
+
 
 --DROP TABLE ASuppr_Resultat_Structure
