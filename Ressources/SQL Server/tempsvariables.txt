@@ -1,0 +1,210 @@
+USE [BotanicDW_MEC]
+GO
+
+/****** Object:  StoredProcedure [push_reporting].[UpdateVariables]    Script Date: 03/31/2015 10:01:25 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+ALTER PROCEDURE [push_reporting].[UpdateVariables]
+AS
+  /* =============================================================================== */
+  /* Cette procédure met a jour les variables du push avec es valeurs actuelles      */
+  /* =============================================================================== */
+  
+/*
+USE [BotanicDW_MEC]
+GO
+
+DECLARE	@return_value int
+
+EXEC	@return_value = [push_reporting].[UpdateVariables]
+
+SELECT	'Return Value' = @return_value
+
+GO
+*/
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(GETDATE()) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(GETDATE()) as varchar) + '/' + 
+case when DAY(GETDATE()) < 10 THEN '0' ELSE '' END+
+CAST(DAY(GETDATE()) as varchar) + '/' + 
+CAST(YEAR(GETDATE()) as varchar)
+where strVariable = '%A J%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(d, -1, GETDATE())) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(d, -1, GETDATE())) as varchar) + '/' + 
+case when DAY(DATEADD(d, -1, GETDATE())) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(d, -1, GETDATE())) as varchar) + '/' + 
+CAST(YEAR(DATEADD(d, -1, GETDATE())) as varchar)
+where strVariable = '%A J-1%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(d, -2, GETDATE())) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(d, -2, GETDATE())) as varchar) + '/' + 
+case when DAY(DATEADD(d, -2, GETDATE())) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(d, -2, GETDATE())) as varchar) + '/' + 
+CAST(YEAR(DATEADD(d, -2, GETDATE())) as varchar)
+where strVariable = '%A J-2%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(year, -1, GETDATE())) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(year, -1, GETDATE())) as varchar) + '/' + 
+case when DAY(DATEADD(year, -1, GETDATE())) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(year, -1, GETDATE())) as varchar) + '/' + 
+CAST(YEAR(DATEADD(year, -1, GETDATE())) as varchar)
+where strVariable = '%A-1 J%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(year, -1, DATEADD(d, -1, GETDATE()))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(year, -1, DATEADD(d, -1, GETDATE()))) as varchar) + '/' + 
+case when DAY(DATEADD(year, -1, DATEADD(d, -1, GETDATE()))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(year, -1, DATEADD(d, -1, GETDATE()))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(year, -1, DATEADD(d, -1, GETDATE()))) as varchar)
+where strVariable = '%A-1 J-1%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) as varchar)
+where strVariable = '%A S-1 D%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 1, 0)) as varchar) + '/' + 
+case when DAY(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 1, 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 1, 0)) as varchar)
+where strVariable = '%A S-1 L%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, GETDATE()), 0))) as varchar)
+where strVariable = '%A S-2 D%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 2, 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 2, 0)) as varchar) + '/' + 
+case when DAY(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 2, 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 2, 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(week, DATEDIFF(week, 0, GETDATE()) - 2, 0)) as varchar)
+where strVariable = '%A S-2 L%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -1, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) as varchar)
+where strVariable = '%A-1 S-1 D%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 1, 0)) as varchar) + '/' + 
+case when DAY(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 1, 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 1, 0)) as varchar)
+where strVariable = '%A-1 S-1 L%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -8, DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())), 0))) as varchar)
+where strVariable = '%A-1 S-2 D%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 2, 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 2, 0)) as varchar) + '/' + 
+case when DAY(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 2, 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 2, 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(week, DATEDIFF(week, 0, DATEADD(year, -1, GETDATE())) - 2, 0)) as varchar)
+where strVariable = '%A-1 S-2 L%'
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0)) as varchar) + '/' + 
+case when DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0)) as varchar)
+where strVariable = '%A M-1 1%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0))) as varchar)
+where strVariable = '%A M-1 31%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())) - 1, 0)) as varchar) + '/' + 
+case when DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())) - 1, 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())) - 1, 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())) - 1, 0)) as varchar)
+where strVariable = '%A-1 M-1 1%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())), 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())), 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())), 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())), 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE())), 0))) as varchar)
+where strVariable = '%A-1 M-1 31%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1), 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1), 0)) as varchar) + '/' + 
+case when DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1), 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1), 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1), 0)) as varchar)
+where strVariable = '%A J-1 1%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1) + 1, 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1) + 1, 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1) + 1, 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1) + 1, 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()-1) + 1, 0))) as varchar)
+where strVariable = '%A J-1 31%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)), 0)) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)), 0)) as varchar) + '/' + 
+case when DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)), 0)) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)), 0)) as varchar) + '/' + 
+CAST(YEAR(DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)), 0)) as varchar)
+where strVariable = '%A-1 J-1 1%';
+
+update push_reporting.[variables]
+set strValeur = case when MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)) + 1, 0))) < 10 THEN '0' ELSE '' END+
+CAST(MONTH(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)) + 1, 0))) as varchar) + '/' + 
+case when DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)) + 1, 0))) < 10 THEN '0' ELSE '' END+
+CAST(DAY(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)) + 1, 0))) as varchar) + '/' + 
+CAST(YEAR(DATEADD(DAY, -1, DATEADD(MONTH, DATEDIFF(MONTH, 0, DATEADD(YEAR, -1, GETDATE()-1)) + 1, 0))) as varchar)
+where strVariable = '%A-1 J-1 31%';
+
+
+RETURN 0;
+
+
+
+
+GO
+
+
