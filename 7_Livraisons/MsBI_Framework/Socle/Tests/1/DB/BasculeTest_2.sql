@@ -183,3 +183,4 @@ GO
 /* TODO : A completer notamment avec la gestion des erreurs */
 /* TODO : Gerer le iEtatTest de maniere plus fine, faire des verifs avant de basculer */
 /* TODO : Ajout des tests */
+/* TODO : Ajout d'un message pour dire dans quel environnnement on est */

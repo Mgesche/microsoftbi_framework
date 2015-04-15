@@ -17,4 +17,5 @@ CREATE TABLE [Test].[Ref_TablesTests](
 
 END
 
-/* TODO : Reflechir environnment plutot que test */
+/* TODO : Reflechir environnment plutot que test, avec table de correspondance sur laquelle on creerait des enregistrements quand on 
+insere dans un nouvel environnment */
