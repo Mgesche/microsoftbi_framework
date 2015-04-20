@@ -6,7 +6,7 @@ AS
   /* Cette procédure extrait les données comprises entre deux chaines de caractéres        */
   /*                                                                                       */
   /* @strDebut : Chaine de début                                                           */
-  /* @strFin : Chaine de fin                                                               */
+  /* @strFin : Chaine de fin, si '', alors on va jusqu'au bout de la chaine                */
   /*																		 		       */
   /* ===================================================================================== */
   
@@ -32,7 +32,13 @@ DECLARE @iFin int
 DECLARE @iLongueur int
 
 SET @iDebut = PATINDEX('%'+@strDebut+'%', @strChaine)+LEN(@strDebut)
-SET @iFin = PATINDEX('%'+@strFin+'%', @strChaine)
+
+IF @strFin = '' 
+BEGIN
+	SET @iFin = LEN(@strChaine)+1
+END ELSE BEGIN
+	SET @iFin = PATINDEX('%'+@strFin+'%', @strChaine)
+END
 SET @iLongueur = @iFin-@iDebut
 
 IF @iLongueur > 0
