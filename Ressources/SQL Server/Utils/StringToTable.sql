@@ -11,10 +11,10 @@ GO
 CREATE FUNCTION [Utils].[StringToTable](
 @DelimitedText VARCHAR(MAX), -- liste CSV
 @QuoteChar CHAR(1) -- caractère de délimitation
-) RETURNS @Items TABLE (Item varchar(20))
+) RETURNS @Items TABLE (Item varchar(100))
 as
 BEGIN
-DECLARE @Item VARCHAR(20)
+DECLARE @Item VARCHAR(100)
 WHILE CHARINDEX(@QuoteChar, @DelimitedText, 0) <> 0 BEGIN
 SELECT @Item=SUBSTRING(@DelimitedText,1,CHARINDEX(@QuoteChar,@DelimitedText, 0)-1),
 @DelimitedText=SUBSTRING(@DelimitedText,CHARINDEX(@QuoteChar,@DelimitedText, 0) + LEN(@QuoteChar), LEN(@DelimitedText))

@@ -1,3 +1,13 @@
+/* Exemple d'utilisation :
+
+DECLARE @resExecute VARCHAR(500)
+
+EXECUTE [Utils].[TableToString] 'push_reporting', '[user]', 'strMail', '', @resExecute OUTPUT
+
+SELECT @resExecute as res
+
+*/
+
 CREATE PROCEDURE [Utils].[TableToString](
 	@StrSchema		VARCHAR(50), 
 	@StrTable		VARCHAR(50), 
@@ -15,11 +25,11 @@ N'@Resultat VARCHAR(MAX) OUTPUT'
 
 SET @Query = 
 N' SELECT  @Resultat = STUFF(('
-+' 			SELECT  ''; '' + CAST('+@StrChamp+' AS VARCHAR(MAX))'
++' 			SELECT  '';'' + CAST('+@StrChamp+' AS VARCHAR(MAX))'
 +'          FROM '+@StrSchema+'.'+@StrTable
-+'          FOR XML PATH(''''), TYPE'
 +' 			'+@StrWhere
-+'          ).value(''.'',''varchar(max)''),1,2, '''') '
++'          FOR XML PATH(''''), TYPE'
++'          ).value(''.'',''varchar(max)''),1,1, '''') '
 
 EXECUTE sp_executesql @Query, @ParamDefinition, @Resultat = @StrResultat OUTPUT
 
