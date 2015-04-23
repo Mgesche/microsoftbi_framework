@@ -18,13 +18,21 @@ SET @ParamDefinition =
 N'@Resultat VARCHAR(50) OUTPUT'
 
 SET @Query = 
-N' SELECT @Resultat = '+@StrAttribut
+N' IF EXISTS ('
++' SELECT 1 '
++' FROM '+@StrSchema+'.'+@StrTable
++' WHERE '+@StrChampCle+' = '''+@StrValeurCle+''' AND '+@StrAttribut+' IS NOT NULL)'
++' BEGIN'
++' SELECT @Resultat = '+@StrAttribut+' '
 +' FROM '+@StrSchema+'.'+@StrTable
 +' WHERE '+@StrChampCle+' = '''+@StrValeurCle+''''
++' END ELSE BEGIN'
++' SELECT NULL'
++' END'
 
 EXECUTE sp_executesql @Query, @ParamDefinition, @Resultat = @ValeurAncienne OUTPUT
 
-IF @ValeurAncienne <> @NouvelleValeur
+IF (@ValeurAncienne IS NULL) OR (@ValeurAncienne <> @NouvelleValeur)
 BEGIN
 	SET @Query = 
 	N' UPDATE '+@StrSchema+'.'+@StrTable
@@ -41,10 +49,3 @@ END
 RETURN 0
 
 GO
-
-DECLARE @res VARCHAR(500)
-EXECUTE dbo.[Parametrage_Attribut] 'Test', 'push_reporting', '[user]', 'idUser', 4681, 'enabled', '0', @res OUTPUT
-SELECT @res
-
-SELECT *
-FROM push_reporting.[user]
