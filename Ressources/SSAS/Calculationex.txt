@@ -1,0 +1,1619 @@
+/*
+The CALCULATE command controls the aggregation of leaf cells in the cube.
+If the CALCULATE command is deleted or modified, the data within the cube is affected.
+You should edit this command only if you manually specify how the cube is aggregated.
+*/
+CALCULATE;               
+
+CREATE MEMBER CURRENTCUBE.MEASURES.[UseAsDefaultMeasure]
+ AS NULL, 
+VISIBLE = 0;          
+
+ALTER CUBE CURRENTCUBE UPDATE DIMENSION Measures, 
+DEFAULT_MEMBER = [Measures].UseAsDefaultMeasure;          
+
+/* Micheal added this 4/23/13 */
+CREATE DYNAMIC SET CURRENTCUBE.[SelectionYear] 
+AS VisualTotals([Fiscal Calendar].[H-Fiscal Calendar].[FY].members);  
+/* End of Micheal addition 4/23/13 */
+
+--CREATE DYNAMIC SET CURRENTCUBE.[SelectionPeriod] 
+--AS VisualTotals([Fiscal Calendar].[H-Fiscal Calendar].[Period].members);
+ 
+
+
+/* **************************************************************************************************** */
+/*---------------------------  TIME AGGREGATION YTD MTD ------------------------------------------------*/
+/* **************************************************************************************************** */
+
+CREATE MEMBER CURRENTCUBE.[Time Aggregation].[Time Aggregation].[YTD]
+ AS Null, VISIBLE = 1;         
+
+CREATE MEMBER CURRENTCUBE.[Time Aggregation].[Time Aggregation].[MTD] 
+ As Null, VISIBLE = 1;         
+
+/* Micheal changed the following Scope statement 4/22/13 */
+SCOPE([Fiscal Calendar].[H-Fiscal Calendar].members, [Time Aggregation].[Time Aggregation].members);         
+
+([Time Aggregation].[Time Aggregation].[MTD] = iif(
+[Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Period]" or
+[Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Day]",
+Aggregate(
+         CrossJoin({[Time Aggregation].[Time Aggregation].&[1]},
+                PeriodsToDate([Fiscal Calendar].[H-Fiscal Calendar].[Period],
+                [Fiscal Calendar].[H-Fiscal Calendar].CurrentMember))),
+iif([Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[FY]",
+Aggregate(
+         CrossJoin({[Time Aggregation].[Time Aggregation].&[1]},
+                PeriodsToDate([Fiscal Calendar].[H-Fiscal Calendar].[FY],
+                [Fiscal Calendar].[H-Fiscal Calendar].CurrentMember))),
+SUM([SelectionYear]))
+));         
+
+--([Time Aggregation].[Time Aggregation].[YTD] = 
+--iif([Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Day]" or
+--    [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Period]" or
+--    [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[FY]",
+--Aggregate(
+ --        CrossJoin({[Time Aggregation].[Time Aggregation].&[1]},
+ --               PeriodsToDate([Fiscal Calendar].[H-Fiscal Calendar].[FY],
+ --               [Fiscal Calendar].[H-Fiscal Calendar].CurrentMember))),
+ --   SUM([SelectionYear])));         
+
+( -- 1
+  [Time Aggregation].[Time Aggregation].[YTD] = 
+iif
+( -- iif beg
+    [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Day]" or
+    [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Period]" or
+    [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[FY]",
+Aggregate
+( -- Ag beg
+         CrossJoin
+           ( -- cross beg
+{[Time Aggregation].[Time Aggregation].&[1]},
+                PeriodsToDate
+                ( -- per beg
+                   [Fiscal Calendar].[H-Fiscal Calendar].[FY],
+                   [Fiscal Calendar].[H-Fiscal Calendar].CurrentMember
+                ) -- per end
+            ) -- cross end
+), -- ag end
+    SUM([SelectionYear]
+) -- iif end
+) -- 1
+);  -- scope 
+
+END SCOPE;  
+
+/* End of Micheal's change 4/22/13 */       
+
+/* **************************************************************************** */
+/*-------------------------------------- TIME COMPARISON  ----------------------*/
+/* **************************************************************************** */
+
+
+
+
+---------------------------------------------------------------
+CREATE MEMBER CURRENTCUBE.[Time Comparison].[Time Comparison].[FY-1]
+ AS 
+iif
+( -- iif beg 1
+    [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Day]", 
+Aggregate
+         ( --ag beg
+          PARALLELPERIOD
+            ( -- par beg
+              [Fiscal Calendar].[H-Fiscal Calendar].[Day], 
+              366,
+              [Fiscal Calendar].[H-Fiscal Calendar].CURRENTMEMBER
+            ), -- par end
+            [Time Comparison].[Time Comparison].&[1]
+          )
+, -- ag end
+--or
+-- else
+   --iif 
+   --( -- iif 2 beg
+   --  [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[Period]" or
+   --  [Fiscal Calendar].[H-Fiscal Calendar].level.uniquename = "[Fiscal Calendar].[H-Fiscal Calendar].[FY]",
+  
+  Aggregate
+   ( --ag beg
+   PARALLELPERIOD
+     ( -- par beg
+       [Fiscal Calendar].[H-Fiscal Calendar].[FY],
+     1, 
+       [Fiscal Calendar].[H-Fiscal Calendar].CURRENTMEMBER
+     ), -- par end
+      [Time Comparison].[Time Comparison].&[1]
+    ) -- ag end
+
+    ) -- iif 2 end
+, 
+-- iif 1 end
+VISIBLE = 1; 
+
+
+CREATE MEMBER CURRENTCUBE.[Time Comparison].[Time Comparison].[FY - FY-1]
+ AS [Time Comparison].[Time Comparison].&[1]-[Time Comparison].[Time Comparison].[FY-1], 
+VISIBLE = 1;                 
+
+
+
+CREATE MEMBER CURRENTCUBE.[Time Comparison].[Time Comparison].[FY / FY-1%]
+ AS iif([Time Comparison].[Time Comparison].[FY-1] <> 0 and not null,
+[Time Comparison].[Time Comparison].[FY - FY-1]/[Time Comparison].[Time Comparison].[FY-1]
+ ,null), 
+FORMAT_STRING = "#,##0.00 %;-#,##0.00 %", 
+VISIBLE = 1; 
+
+
+
+/* **************************************************************************************************** */
+/*---------------------------  SALES INDICATORS --------------------------------------------------------*/
+/* **************************************************************************************************** */
+
+/**********************************************************************************************************/
+
+--------- Open Qty and Sales Value  cma 2-22-13 
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Inv FCST]
+ AS 
+[Measures].[Measures].[Qty Open Invoiced FCST] + [Measures].[Measures].[Qty Open Invoiced FCST E 1]              
+--iif([Measures].[Qty Open Invoiced FCST E 1]<>0,[Measures].[Qty Open Invoiced FCST E 1],[Measures].[Qty Open Invoiced FCST])              
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'; 
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Inv KG]
+ AS [Measures].[Measures].[Qty Open Invoiced KG] + [Measures].[Measures].[Qty Open Invoiced KG E 1]              
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';  
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Inv KS]
+ AS [Measures].[Measures].[Qty Open Invoiced KS] + [Measures].[Measures].[Qty Open Invoiced KS E 1]              
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'; 
+
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Inv MS]
+ AS [Measures].[Measures].[Qty Open Invoiced MS] + [Measures].[Measures].[Qty Open Invoiced MS E 1]              
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';  
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Inv Seed KG]
+ AS [Measures].[Measures].[Qty Open Invoiced Seed KG] + [Measures].[Measures].[Qty Open Invoiced Seed KG E 1]              
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';  
+         
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open Inv]
+ AS [Measures].[Sales Value Open Invoiced] + [Measures].[Sales Value Open Invoiced Comp E 1]          
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';           
+
+
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open EUR]
+ AS [Measures].[Sales Value Open Invoiced Comp EUR] + [Measures].[Sales Value Open Invoiced E 1 EUR], 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+ 
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open USD]
+ AS [Measures].[Sales Value Open Invoiced Comp USD] + [Measures].[Sales Value Open Invoiced E 1 USD], 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+ 
+
+
+
+/*-------------  Création du Membre Calculé TOTAL Sales Value E-1 (YTD à la fin de l'année) -------------*/
+
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[TotalSalesValueShipped E-1]
+ AS Null,
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1,  DISPLAY_FOLDER = 'LIVRAISON\ CA' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';            
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[TotalSalesValueShipped E-1 EUR]
+ AS Null,
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0,  DISPLAY_FOLDER = 'LIVRAISON\ CA' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[TotalSalesValueShipped E-1 USD]
+ AS Null,
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0,  DISPLAY_FOLDER = 'LIVRAISON\ CA' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+     
+[TotalSalesValueShipped E-1]= (([Time Aggregation].[Time Aggregation].[YTD],
+[Measures].[Sales Value Shipped Comp]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);          
+
+
+[TotalSalesValueShipped E-1 EUR]= (([Time Aggregation].[Time Aggregation].[YTD],
+[Measures].[Sales Value Shipped Comp EUR]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);         
+
+[TotalSalesValueShipped E-1 USD]= (([Time Aggregation].[Time Aggregation].[YTD],
+[Measures].[Sales Value Shipped Comp USD]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);         
+            
+
+scope([Measures].[TotalSalesValueShipped E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);
+[TotalSalesValueShipped E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]); 
+[TotalSalesValueShipped E-1 EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[TotalSalesValueShipped E-1 USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                          
+end scope;
+ 
+
+scope([Measures].[TotalSalesValueShipped E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+  [TotalSalesValueShipped E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+  [TotalSalesValueShipped E-1 EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+  [TotalSalesValueShipped E-1 USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;  
+
+/**********************************************************************************************************/
+/*                              Sales Invoiced E-1                                                        */
+/**********************************************************************************************************/
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[TotalSalesValueInvoiced E-1]
+ AS Null, 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'FACTURATION\ CA' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';         
+ 
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[TotalSalesValueInvoiced E-1 EUR]
+ AS Null, 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'FACTURATION\ CA' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[TotalSalesValueInvoiced E-1 USD]
+ AS Null, 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'FACTURATION\ CA' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+[TotalSalesValueInvoiced E-1]= (([Time Aggregation].[Time Aggregation].[YTD],[Measures].[Sales Value Invoiced Comp]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);           
+
+/* beginning Micheal 4/22/13 */
+scope([Measures].[TotalSalesValueInvoiced E-1],[Fiscal Calendar].[H-Fiscal Calendar].[FY]);                      
+    [TotalSalesValueInvoiced E-1]=(PARALLELPERIOD([Fiscal Calendar].[H-Fiscal Calendar].[FY], 1, 
+        [Fiscal Calendar].[H-Fiscal Calendar].CURRENTMEMBER), [Sales Value Invoiced]);                      
+end scope; 
+
+scope([Measures].[TotalSalesValueInvoiced E-1],[Fiscal Calendar].[H-Fiscal Calendar].[FY],[Time Comparison].[Time Comparison].[FY-1]);                      
+    [TotalSalesValueInvoiced E-1]=(PARALLELPERIOD([Fiscal Calendar].[H-Fiscal Calendar].[FY], 1, 
+        [Fiscal Calendar].[H-Fiscal Calendar].CURRENTMEMBER), [Sales Value Invoiced]);                      
+end scope; 
+/* End of Micheal 4/22/13 */
+
+[TotalSalesValueInvoiced E-1 EUR]= (([Time Aggregation].[Time Aggregation].[YTD],
+[Measures].[Sales Value Invoiced Comp EUR]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);         
+[TotalSalesValueInvoiced E-1 USD]= (([Time Aggregation].[Time Aggregation].[YTD],
+[Measures].[Sales Value Invoiced Comp USD]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);         
+                      
+
+scope([Measures].[TotalSalesValueInvoiced E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+[TotalSalesValueInvoiced E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[TotalSalesValueInvoiced E-1 EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[TotalSalesValueInvoiced E-1 USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;                      
+       
+scope([Measures].[TotalSalesValueInvoiced E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+[TotalSalesValueInvoiced E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[TotalSalesValueInvoiced E-1 EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[TotalSalesValueInvoiced E-1 USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;   
+           
+
+/******************************************************************************************************/
+/*----- Calcul pour créer le Total Annuel  sur Portefeuille TOT E  Open (Shipped) TOT E*/
+/**********************************************************************************************************/
+
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open TOT E]
+ AS [Sales Value Open Comp],
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'DELIVERY\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';           
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open TOT E EUR]
+ AS [Measures].[Sales Value Open Comp EUR], 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'DELIVERY\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open TOT E USD]
+ AS [Measures].[Sales Value Open Comp USD], 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'DELIVERY\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+       
+
+--[Sales Value Open TOT E]= [Sales Value Open Comp];          
+
+--[Sales Value Open TOT E EUR]= [Measures].[Sales Value Open Comp EUR];          
+
+--[Sales Value Open TOT E USD]= [Measures].[Sales Value Open Comp USD];          
+ 
+
+scope([Measures].[Sales Value Open TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);             
+[Sales Value Open TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.lastchild,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[Sales Value Open TOT E EUR] =([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.lastchild,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[Sales Value Open TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.lastchild,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;     
+
+scope([Measures].[Sales Value Open TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);             
+[Sales Value Open TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent.lastchild,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[Sales Value Open TOT E EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent.lastchild,[Time Aggregation].[Time Aggregation].[YTD]);                      
+[Sales Value Open TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent.lastchild,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;     
+   
+
+/********************************************************************/
+/*----- Calcul pour créer le Total Annuel -------- Open Order TOT E */
+/********************************************************************/
+--*********cma 1/20/14 revised ****************
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open Invoiced TOT E]
+ AS          
+--(
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--        ,
+[MEASURES].[Sales Value Open Inv]
+--   )
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';           
+
+--scope([Measures].[Sales Value Open Invoiced TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+--    [Sales Value Open Invoiced TOT E]=SUM([SelectionYear]);                      
+--end scope;
+
+--*************************************************************************/
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open Invoiced TOT E EUR]
+ AS
+--(
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--        ,
+[Measures].[Sales Value Open EUR]
+--      )          
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+
+
+
+--scope([Measures].[Sales Value Open Invoiced TOT E EUR],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+--    [Sales Value Open Invoiced TOT E EUR]=SUM([SelectionYear]);                      
+--end scope;
+
+--*************************************************************************/
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open Invoiced TOT E USD]
+ AS 
+--(
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--        ,
+[Measures].[Sales Value Open USD]
+--      ) 
+      
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+
+scope([Measures].[Sales Value Open Invoiced TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[FY]);                      
+  [Sales Value Open Invoiced TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Sales Value Open Invoiced TOT E EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Sales Value Open Invoiced TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+end scope; 
+
+
+scope([Measures].[Sales Value Open Invoiced TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+  [Sales Value Open Invoiced TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Sales Value Open Invoiced TOT E EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Sales Value Open Invoiced TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+end scope; 
+
+
+
+scope([Measures].[Sales Value Open Invoiced TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+  [Sales Value Open Invoiced TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Sales Value Open Invoiced TOT E EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Sales Value Open Invoiced TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+end scope; 
+
+scope([Measures].[Sales Value Open Invoiced TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+    [Sales Value Open Invoiced TOT E]=SUM([SelectionYear]); 
+  --  [Sales Value Open Invoiced TOT E USD]=SUM([SelectionYear]);
+  --  [Sales Value Open Invoiced TOT E EUR]=SUM([SelectionYear]);                        
+end scope;
+
+
+--*************************************************************************/
+
+/*----- Calcul pour créer le Total Annuel Qty Invoiced FCST */
+------cma 1/20/14  revised --------------------------------
+
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Invoiced FCST TOT E]
+ AS
+ --(
+ --    iif( 
+ --    [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+ --        iif( 
+ --            [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+ --          [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+ --           )  
+ --       ) 
+ --       ,
+[MEASURES].[Qty Open Inv FCST] 
+--   )
+, 
+     
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'BILLING\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';  
+
+--scope([MEASURES].[Qty Invoiced FCST TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+--    [Qty Invoiced FCST TOT E]=SUM([SelectionYear]);                      
+--end scope;
+
+--***************************************************************************
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Invoiced FCST TOT E KG]
+ AS 
+--(
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+ --          [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+ --           )  
+ --       ) 
+ --       ,
+[MEASURES].[Qty Open Inv KG]
+ --  )
+, 
+ 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+--scope([MEASURES].[Qty Invoiced FCST TOT E KG],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+--    [Qty Invoiced FCST TOT E KG]=SUM([SelectionYear]);                      
+--end scope;     
+
+--*****************************************************************************
+       
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Invoiced FCST TOT E KS]
+ AS
+ --(
+ --    iif( 
+ --    [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+ --        iif( 
+ --            [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+ --          [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+ --           )  
+ --       ) 
+ --     ,
+[MEASURES].[Qty Open Inv KS]
+ --  )
+, 
+    
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+                  
+--scope([MEASURES].[Qty Invoiced FCST TOT E KS],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+--    [Qty Invoiced FCST TOT E KS]=SUM([SelectionYear]);                      
+--end scope;  
+
+--******************************************************************************
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Invoiced FCST TOT E MS]
+ AS 
+ --(
+ --    iif( 
+ --    [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+ --        iif( 
+ --            [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+ --          [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+  --   [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+   --         )  
+   --     ) 
+   --    ,
+[MEASURES].[Qty Open Inv MS]
+ --  )
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+                  
+--scope([MEASURES].[Qty Invoiced FCST TOT E MS],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+--    [Qty Invoiced FCST TOT E MS]=SUM([SelectionYear]);                      
+--end scope;  
+--******************************************************************************
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Invoiced FCST TOT E Seed KG]
+ AS  
+--(
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+ --           )  
+ --       ) 
+ --       ,
+[MEASURES].[Qty Open Inv Seed KG]
+ --  )
+, 
+   
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+scope([Measures].[Qty Invoiced FCST TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[FY]);                      
+  [Qty Invoiced FCST TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Qty Invoiced FCST TOT E KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+ [Qty Invoiced FCST TOT E KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+ [Qty Invoiced FCST TOT E MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember); 
+[Qty Invoiced FCST TOT E Seed KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember); 
+end scope; 
+
+
+scope([Measures].[Qty Invoiced FCST TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+  [Qty Invoiced FCST TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Qty Invoiced FCST TOT E KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Qty Invoiced FCST TOT E KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+ [Qty Invoiced FCST TOT E MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+[Qty Invoiced FCST TOT E Seed KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+end scope; 
+
+
+
+scope([Measures].[Qty Invoiced FCST TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+  [Qty Invoiced FCST TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Qty Invoiced FCST TOT E KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Qty Invoiced FCST TOT E KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Qty Invoiced FCST TOT E MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Qty Invoiced FCST TOT E Seed KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+end scope; 
+
+
+scope([MEASURES].[Qty Invoiced FCST TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[All]);  
+   [Qty Invoiced FCST TOT E]=SUM([SelectionYear]);   
+  -- [Qty Invoiced FCST TOT E KG]=SUM([SelectionYear]);  
+  -- [Qty Invoiced FCST TOT E KS]=SUM([SelectionYear]);
+  -- [Qty Invoiced FCST TOT E MS]=SUM([SelectionYear]);                     
+  -- [Qty Invoiced FCST TOT E Seed KG]=SUM([SelectionYear]);                      
+end scope;  
+--*******************************************************************************                  
+
+
+
+              
+/*******************************************************************************/
+/*---8/14/12 cima --------BEGIN Open TOT E-1 ----------------------------------*/
+*******************************************************************************/
+
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open Invoiced TOT E 1]
+ AS 
+--(
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--   ,
+[Measures].[Sales Value Open Invoiced Comp E 1]
+      
+--   )
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';           
+
+--*********************************
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open Invoiced TOT E 1 EUR]
+ AS
+-- ( 
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--      ,
+[Measures].[Sales Value Open Invoiced E 1 EUR]
+--   )
+,          
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';
+
+--**********************************
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Open Invoiced TOT E 1 USD]
+ AS 
+--( 
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+     
+--        ,
+[Measures].[Sales Value Open Invoiced E 1 USD]
+--   )
+,         
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'; 
+
+scope([Measures].[Sales Value Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[FY]);                      
+  [Sales Value Open Invoiced TOT E 1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Sales Value Open Invoiced TOT E 1 EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Sales Value Open Invoiced TOT E 1 USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+end scope; 
+
+
+scope([Measures].[Sales Value Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+  [Sales Value Open Invoiced TOT E 1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Sales Value Open Invoiced TOT E 1 EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Sales Value Open Invoiced TOT E 1 USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+end scope; 
+
+
+
+scope([Measures].[Sales Value Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+  [Sales Value Open Invoiced TOT E 1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Sales Value Open Invoiced TOT E 1 EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Sales Value Open Invoiced TOT E 1 USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+end scope; 
+
+scope([Measures].[Sales Value Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[All]);                      
+    [Sales Value Open Invoiced TOT E 1]=SUM([SelectionYear]); 
+ --   [Sales Value Open Invoiced TOT E 1 USD]=SUM([SelectionYear]);
+ --   [Sales Value Open Invoiced TOT E 1 EUR]=SUM([SelectionYear]);                        
+end scope;
+
+--*********************************************        
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Invoiced TOT E 1]
+ AS
+--  ( 
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+ --           )  
+--        ) 
+     
+--        ,
+[Measures].[Qty Open Invoiced FCST E 1]
+--   )
+,  
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0,  DISPLAY_FOLDER = 'BILLING\Open E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'  ;  
+--***********************************************
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Invoiced TOT E 1 KS]
+ AS 
+--( 
+ --    iif( 
+ --    [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+ --        iif( 
+ --            [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+ --          [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+ --           )  
+ --       ) 
+     
+ --      ,
+[Measures].[Qty Open Invoiced KS E 1]
+--   )
+,   
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\Open E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'  ;
+--****************************************************
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Invoiced TOT E 1 MS]
+ AS 
+--( 
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+     
+--     ,
+[Measures].[Qty Open Invoiced MS E 1]
+--   )
+,    
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\Open E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'  ;
+--****************************************************
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Invoiced TOT E 1 KG]
+ AS
+--( 
+--     iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--      ,
+[Measures].[Qty Open Invoiced KG E 1]
+--   )
+,    
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\Open E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'  ;             
+--***************************************************** 
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Open Invoiced TOT E 1 Variety KG]
+ AS 
+--( 
+--     iif( 
+ --    [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+ --        iif( 
+ --            [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+ --          [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+ --    [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+ --           )  
+ --       ) 
+     
+ --     ,
+[Measures].[Qty Open Invoiced Seed KG E 1]
+--   )
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\Open E-1' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'  ;              
+
+scope([Measures].[Qty Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[FY]);                      
+  [Qty Open Invoiced TOT E 1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Qty Open Invoiced TOT E 1 KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+ [Qty Open Invoiced TOT E 1 KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+ [Qty Open Invoiced TOT E 1 MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember); 
+[Qty Open Invoiced TOT E 1 Variety KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember); 
+end scope; 
+
+
+scope([Measures].[Qty Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+  [Qty Open Invoiced TOT E 1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Qty Open Invoiced TOT E 1 KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Qty Open Invoiced TOT E 1 KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+ [Qty Open Invoiced TOT E 1 MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+[Qty Open Invoiced TOT E 1 Variety KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+end scope; 
+
+
+
+scope([Measures].[Qty Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+  [Qty Open Invoiced TOT E 1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Qty Open Invoiced TOT E 1 KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Qty Open Invoiced TOT E 1 KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+ [Qty Open Invoiced TOT E 1 MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Qty Open Invoiced TOT E 1 Variety KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+end scope; 
+
+
+scope([MEASURES].[Qty Open Invoiced TOT E 1],[Fiscal Calendar].[H-Fiscal Calendar].[All]);  
+   [Qty Open Invoiced TOT E 1]=SUM([SelectionYear]);   
+  -- [Qty Open Invoiced TOT E 1 KG]=SUM([SelectionYear]);  
+  -- [Qty Open Invoiced TOT E 1 KS]=SUM([SelectionYear]);
+  -- [Qty Open Invoiced TOT E 1 MS]=SUM([SelectionYear]);                     
+  -- [Qty Open Invoiced TOT E 1 Variety KG]=SUM([SelectionYear]);                      
+end scope;  
+
+/*---9/5/12 cima ---------END Qty Open TOT E-1 ------------------------------*/
+-----------------------------------------------------------------------------------------------------------------------
+/*---------------------------  Création du Membre calculé Sales Value invoiced + Open  --------------------------------*/
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Invoiced + Open]
+ AS 
+
+[Measures].[Sales Value Invoiced Comp] + [Sales Value Open Invoiced TOT E]
+
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';         
+
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Invoiced + Open EUR]
+ AS 
+[Measures].[Sales Value Invoiced Comp EUR] + [Sales Value Open Invoiced TOT E EUR]
+
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value Invoiced + Open USD]
+ AS 
+
+[Measures].[Sales Value Invoiced Comp USD] + [Sales Value Open Invoiced TOT E USD]
+
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'BILLING\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+
+
+         
+
+
+/*---------------------------  Création du Membre calculé Sales Value (shipped) + Open  --------------------------------*/
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value + Open]
+ AS [Measures].[Sales Value Shipped Comp] + [Sales Value Open TOT E], 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'DELIVERY\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';           
+
+/* --2/21/12 cima -------Creation of Sales Value + Open EUR and USD --2/21/12 cima -----------*/
+/* --3/6/12 cima --- fix problems   -- 3/6/12 ---*/
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value + Open EUR]
+ AS [Measures].[Sales Value Shipped Comp EUR] + [Sales Value Open TOT E EUR], 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'DELIVERY\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Sales Value + Open USD]
+ AS [Measures].[Sales Value Shipped Comp USD] + [Sales Value Open TOT E USD], 
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 0 ,  DISPLAY_FOLDER = 'DELIVERY\ SALES VALUE' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';          
+
+/* --2/21/12 cima -------END of Creation of Sales Value + Open EUR and USD --2/21/12 cima -----------*/
+           
+
+/*************************************************************************************************
+****************************** Calcul des indicateurs RAL = Prévision - Livré *********************/
+/*------ CA RAL BUDGET ---*/
+
+[Measures].[CA RAL BUDGET]=
+    (([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]);          
+/*---02/23/12 cima EUR USD ---------------*/
+ [Measures].[CA RAL BUDGET EUR]=
+    (([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Sales Value EUR])-[Measures].[Sales Value Comp EUR]);          
+ [Measures].[CA RAL BUDGET USD]=
+    (([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Sales Value USD])-[Measures].[Sales Value Comp USD]);         
+
+                     
+/*------ CA RAL FC09 ---*/
+[Measures].[CA RAL FIN_SEPT]
+    =(([Forecast].[Fcst Version].&[FIN_FCSEPT],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]);                  
+/*---02/23/12 cima EUR USD ---------------*/
+[Measures].[CA RAL FIN_SEPT EUR]=
+    (([Forecast].[Fcst Version].&[FIN_FCSEPT],[Measures].[Fcst Sales Value EUR])-[Measures].[Sales Value Comp USD]);          
+[Measures].[CA RAL BUDGET USD]=
+    (([Forecast].[Fcst Version].&[FIN_FCSEPT]],[Measures].[Fcst Sales Value USD])-[Measures].[Sales Value Comp USD]);         
+
+                     
+
+
+[Measures].[CA RAL FC_NOV10]
+   =(([Forecast].[Fcst Version].&[FC_NOV10],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]);                 
+/*------ QTE RAL BDGT ---*/
+[Measures].[QTE RAL BDGT]
+    =(([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Quantity])-[Measures].[Qty ShippedFCST]);                  
+/*------ QTE RAL FC09 ---*/
+[Measures].[QTE RAL FIN_SEPT]
+    =(([Forecast].[Fcst Version].&[FIN_FCSEPT],[Measures].[Fcst Sales Value])-[Measures].[Qty ShippedFCST]);                  
+
+[Measures].[QTE RAL FC_NOV10]
+    =(([Forecast].[Fcst Version].&[FC_NOV10],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]);                 
+
+
+/*************************************************************************************************
+****************************** Calcul des indicateurs RAL = Prévision - Livré *********************/
+
+/*************************************************************************************************
+****************************** Calcul des indicateurs RAL = Prévision - Livré *********************/
+/*------ CA RAL BUDGET ---*/
+
+[Measures].[CA RAV BUDGET]=
+    (([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]-[Measures].[Sales Value Open Comp E]);           
+
+/*---02/23/12 cima EUR USD ---------------*/
+[Measures].[CA RAV BUDGET EUR]=
+    (([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Sales Value EUR])-[Measures].[Sales Value Comp EUR]-[Measures].[Sales Value Open Comp EUR]);           
+[Measures].[CA RAV BUDGET USD]=
+    (([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Sales Value USD])-[Measures].[Sales Value Comp USD]-[Measures].[Sales Value Open Comp USD]);           
+
+
+      
+/*------ CA RAV FC09 ---*/
+[Measures].[CA RAV FIN_SEPT]
+    =(([Forecast].[Fcst Version].&[FIN_FCSEPT],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]-[Measures].[Sales Value Open Comp E]);            
+/*---02/23/12 cima EUR USD ---------------*/
+[Measures].[CA RAV FIN_SEPT EUR]
+    =(([Forecast].[Fcst Version].&[FIN_FCSEPT],[Measures].[Fcst Sales Value EUR])-[Measures].[Sales Value Comp EUR]-[Measures].[Sales Value Open Comp EUR]);           
+[Measures].[CA RAV FIN_SEPT USD]
+   =(([Forecast].[Fcst Version].&[FIN_FCSEPT],[Measures].[Fcst Sales Value USD])-[Measures].[Sales Value Comp USD]-[Measures].[Sales Value Open Comp USD]);           
+
+      
+
+[Measures].[CA RAV FC_NOV10]
+    =(([Forecast].[Fcst Version].&[FC_NOV10],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]);                 
+/*------ QTE RAV BDGT ---*/
+[Measures].[QTE RAV BDGT]
+    =(([Forecast].[Fcst Version].&[FIN_BDGT],[Measures].[Fcst Quantity])-[Measures].[Qty ShippedFCST]-[Measures].[Qty OpenFCST E]);                  
+/*------ QTE RAV FCSEPT ---*/
+[Measures].[QTE RAV FIN_SEPT]
+    =(([Forecast].[Fcst Version].&[FIN_FCSEPT],[Measures].[Fcst Sales Value])-[Measures].[Qty ShippedFCST]-[Measures].[Qty OpenFCST E]);                  
+
+[Measures].[QTE RAV FC_NOV10]
+    =(([Forecast].[Fcst Version].&[FC_NOV10],[Measures].[Fcst Sales Value])-[Measures].[Sales Value Comp]);                 
+
+
+
+ 
+
+/*---------------------------------------- Quantity INDICATORS -----------------------------------------*/
+
+/*  Conversion entre unité
+------ Permet la conversion des quantités en MS, KG ou KS en utilisant la dimension UOM -----*/
+
+
+scope([UOM].[UOM].[Sales UOM]);        
+[Measures].[Qty Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced]);        
+[Measures].[Qty Back Ordered Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered Invoiced]);        
+[Measures].[Qty Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Ordered]);        
+[Measures].[Qty Shipped FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Shipped]);        
+[Measures].[Qty Cancelled FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Cancelled]);        
+--1/21/14 cma [Measures].[Qty Open Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced]);        
+[Measures].[Qty Open Inv FCST]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Inv FCST]);        
+[Measures].[Qty Open FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open]);        
+[Measures].[Qty Back Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered]);        
+[Measures].[Fcst Quantity]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Fcst Quantity]); 
+[MEASURES].[Qty Open Invoiced TOT E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced TOT E 1]);   
+[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced FCST E 1]);  
+[Measures].[Qty Invoiced FCST TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced FCST TOT E]);    
+---cima 8/10/12 fixed UOM/Curr problem 
+[Measures].[Sales Value Invoiced Comp EUR]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp EUR]);   
+[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]);   
+[Measures].[Sales Value Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp USD]);     
+[Measures].[Sales Value Open Invoiced]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced]);   
+[Measures].[Sales Value Open Invoiced Comp EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp EUR]);   
+[Measures].[Sales Value Open Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp USD]);   
+[Measures].[Sales Value Invoiced + Open]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced + Open]);   
+[Measures].[Sales Value Open Invoiced TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E]);   
+[Measures].[Sales Value Open Invoiced TOT E EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E EUR]);   
+[Measures].[Sales Value Open Invoiced TOT E USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E USD]);   
+
+[Measures].[TotalSalesValueInvoiced E-1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[TotalSalesValueInvoiced E-1]); 
+--[Measures].[Qty Invoiced FCST TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[TotalSalesValueInvoiced E-1]);   
+--[Measures].[Qty Open FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open FCST E 1]); 
+--[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced FCST E 1]); 
+end scope;                    
+
+scope([UOM].[UOM].[MS]);        
+[Measures].[Qty Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced MS]);        
+[Measures].[Qty Back Ordered Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered Invoiced MS]);        
+[Measures].[Qty Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Ordered MS]);        
+[Measures].[Qty Shipped FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Shipped MS]);        
+[Measures].[Qty Cancelled FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Cancelled MS]);        
+--1/21/14 cma [Measures].[Qty Open Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced MS]);        
+[Measures].[Qty Open Inv FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Inv MS]);        
+[Measures].[Qty Open FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open MS]);        
+[Measures].[Qty Back Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered MS]);        
+[Measures].[Fcst Quantity]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Fcst Quantity MS]); 
+[MEASURES].[Qty Open Invoiced TOT E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced TOT E 1 MS]); 
+[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced MS E 1]); 
+[Measures].[Qty Invoiced FCST TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced FCST TOT E MS]);    
+       
+---cima 8/10/12 fixed UOM/Curr problem 
+[Measures].[Sales Value Invoiced Comp EUR]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp EUR]);   
+[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]);   
+[Measures].[Sales Value Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp USD]);    
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp EUR]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp USD]);   
+[Measures].[Sales Value Open Inv]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Inv]);   
+[Measures].[Sales Value Open EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open EUR]);   
+[Measures].[Sales Value Open USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open USD]);   
+[Measures].[Sales Value Invoiced + Open]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced + Open]);   
+[Measures].[Sales Value Open Invoiced TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E]);    
+[Measures].[Sales Value Open Invoiced TOT E EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E EUR]);    
+[Measures].[Sales Value Open Invoiced TOT E USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E USD]);    
+[Measures].[TotalSalesValueInvoiced E-1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[TotalSalesValueInvoiced E-1]);   
+--[Measures].[Qty Open FCST E 1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open MS E 1]);
+---[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced MS E 1]); 
+end scope;            
+
+scope([UOM].[UOM].[KG]);        
+[Measures].[Qty Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced KG]);        
+[Measures].[Qty Back Ordered Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered Invoiced KG]);        
+[Measures].[Qty Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Ordered KG]);        
+[Measures].[Qty Shipped FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Shipped KG]);        
+[Measures].[Qty Cancelled FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Cancelled KG]);        
+--1/21/14 cma [Measures].[Qty Open Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KG]);        
+[Measures].[Qty Open Inv FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Inv KG]);        
+[Measures].[Qty Open FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open KG]);        
+[Measures].[Qty Back Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered KG]);        
+[Measures].[Fcst Quantity]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Fcst Quantity KG]); 
+[MEASURES].[Qty Open Invoiced TOT E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced TOT E 1 KG]); 
+[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KG E 1]);
+[Measures].[Qty Invoiced FCST TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced FCST TOT E KG]);            
+---cima 8/10/12 fixed UOM/Curr problem 
+[Measures].[Sales Value Invoiced Comp EUR]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp EUR]);   
+[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]);   
+[Measures].[Sales Value Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp USD]);     
+[Measures].[Sales Value Open Inv]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Inv]);   
+[Measures].[Sales Value Open EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open EUR]);   
+[Measures].[Sales Value Open USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open USD]);   
+[Measures].[Sales Value Invoiced + Open]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced + Open]);   
+[Measures].[Sales Value Open Invoiced TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E]);   
+[Measures].[Sales Value Open Invoiced TOT E EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E EUR]);    
+[Measures].[Sales Value Open Invoiced TOT E USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E USD]);    
+[Measures].[TotalSalesValueInvoiced E-1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[TotalSalesValueInvoiced E-1]);   
+--[Measures].[Qty Open FCST E 1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open KG E 1]);
+--[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KG E 1]); 
+end scope;                      
+
+scope([UOM].[UOM].[KS]);        
+[Measures].[Qty Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced KS]);        
+[Measures].[Qty Back Ordered Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered Invoiced KS]);        
+[Measures].[Qty Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Ordered KS]);        
+[Measures].[Qty Shipped FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Shipped KS]);        
+[Measures].[Qty Cancelled FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Cancelled KS]);        
+--1/21/14 cma [Measures].[Qty Open Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KS]);        
+[Measures].[Qty Open Inv FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Inv KS]);        
+[Measures].[Qty Open FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open KS]);        
+[Measures].[Qty Back Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered KS]);        
+[Measures].[Fcst Quantity]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Fcst Quantity KS]); 
+[MEASURES].[Qty Open Invoiced TOT E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced TOT E 1 KS]);  
+[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KS E 1]);
+[Measures].[Qty Invoiced FCST TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced FCST TOT E KS]);           
+---cima 8/10/12 fixed UOM/Curr problem 
+[Measures].[Sales Value Invoiced Comp EUR]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp EUR]);   
+[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]);   
+[Measures].[Sales Value Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp USD]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp EUR]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp USD]);   
+[Measures].[Sales Value Open Inv]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Inv]);   
+[Measures].[Sales Value Open EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open EUR]);   
+[Measures].[Sales Value Open USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open USD]);   [Measures].[Sales Value Invoiced + Open]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced + Open]);   
+[Measures].[Sales Value Open Invoiced TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E]);   
+[Measures].[Sales Value Open Invoiced TOT E EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E EUR]);    
+[Measures].[Sales Value Open Invoiced TOT E USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E USD]);    
+[Measures].[TotalSalesValueInvoiced E-1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[TotalSalesValueInvoiced E-1]);   
+--[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]);  
+--[Measures].[Qty Open FCST E 1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open KS E 1]); 
+--[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KS E 1]);   
+end scope;  
+
+scope([UOM].[UOM].[Variety KG]);    
+[Measures].[Qty Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced Seed KG]);        
+[Measures].[Qty Back Ordered Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered Invoiced Seed KG]);        
+[Measures].[Qty Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Ordered Seed KG]);        
+[Measures].[Qty Shipped FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Shipped Seed KG]);        
+[Measures].[Qty Cancelled FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Cancelled Seed KG]);        
+--1/21/14 cma [Measures].[Qty Open Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced Seed KG]);        
+[Measures].[Qty Open Inv FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Inv Seed KG]);        
+[Measures].[Qty Open FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Seed KG]);        
+[Measures].[Qty Back Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered Seed KG]);        
+[Measures].[Fcst Quantity]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Fcst Quantity Seed KG]); 
+[Measures].[Qty Invoiced FCST TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced FCST TOT E Seed KG]);           
+---cima 8/10/12 fixed UOM/Curr problem 
+--[MEASURES].[Qty Open Invoiced TOT E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced TOT E 1 KG]); 
+--[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KG E 1]);        
+---cima 8/10/12 fixed UOM/Curr problem 
+[Measures].[Sales Value Invoiced Comp EUR]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp EUR]);   
+[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]);   
+[Measures].[Sales Value Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp USD]);     
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp EUR]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp USD]);   
+[Measures].[Sales Value Open Inv]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Inv]);   
+[Measures].[Sales Value Open EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open EUR]);   
+[Measures].[Sales Value Open USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open USD]);   
+[Measures].[Sales Value Invoiced + Open]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced + Open]);   
+[Measures].[Sales Value Open Invoiced TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E]);   
+[Measures].[Sales Value Open Invoiced TOT E EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E EUR]);    
+[Measures].[Sales Value Open Invoiced TOT E USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced TOT E USD]);    
+[Measures].[TotalSalesValueInvoiced E-1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[TotalSalesValueInvoiced E-1]);   
+--[Measures].[Qty Open FCST E 1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open KG E 1]);
+--[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced KG E 1]); 
+end scope;                      
+
+              
+      
+scope([UOM].[UOM].[All]);        
+[Measures].[Qty Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced FCST]);        
+[Measures].[Qty Back Ordered Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered Invoiced FCST]);        
+[Measures].[Qty Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Ordered FCST]);        
+[Measures].[Qty Shipped FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Shipped FCST]);        
+[Measures].[Qty Cancelled FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Cancelled FCST]);        
+--1/21/14 cma [Measures].[Qty Open Invoiced FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced FCST]);        
+[Measures].[Qty Open Inv FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Inv FCST]);        
+[Measures].[Qty Open FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open FCST]);        
+[Measures].[Qty Back Ordered FCST]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Back Ordered FCST]);        
+[Measures].[Fcst Quantity]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Fcst Quantity]);  
+[MEASURES].[Qty Open Invoiced TOT E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced TOT E 1]);  
+[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced FCST E 1]); 
+[Measures].[Qty Invoiced FCST TOT E]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Invoiced FCST TOT E]);              
+---cima 8/10/12 fixed UOM/Curr problem 
+[Measures].[Sales Value Invoiced Comp EUR]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp EUR]);   
+[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]);   
+[Measures].[Sales Value Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced Comp USD]);   
+[Measures].[Sales Value Open Inv]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Inv]);   
+[Measures].[Sales Value Open EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open EUR]);   
+[Measures].[Sales Value Open USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open USD]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp EUR]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp EUR]);   
+--1/21/14 cma [Measures].[Sales Value Open Invoiced Comp USD]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Open Invoiced Comp USD]);    
+[Measures].[TotalSalesValueInvoiced E-1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[TotalSalesValueInvoiced E-1]);   
+
+--[Measures].[Sales Value Invoiced]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Sales Value Invoiced]); 
+--[Measures].[Qty Open FCST E 1]= ([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open FCST E 1]); 
+--[Measures].[Qty Open Invoiced FCST E 1]=([UOM].[UOM].&[Sales UOM Forecast],[Measures].[Qty Open Invoiced FCST E 1]); 
+end scope; 
+
+        
+
+/**********************************************************************************************************/
+
+/*-------------  Création du Membre Calculé TOTAL QTY E-1 (YTD à la fin de l'année) -------------*/
+
+
+
+
+/*----- Calcul pour créer le Total Annuel Qty Invoiced FCST E-1 */
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Total Qty Invoiced FCST E-1]
+ AS Null,
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1,  DISPLAY_FOLDER = 'BILLING\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+/*----- Calcul pour créer le Total Annuel E-1   */
+[Total Qty Invoiced FCST E-1]= (([Time Aggregation].[Time Aggregation].[YTD],[Measures].[Qty Invoiced FCST]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);                      
+
+scope([Measures].[Total Qty Invoiced FCST E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+[Total Qty Invoiced FCST E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope; 
+
+scope([Measures].[Total Qty Invoiced FCST E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+[Total Qty Invoiced FCST E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;                       
+
+
+/*----- Calcul pour créer le Total Annuel Qty Shipped FCST E-1 */
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Total Qty Shipped FCST E-1]
+ AS Null,
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1,  DISPLAY_FOLDER = 'DELIVERY\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+/*----- Calcul pour créer le Total Annuel E-1   */
+[Total Qty Shipped FCST E-1]= (([Time Aggregation].[Time Aggregation].[YTD],[Measures].[Qty Shipped FCST]),[Fiscal Calendar].[H-Fiscal Calendar].CurrentMember.prevmember.lastchild);                      
+
+scope([Measures].[Total Qty Shipped FCST E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+[Total Qty Shipped FCST E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;               
+
+scope([Measures].[Total Qty Shipped FCST E-1],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+[Total Qty Shipped FCST E-1]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;   
+
+
+
+
+
+/*----- Calcul pour créer le Total Annuel Qty Shipped FCST */
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Shipped FCST TOT E]
+ AS Null, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'DELIVERY\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                      
+
+[Qty Shipped FCST TOT E]= [Qty Shipped FCST];                      
+
+scope([Measures].[Qty Shipped FCST TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+[Qty Shipped FCST TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;                 
+
+scope([Measures].[Qty Shipped FCST TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+[Qty Shipped FCST TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent,[Time Aggregation].[Time Aggregation].[YTD]);                      
+end scope;                 
+
+
+/*---------------------------  Création du Membre calculé Qty Invoiced FCST + Open   --------------------------------*/
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Invoiced FCST + Open]
+ AS [Qty Invoiced FCST] + [Qty Invoiced FCST TOT E],
+FORMAT_STRING = "#,##0.00;-#,##0.00",  
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'BILLING\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';                  
+
+
+/*---------------------------  Création du Membre calculé Qty Shipped FCST + Open   --------------------------------*/
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Qty Shipped FCST + Open]
+ AS [Qty Shipped FCST] + [Measures].[Qty Open FCST],
+--cima 8-27-12 -- 
+--[Qty Shipped FCST TOT E], 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'DELIVERY\ QTY' ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders'; 
+           
+/*----------cima 9/5/12 ---------Qty Open Invoiced FCST E 1 -------------*/
+
+
+/* ********************************************************************************** */
+/*-----------------------------NUMBER OF SALES ORDERS AND LINES---------------------- */
+/* ********************************************************************************** */
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Count of Sales Orders]
+ AS [Measures].[Number of Sales Orders], 
+FORMAT_STRING = "#,##0;-#,##0", 
+VISIBLE = 1 ,   ASSOCIATED_MEASURE_GROUP = 'Sales Orders';       
+
+ 
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Count of Sales Orders Lines]
+ AS [Measures].[Sales Orders Line Count], 
+FORMAT_STRING = "#,##0;-#,##0", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Sales Orders';         
+
+/****************************************************************************************/
+/*--------cima 2/29/12---------FORECAST CALCULATIONS------------------------------*/
+/****************************************************************************************/
+--*******cma ***1/20/14*****TOT E - Forecast Sales Value for Total Year ****************/
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Sales Value TOT E]
+AS 
+--(
+--iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--      ,
+[Measures].[Fcst Sales Value]
+--   )
+,    
+  
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Forecast';
+
+--scope([Measures].[Fcst Sales Value TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[All]);
+--  [Fcst Sales Value TOT E]=Sum([SelectionYear]);
+--end scope; 
+
+/**********************************************************************************/  
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Sales Value TOT E EUR]
+ AS 
+--(
+--iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+     
+--     ,
+[Measures].[Fcst Sales Value EUR]
+--   )
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Forecast';                      
+
+--scope([Measures].[Fcst Sales Value TOT E EUR],[Fiscal Calendar].[H-Fiscal Calendar].[All]);
+--  [Fcst Sales Value TOT E EUR]=Sum([SelectionYear]);
+--end scope; 
+
+/**********************************************************************************/  
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Sales Value TOT E USD]
+ AS
+ --(
+--iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--       ) 
+--        ,
+[Measures].[Fcst Sales Value USD]
+--   )
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Forecast';      
+
+--scope([Measures].[Fcst Sales Value TOT E USD],[Fiscal Calendar].[H-Fiscal Calendar].[All]);
+--  [Fcst Sales Value TOT E USD]=Sum([SelectionYear]);
+--end scope;                 
+
+scope([Measures].[Fcst Sales Value TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[FY]);                      
+  [Fcst Sales Value TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Fcst Sales Value TOT E EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Fcst Sales Value TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+end scope; 
+
+
+scope([Measures].[Fcst Sales Value TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+  [Fcst Sales Value TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Fcst Sales Value TOT E EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Fcst Sales Value TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+end scope; 
+
+
+
+scope([Measures].[Fcst Sales Value TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+  [Fcst Sales Value TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Fcst Sales Value TOT E EUR]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+ [Fcst Sales Value TOT E USD]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+end scope; 
+
+scope([Measures].[Fcst Sales Value TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[All]);
+  [Fcst Sales Value TOT E]=Sum([SelectionYear]);
+  [Fcst Sales Value TOT E EUR]=Sum([SelectionYear]);
+  [Fcst Sales Value TOT E USD]=Sum([SelectionYear]); 
+end scope; 
+
+/**********************************************************************************/  
+
+ 
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Qty TOT E]
+ AS 
+--(
+--iif( 
+--     [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Period",
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent,
+--         iif( 
+--             [Fiscal Calendar].[H-Fiscal Calendar].level.Name = "Day",
+--           [Fiscal Calendar].[H-Fiscal Calendar].currentmember.parent.parent,
+--     [Fiscal Calendar].[H-Fiscal Calendar].currentmember
+--            )  
+--        ) 
+--        ,
+[Measures].[Fcst Quantity]
+--   )
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Forecast';   
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Qty TOT E KG]
+ AS 
+[Measures].[Fcst Quantity KG]
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Forecast'; 
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Qty TOT E KS]
+ AS 
+[Measures].[Fcst Quantity KS]
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0,  ASSOCIATED_MEASURE_GROUP = 'Forecast';   
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Qty TOT E MS]
+ AS 
+[Measures].[Fcst Quantity MS]
+, 
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0,  ASSOCIATED_MEASURE_GROUP = 'Forecast';   
+
+CREATE MEMBER CURRENTCUBE.[MEASURES].[Fcst Qty TOT E Seed KG]
+ AS 
+[Measures].[Fcst Quantity Seed KG]
+,
+FORMAT_STRING = "#,##0.00;-#,##0.00", 
+VISIBLE = 0,  ASSOCIATED_MEASURE_GROUP = 'Forecast';     
+
+
+scope([Measures].[Fcst Qty TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[FY]);                      
+  [Fcst Qty TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);                      
+  [Fcst Qty TOT E KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);  
+  [Fcst Qty TOT E KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);  
+  [Fcst Qty TOT E MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);  
+  [Fcst Qty TOT E Seed KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember);  
+end scope; 
+
+
+scope([Measures].[Fcst Qty TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Period]);                      
+  [Fcst Qty TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Fcst Qty TOT E KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Fcst Qty TOT E KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+  [Fcst Qty TOT E MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+ [Fcst Qty TOT E Seed KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent);                      
+ end scope; 
+
+
+
+scope([Measures].[Fcst Qty TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[Day]);                      
+  [Fcst Qty TOT E]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);                      
+  [Fcst Qty TOT E KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);
+  [Fcst Qty TOT E KS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);
+  [Fcst Qty TOT E MS]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);
+  [Fcst Qty TOT E Seed KG]=([Fiscal Calendar].[H-Fiscal Calendar].currentMember.parent.parent);
+end scope; 
+
+scope([Measures].[Fcst Qty TOT E],[Fiscal Calendar].[H-Fiscal Calendar].[All]);
+  [Fcst Qty TOT E]=Sum([SelectionYear]);
+end scope;  
+ 
+
+ 
+/****************************************************************************************/
+/*-----------------------------CURRENCY CONVERSIONS-------------------------------------*/
+/****************************************************************************************/
+
+scope([Currency].[Curr].[Company Currency]);        
+[Measures].[Sales Value Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced]);        
+[Measures].[Sales Value Back Ordered]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Back Ordered]);        
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced]);        
+[Measures].[Sales Value Open Inv]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Inv]);        
+[Measures].[Fcst Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value]);        
+[Measures].[Sales Value Invoiced + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced + Open]);        
+[Measures].[TotalSalesValueShipped E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueShipped E-1]);        
+[Measures].[TotalSalesValueInvoiced E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueInvoiced E-1]);        
+[Measures].[Sales Value Open Invoiced TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced TOT E]);        
+[Measures].[Sales Value + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Measures].[Sales Value + Open]);        
+[Measures].[Sales Value Open TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open TOT E]);        
+[Measures].[Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value]);        
+[Measures].[CA RAL BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL BUDGET]);        
+[Measures].[CA RAL FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL FIN_SEPT]);        
+[Measures].[CA RAV BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV BUDGET]);        
+[Measures].[CA RAV FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV FIN_SEPT]);        
+[Measures].[Fcst Sales Value TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value TOT E]);   
+[Measures].[Sales Value Open] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open]);    
+--[Measures].[Sales Value Open Comp E 1] =  ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Comp E 1]);   
+--[Measures].[Sales Value Open Invoiced Comp E 1] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced Comp E 1]);   
+end scope;         
+
+scope([Currency].[Curr].[EUR]);        
+[Measures].[Sales Value Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced Comp EUR]);        
+[Measures].[Sales Value Back Ordered]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Back Ordered Comp EUR]);        
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced Comp EUR]); 
+[Measures].[Sales Value Open Inv]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open EUR]);        
+[Measures].[Fcst Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value EUR]);        
+[Measures].[Sales Value Invoiced + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced + Open EUR]);        
+[Measures].[TotalSalesValueShipped E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueShipped E-1 EUR]);        
+[Measures].[TotalSalesValueInvoiced E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueInvoiced E-1 EUR]);        
+[Measures].[Sales Value Open Invoiced TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced TOT E EUR]);        
+[Measures].[Sales Value + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Measures].[Sales Value + Open EUR]);        
+[Measures].[Sales Value Open TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open TOT E EUR]);        
+[Measures].[Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Shipped Comp EUR]);        
+[Measures].[CA RAL BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL BUDGET EUR]);        
+[Measures].[CA RAL FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL FIN_SEPT EUR]);        
+[Measures].[CA RAV BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV BUDGET EUR]);        
+[Measures].[CA RAV FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV FIN_SEPT EUR]);        
+[Measures].[Fcst Sales Value TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value TOT E EUR]);    
+ [Measures].[Sales Value Open] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Comp EUR]);   
+--[Measures].[Sales Value Open Comp E 1] =  ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Comp EUR]);  
+--[Measures].[Sales Value Open Invoiced Comp E 1] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced E 1 EUR]);    
+ 
+-- cima 8/10/12 - fixed Qty Invoiced with EUR ----
+[Measures].[Qty Invoiced FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST]);           
+--1/21/14 cma[Measures].[Qty Open Invoiced FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Open Invoiced FCST]);
+[Measures].[Qty Open Inv FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Open Inv FCST]);        
+[Measures].[Qty Invoiced FCST + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST + Open]);    
+[Measures].[Qty Invoiced FCST TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST TOT E]);    
+[Measures].[Total Qty Invoiced FCST E-1]=([Currency].[Curr].&[Company Currency],[Measures].[Total Qty Invoiced FCST E-1]);            
+[Measures].[Qty Shipped FCST + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Shipped FCST + Open]);     
+end scope;          
+
+
+scope([Currency].[Curr].[USD]);        
+[Measures].[Sales Value Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced Comp USD]);        
+[Measures].[Sales Value Back Ordered]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Back Ordered Comp USD]);        
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced Comp USD]);        
+[Measures].[Sales Value Open Inv]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open USD]);        
+[Measures].[Fcst Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value USD]);        
+[Measures].[Sales Value Invoiced + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced + Open USD]);        
+[Measures].[TotalSalesValueShipped E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueShipped E-1 USD]);        
+[Measures].[TotalSalesValueInvoiced E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueInvoiced E-1 USD]);        
+[Measures].[Sales Value Open Invoiced TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced TOT E USD]);        
+[Measures].[Sales Value + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Measures].[Sales Value + Open USD]);        
+[Measures].[Sales Value Open TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open TOT E USD]);        
+[Measures].[Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Shipped Comp USD]);        
+[Measures].[CA RAL BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL BUDGET USD]);         
+[Measures].[CA RAL FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL FIN_SEPT USD]);          
+[Measures].[CA RAV BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV BUDGET USD]);         
+[Measures].[CA RAV FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV FIN_SEPT USD]);         
+[Measures].[Fcst Sales Value TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value TOT E USD]);    
+[Measures].[Sales Value Open] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Comp USD]);    
+--[Measures].[Sales Value Open Comp E 1] =  ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Comp USD]);       
+-- [Measures].[Sales Value Open Invoiced Comp E 1] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced E 1 USD]);  
+
+-- cima 8/10/12 - fixed Qty Invoiced with EUR ----
+[Measures].[Qty Invoiced FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST]);   
+--1/21/14 cm [Measures].[Qty Open Invoiced FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Open Invoiced FCST]); 
+[Measures].[Qty Open Inv FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Open Inv FCST]);       
+[Measures].[Qty Invoiced FCST + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST + Open]);    
+[Measures].[Qty Invoiced FCST TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST TOT E]);    
+[Measures].[Total Qty Invoiced FCST E-1]=([Currency].[Curr].&[Company Currency],[Measures].[Total Qty Invoiced FCST E-1]); 
+[Measures].[Qty Shipped FCST + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Shipped FCST + Open]);                
+ 
+end scope;         
+
+scope([Currency].[Curr].[All]);        
+[Measures].[Sales Value Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced]);        
+[Measures].[Sales Value Back Ordered]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Back Ordered]);        
+--1/21/14 cma [Measures].[Sales Value Open Invoiced]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced]);        
+[Measures].[Sales Value Open Inv]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Inv]);        
+[Measures].[Fcst Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value]);        
+[Measures].[Sales Value Invoiced + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Invoiced + Open]);        
+[Measures].[TotalSalesValueShipped E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueShipped E-1]);        
+[Measures].[TotalSalesValueInvoiced E-1]=([Currency].[Curr].&[Company Currency],[Measures].[TotalSalesValueInvoiced E-1]);        
+[Measures].[Sales Value Open Invoiced TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced TOT E]);        
+[Measures].[Sales Value + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Measures].[Sales Value + Open]);        
+[Measures].[Sales Value Open TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open TOT E]);        
+[Measures].[Sales Value]=([Currency].[Curr].&[Company Currency],[Measures].[Sales Value]);        
+[Measures].[CA RAL BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL BUDGET]);        
+[Measures].[CA RAL FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAL FIN_SEPT]);        
+[Measures].[CA RAV BUDGET]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV BUDGET]);        
+[Measures].[CA RAV FIN_SEPT]=([Currency].[Curr].&[Company Currency],[Measures].[CA RAV FIN_SEPT]);        
+[Measures].[Fcst Sales Value TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Fcst Sales Value TOT E]);    
+[Measures].[Sales Value Open] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open]);    
+--[Measures].[Sales Value Open Comp E 1] =  ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Comp E 1]); 
+--[Measures].[Sales Value Open Invoiced Comp E 1] = ([Currency].[Curr].&[Company Currency],[Measures].[Sales Value Open Invoiced Comp E 1]);     
+
+[Measures].[Qty Invoiced FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST]);   
+--1/21/14 cma [Measures].[Qty Open Invoiced FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Open Invoiced FCST]);    
+ [Measures].[Qty Open Inv FCST]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Open Inv FCST]);    
+[Measures].[Qty Invoiced FCST + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST + Open]);    
+[Measures].[Qty Invoiced FCST TOT E]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Invoiced FCST TOT E]);    
+[Measures].[Total Qty Invoiced FCST E-1]=([Currency].[Curr].&[Company Currency],[Measures].[Total Qty Invoiced FCST E-1]);  
+[Measures].[Qty Shipped FCST + Open]=([Currency].[Curr].&[Company Currency],[Measures].[Qty Shipped FCST + Open]);               
+
+
+									
+
+end scope; 

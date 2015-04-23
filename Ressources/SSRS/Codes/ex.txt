@@ -1,0 +1,30 @@
+Public Function EvolutionRate(ByVal a as String, ByVal b as String) As Decimal
+  If IsNothing(b) or IsNothing(a) or IsDBNull(a) or IsDBNull(b) or a = "" or b = "" Then
+	EvolutionRate = Nothing
+  ElseIf b = 0 Then
+	EvolutionRate = 0
+  Else
+	EvolutionRate =  (CDec(a) / CDec(b)) - 1
+  End If
+  return EvolutionRate
+End function
+
+Public Function Division(ByVal a as String, ByVal b as String) As Decimal
+  If IsNothing(b) or IsNothing(a) or IsDBNull(a) or IsDBNull(b) or a = "" or b = ""  Then
+	Division = Nothing
+  ElseIf b = 0 Then
+	Division = 0
+  Else
+	Division = (CDec(a) / CDec(b))
+  End If
+  return Division 
+End function
+
+Public Function Dec(ByVal a as String) As Decimal
+  If IsNothing(a) or IsDBNull(a) or a = "" Then
+	Dec = Nothing
+  Else
+	Dec =  CDec(a)
+  End If
+  return Dec
+End function
