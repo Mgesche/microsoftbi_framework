@@ -1,0 +1,4 @@
+Plus d'environnement, passser facilement e prod par versions
+Tests unitaires
+Savoir quel composant est utilisé pour gérer les inutiles
+Automatisation
