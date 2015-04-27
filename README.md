@@ -4,6 +4,7 @@ Microsoft Bi Framework
 #Fonctions transverses
 ##Aide au chiffrage d'un projet BI
 ##Assistant évolution de son systéme décisionnel
+##Exploitation
 
 #Données
 ##Import de données dans l'ODS
