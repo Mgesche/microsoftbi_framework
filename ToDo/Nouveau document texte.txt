@@ -1,3 +1,5 @@
 stored proc pour generer le rapport
 
 voir https://econsultancy.com/blog/66131-17-visualisation-tools-to-make-your-data-beautiful/
+
+Pour la partie accés a distance, on se base sur du PHP pour le webservice
