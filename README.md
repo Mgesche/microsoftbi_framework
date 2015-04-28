@@ -5,6 +5,9 @@ Microsoft Bi Framework
 ##Aide au chiffrage d'un projet BI
 ##Assistant évolution de son systéme décisionnel
 ##Exploitation
+##Utilitaires
+##Scriplets
+##Documentation
 
 #Données
 ##Import de données dans l'ODS
