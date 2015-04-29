@@ -18,10 +18,14 @@ Microsoft Bi Framework
 ###Données non structurées
 ##Alimentation du Datawarehouse
 ##Qualité des données
+###DQS
+##Saisie de données
 
 #Reporting
 ##Reporting institutionnel sur l'intranet
 ##Push reporting
-##Analyse via les cubes
+##Analyse
+###Cubes SSAS
+###PowerPivot
 ##Export de fichiers
 ##Reporting mobile
