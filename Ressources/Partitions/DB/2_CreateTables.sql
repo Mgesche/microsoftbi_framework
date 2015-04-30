@@ -12,16 +12,13 @@ INSERT INTO DSV.AuditEtapes
 SELECT 1, 'Chargement DSV';
 
 INSERT INTO DSV.AuditEtapes
-SELECT 2, 'Creation structure du cube';
+SELECT 2, 'Mise a jour structure du cube';
 
 INSERT INTO DSV.AuditEtapes
-SELECT 3, 'Mise a jour structure du cube';
+SELECT 3, 'Process data';
 
 INSERT INTO DSV.AuditEtapes
-SELECT 4, 'Process data';
-
-INSERT INTO DSV.AuditEtapes
-SELECT 5, 'Process index';
+SELECT 4, 'Process index';
 
 IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'AuditPartition' AND TABLE_SCHEMA = 'DSV')
 BEGIN

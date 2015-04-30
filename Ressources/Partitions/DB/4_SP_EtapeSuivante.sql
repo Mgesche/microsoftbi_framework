@@ -5,8 +5,8 @@
 	SELECT * FROM DSV.AuditPartition
 
 */
-alter  PROCEDURE [dbo].EtapeSuivante
-	@AuditTraitement_id INTEGER OUTPUT 
+ALTER PROCEDURE [dbo].EtapeSuivante
+	@AuditTraitement_id INTEGER 
 ,	@id_Etape INTEGER  
 
 AS
@@ -40,5 +40,9 @@ VALUES (
 );
 
 SET @AuditTraitement_id = @@IDENTITY;
+
+SELECT @AuditTraitement_id AS AuditTraitement_id 
+
+RETURN
 
 GO
