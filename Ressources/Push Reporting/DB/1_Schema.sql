@@ -1,0 +1,1 @@
+CREATE SCHEMA push_reporting;

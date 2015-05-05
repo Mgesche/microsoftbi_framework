@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Body>
+    <Height>3.26113cm</Height>
+    <Style>
+      <Border>
+        <Width>0.25pt</Width>
+      </Border>
+    </Style>
+  </Body>
+  <Width>12.36896cm</Width>
+  <Page>
+    <PageHeight>29.7cm</PageHeight>
+    <PageWidth>42cm</PageWidth>
+    <InteractiveHeight>29.7cm</InteractiveHeight>
+    <InteractiveWidth>21cm</InteractiveWidth>
+    <LeftMargin>0.5cm</LeftMargin>
+    <RightMargin>0.5cm</RightMargin>
+    <TopMargin>0.5cm</TopMargin>
+    <BottomMargin>0.5cm</BottomMargin>
+    <ColumnSpacing>0.1cm</ColumnSpacing>
+    <Style />
+  </Page>
+  <Description>Le tableau de bord principal, permet de visualiser les indicateurs CA, Débit, Marge, Démarque et Stock cumulé selon les périodes selectionnées jusqu'au niveau sous famille (exclusion des familles 160 sauf coupon (160130), 400, 900, 230 )</Description>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="Ds_BotanicDW_MEC">
+      <Transaction>true</Transaction>
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=decsqldev;Initial Catalog=BotanicDW_MEC</ConnectString>
+        <IntegratedSecurity>true</IntegratedSecurity>
+      </ConnectionProperties>
+      <rd:SecurityType>Integrated</rd:SecurityType>
+      <rd:DataSourceID>c3ffb0a4-75a3-4ba3-85f1-a020eebb2c8c</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="Dts_SousGroupe">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <CommandText>select -1 as idSousGroupe, '_ Nouveau' as strSousGroupe
+union
+select idSousGroupe, strSousGroupe
+from push_reporting.sous_groupe
+order by strSousGroupe</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idSousGroupe">
+          <DataField>idSousGroupe</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="strSousGroupe">
+          <DataField>strSousGroupe</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Groupe">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@P_SousGroupe">
+            <Value>=Parameters!P_SousGroupe.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>select strGroupe
+from push_reporting.sous_groupe REL
+JOIN push_reporting.groupe GRP
+  ON REL.idGroupe = GRP.idGroupe
+WHERE REL.idSousGroupe = @P_SousGroupe</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="strGroupe">
+          <DataField>strGroupe</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_InfosPlanif">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@P_SousGroupe">
+            <Value>=Parameters!P_SousGroupe.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>select  RAP.idRapport, REL.strGroupement, REL.strPlanif, REL.titreMail, REL.typeExportMail
+from push_reporting.sous_groupe SGR
+JOIN [push_reporting].[rel_sous_groupe_rapport] REL
+  ON SGR.idSousGroupe = REL.idSousGroupe
+JOIN [push_reporting].rapport RAP
+  ON RAP.idRapport = REL.idRapport
+WHERE SGR.idSousGroupe = @P_SousGroupe</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="strGroupement">
+          <DataField>strGroupement</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="idRapport">
+          <DataField>idRapport</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="strPlanif">
+          <DataField>strPlanif</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="titreMail">
+          <DataField>titreMail</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="typeExportMail">
+          <DataField>typeExportMail</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Rapport">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <CommandText>SELECT DISTINCT RAP.idRapport, strNomRapport
+FROM push_reporting.rapport RAP
+JOIN [push_reporting].[rel_sous_groupe_rapport] REL
+  ON RAP.idRapport = REL.idRapport
+ORDER BY strNomRapport</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idRapport">
+          <DataField>idRapport</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="strNomRapport">
+          <DataField>strNomRapport</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Rapport_Default">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@rapport">
+            <Value>=Parameters!P_NomRapport.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT RAP.idRapport, strNomRapport, strURLRapport
+FROM push_reporting.rapport RAP
+JOIN [push_reporting].[rel_sous_groupe_rapport] REL
+  ON RAP.idRapport = REL.idRapport
+WHERE RAP.idRapport = @rapport</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idRapport">
+          <DataField>idRapport</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="strNomRapport">
+          <DataField>strNomRapport</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="strURLRapport">
+          <DataField>strURLRapport</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Param">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@idtypeParam">
+            <Value>=Parameters!P_TypeParam.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT idParam, strParam, idTypeParam,
+CASE idTypeParam 
+WHEN 1 THEN 'Code_Societe' 
+WHEN 2 THEN 'Code_Societe, Univers, Famille, SousFamille, Tri' 
+WHEN 3 THEN 'Region' 
+WHEN 4 THEN 'Pas de parametres' 
+WHEN 5 THEN 'Region, DateDebutN, DateFinN, DateDebutN_1, DateFinN_1' 
+WHEN 6 THEN 'DateDebutN, DateFinN, DateDebutN_1, DateFinN_1' 
+WHEN 7 THEN 'Enseigne, Famille, DateDebutN, DateFinN, DateDebutN_1, DateFinN_1' 
+END as type_param
+FROM [push_reporting].param
+where idTypeParam = @idtypeParam</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idParam">
+          <DataField>idParam</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="strParam">
+          <DataField>strParam</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="idTypeParam">
+          <DataField>idTypeParam</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="type_param">
+          <DataField>type_param</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_Param_Default">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@idsousgroupe">
+            <Value>=Parameters!P_SousGroupe.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT PAR.idParam, strParam
+FROM [push_reporting].param PAR
+JOIN [push_reporting].rel_sous_groupe_param REL
+  on rel.idparam = PAR.idparam
+where rel.idSousGroupe = @idsousgroupe</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idParam">
+          <DataField>idParam</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="strParam">
+          <DataField>strParam</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_TypeParam">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <CommandText>SELECT distinct idTypeParam,
+CASE idTypeParam 
+WHEN 1 THEN 'Code_Societe' 
+WHEN 2 THEN 'Code_Societe, Univers, Famille, SousFamille, Tri' 
+WHEN 3 THEN 'Region' 
+WHEN 4 THEN 'Pas de parametres' 
+WHEN 5 THEN 'Region, DateDebutN, DateFinN, DateDebutN_1, DateFinN_1' 
+WHEN 6 THEN 'DateDebutN, DateFinN, DateDebutN_1, DateFinN_1' 
+WHEN 7 THEN 'Enseigne, Famille, DateDebutN, DateFinN, DateDebutN_1, DateFinN_1' 
+END as type_param
+FROM [push_reporting].param</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idTypeParam">
+          <DataField>idTypeParam</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="type_param">
+          <DataField>type_param</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_TypeParam_Default">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@idsousgroupe">
+            <Value>=Parameters!P_SousGroupe.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT PAR.idTypeParam
+FROM [push_reporting].param PAR
+JOIN [push_reporting].rel_sous_groupe_param REL
+  on rel.idparam = PAR.idparam
+where rel.idSousGroupe = @idsousgroupe</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idTypeParam">
+          <DataField>idTypeParam</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="Dts_ParamLibelle">
+      <Query>
+        <DataSourceName>Ds_BotanicDW_MEC</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@idparam">
+            <Value>=Parameters!P_Param.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>SELECT PAR.idParam, [strTraduction]
+FROM push_reporting.param PAR
+JOIN [push_reporting].[trad_libelle] TRA
+  ON PAR.strParam = TRA.strLibelle
+WHERE PAR.idParam = @idparam</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="idParam">
+          <DataField>idParam</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="strTraduction">
+          <DataField>strTraduction</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="P_SousGroupe">
+      <DataType>String</DataType>
+      <Prompt>Sous-Groupe</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_SousGroupe</DataSetName>
+          <ValueField>idSousGroupe</ValueField>
+          <LabelField>strSousGroupe</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="P_Groupe">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_Groupe</DataSetName>
+          <ValueField>strGroupe</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Groupe</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="P_NomRapport">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_InfosPlanif</DataSetName>
+          <ValueField>idRapport</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Rapport</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_Rapport</DataSetName>
+          <ValueField>idRapport</ValueField>
+          <LabelField>strNomRapport</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="P_URLRapport">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_Rapport_Default</DataSetName>
+          <ValueField>strURLRapport</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>URL Rapport</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="P_Groupement">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_InfosPlanif</DataSetName>
+          <ValueField>strGroupement</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Groupement</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="P_Planif">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_InfosPlanif</DataSetName>
+          <ValueField>strPlanif</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Planif</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="P_TitreMail">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_InfosPlanif</DataSetName>
+          <ValueField>titreMail</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Titre Mail</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="P_TypeExport">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_InfosPlanif</DataSetName>
+          <ValueField>typeExportMail</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Type Export</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="P_TypeParam">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_TypeParam_Default</DataSetName>
+          <ValueField>idTypeParam</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Type de parametre</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_TypeParam</DataSetName>
+          <ValueField>idTypeParam</ValueField>
+          <LabelField>type_param</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="P_Param">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_Param_Default</DataSetName>
+          <ValueField>idParam</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Parametre</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Dts_Param</DataSetName>
+          <ValueField>idParam</ValueField>
+          <LabelField>strParam</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="P_Traduction">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>Dts_ParamLibelle</DataSetName>
+          <ValueField>strTraduction</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Traduction</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <Language>fr-FR</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>e71889c6-0274-4587-9417-f8561dd0f5b8</rd:ReportID>
+</Report>
