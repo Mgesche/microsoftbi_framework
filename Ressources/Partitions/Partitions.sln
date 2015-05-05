@@ -3,13 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{D183A3D8-5FD8-494B-B014-37F57B35E655}") = "SSIS", "SSIS\SSIS.dtproj", "{17C0F5D4-F22F-438F-B32A-071F80EE744D}"
 EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "SSRS", "SSRS\SSRS.rptproj", "{9C63B042-A0D7-433F-BC2D-D7720DB0E863}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		DebugLocal|Default = DebugLocal|Default
 		Development|Default = Development|Default
+		Release|Default = Release|Default
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.Debug|Default.ActiveCfg = Development
+		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.Debug|Default.Build.0 = Development
+		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.DebugLocal|Default.ActiveCfg = Development
+		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.DebugLocal|Default.Build.0 = Development
 		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.Development|Default.ActiveCfg = Development
 		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.Development|Default.Build.0 = Development
+		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.Release|Default.ActiveCfg = Development
+		{17C0F5D4-F22F-438F-B32A-071F80EE744D}.Release|Default.Build.0 = Development
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Debug|Default.ActiveCfg = Debug
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Debug|Default.Build.0 = DebugLocal
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Debug|Default.Deploy.0 = DebugLocal
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.DebugLocal|Default.ActiveCfg = DebugLocal
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.DebugLocal|Default.Build.0 = DebugLocal
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Development|Default.ActiveCfg = DebugLocal
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Development|Default.Build.0 = DebugLocal
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Release|Default.ActiveCfg = Release
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Release|Default.Build.0 = Release
+		{9C63B042-A0D7-433F-BC2D-D7720DB0E863}.Release|Default.Deploy.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,12 @@
   </Database>
   <Cubes />
   <Dimensions />
-  <DataSources />
+  <DataSources>
+    <ProjectItem>
+      <Name>Botanic_DW_MEC.ds</Name>
+      <FullPath>Botanic_DW_MEC.ds</FullPath>
+    </ProjectItem>
+  </DataSources>
   <DataSourceViews />
   <MiningModels />
   <Roles />
@@ -19,17 +24,29 @@
       <Name>Development</Name>
       <Options>
         <OutputPath>bin</OutputPath>
-        <ConnectionMappings />
+        <ConnectionMappings>
+          <ConfigurationSetting>
+            <Id>Botanic DW MEC</Id>
+            <Name>Botanic DW MEC</Name>
+            <Value xsi:type="xsd:string">Provider=SQLNCLI10.1;Data Source=.;Integrated Security=SSPI;Initial Catalog=BotanicDW_MEC</Value>
+          </ConfigurationSetting>
+        </ConnectionMappings>
         <ConnectionProviderMappings />
-        <ConnectionSecurityMappings />
+        <ConnectionSecurityMappings>
+          <ConfigurationSetting>
+            <Id>Botanic DW MEC</Id>
+            <Name>Botanic DW MEC</Name>
+            <Value xsi:type="xsd:int">0</Value>
+          </ConfigurationSetting>
+        </ConnectionSecurityMappings>
         <DatabaseStorageLocations />
       </Options>
     </Configuration>
   </Configurations>
   <DTSPackages>
     <DtsPackage FormatVersion="3">
-      <Name>Package.dtsx</Name>
-      <FullPath>Package.dtsx</FullPath>
+      <Name>Process_Partition.dtsx</Name>
+      <FullPath>Process_Partition.dtsx</FullPath>
       <References />
     </DtsPackage>
   </DTSPackages>
