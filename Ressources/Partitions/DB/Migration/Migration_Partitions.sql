@@ -1,6 +1,6 @@
 TRUNCATE TABLE DSV.Partitions
 
-SET IDENTITY_INSERT ON
+SET IDENTITY_INSERT DSV.Partitions ON
 
 INSERT INTO DSV.Partitions (
 	 [id]
@@ -55,6 +55,8 @@ SELECT [id]
       ,[TypePlanif]
       ,[export_rapp]
 FROM dbo.partitions
+
+SET IDENTITY_INSERT DSV.Partitions OFF
 
 /* Creation de PartitionTable */
 /*
