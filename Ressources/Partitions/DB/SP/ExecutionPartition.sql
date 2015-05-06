@@ -3,7 +3,7 @@
 	EXECUTE [dbo].ExecutionPartition 369
 
 */
-CREATE  PROCEDURE [dbo].ExecutionPartition 
+CREATE PROCEDURE [dbo].ExecutionPartition 
     @id_Partition INTEGER
 
 AS
