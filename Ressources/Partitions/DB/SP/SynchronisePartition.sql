@@ -1,3 +1,15 @@
+/* Exemple :
+
+	EXECUTE [DSV].SynchronisePartition
+
+*/
+IF object_id(N'DSV.SynchronisePartition ', N'P') IS NOT NULL
+    DROP PROCEDURE DSV.SynchronisePartition 
+GO
+
+CREATE PROCEDURE [DSV].SynchronisePartition 
+AS
+
 TRUNCATE TABLE DSV.Partitions
 
 SET IDENTITY_INSERT DSV.Partitions ON
@@ -172,3 +184,5 @@ WHERE PartitionTableQuery = 'SELECT TIK.[DateEdition_id] ,TIK.[HeureEdition_id] 
 /* Suppression des lignes non valides */
 DELETE FROM DSV.Partitions 
 WHERE PartitionTableGlobal IS NULL
+
+GO
