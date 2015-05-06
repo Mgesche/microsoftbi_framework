@@ -2,7 +2,7 @@ IF object_id(N'DSV.processIndexxmlareffield', N'FN') IS NOT NULL
     DROP FUNCTION DSV.processIndexxmlareffield
 GO
 
-CREATE function [dbo].[processIndexxmlareffield] (
+CREATE function [DSV].[processIndexxmlareffield] (
 	@id as int) RETURNS varchar(5000)
 AS
 BEGIN
