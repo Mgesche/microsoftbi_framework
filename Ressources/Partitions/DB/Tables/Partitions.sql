@@ -21,6 +21,7 @@ CREATE TABLE [DSV].[partitions](
 	[CreateXMLARef] [varchar](5000) NULL,
 	[UpdateXMLARef] [varchar](5000) NULL,
 	[PartitionTableQuery] [varchar](5000) NULL,
+	[PartitionTable] [varchar](100) NULL,
 	[ProcessAction] [varchar](5000) NULL,
 	[ProcessActionRef] [varchar](5000) NULL,
 	[ToProcessRef] [int] NULL,
