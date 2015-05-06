@@ -27,18 +27,6 @@ set @chaine =(
             </Annotations>
             <Source xsi:type="QueryBinding">
                 <DataSourceID>'+p.datasourceid+'</DataSourceID>
-                <QueryDefinition>'+ p.partitiontablequery + ' WHERE
-					'+ p.champstablename +' &gt;= (select startd
-					from partitions 
-					where fact='''+ p.fact +'''
-					and period=''' + p.Period +'''
-					and sousperiod ='''+p.SousPeriod+''')  
-					and  '+ p.champstablename +'  &lt;=  
-					(select endd
-					from partitions 
-					where fact= '''+ p.fact +'''
-					and period=''' + p.Period +'''
-					and sousperiod ='''+p.SousPeriod+''')</QueryDefinition>
             </Source>
             <StorageMode>Molap</StorageMode>
             <ProcessingMode>Regular</ProcessingMode>
