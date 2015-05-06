@@ -18,11 +18,11 @@ END
 /* Region */
 SET @NbError = (SELECT COUNT(*) FROM (
 SELECT Societe_Id
-FROM [push_reporting].[GetSocietes] ('Region', 'B_SIAL')
+FROM [push_reporting].[GetSocietes] ('Region', 'LIT Littoral')
 EXCEPT
 SELECT Societe_Id
 FROM DimSociete
-WHERE CodeRegionCommerciale = 'B_SIAL'
+WHERE RegionCommerciale = 'LIT Littoral'
 ) RES)
 
 IF @NbError > 0

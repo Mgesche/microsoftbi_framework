@@ -68,8 +68,8 @@ SELECT [BotanicDW_MEC].[push_reporting].[IsDataReady] (20150401, 67, 'Enseigne',
 SELECT [BotanicDW_MEC].[push_reporting].[IsDataReady] (20150401, 68, 'Enseigne', 1);
 
 /* ALP : 100 / 140 = 71,4% */
-SELECT [BotanicDW_MEC].[push_reporting].[IsDataReady] (20150401, 71, 'Region', 'B_SIAL');
-SELECT [BotanicDW_MEC].[push_reporting].[IsDataReady] (20150401, 72, 'Region', 'B_SIAL');
+SELECT [BotanicDW_MEC].[push_reporting].[IsDataReady] (20150401, 71, 'Region', 'LIT Littoral');
+SELECT [BotanicDW_MEC].[push_reporting].[IsDataReady] (20150401, 72, 'Region', 'LIT Littoral');
 
 /* 415 : 45 / 45 = 100% */
 SELECT [BotanicDW_MEC].[push_reporting].[IsDataReady] (20150401, 100, 'Magasin', '415');

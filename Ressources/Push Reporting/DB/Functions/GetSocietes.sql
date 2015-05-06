@@ -43,7 +43,7 @@ BEGIN
   INSERT INTO @ListeSociete
   SELECT Societe_Id
   FROM DimSociete
-  WHERE CodeRegionCommerciale = @strFiltre
+  WHERE RegionCommerciale = @strFiltre
 END
 
 IF @strTypeFiltre = 'Magasin'
