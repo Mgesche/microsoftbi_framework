@@ -27,6 +27,7 @@ set @chaine =(
             </Annotations>
             <Source xsi:type="QueryBinding">
                 <DataSourceID>'+p.datasourceid+'</DataSourceID>
+                <QueryDefinition>'+REPLACE(p.partitiontablequery, p.PartitionTable, 'DSV.'+p.PartitionTable+'_'+p.Id)+'</QueryDefinition>
             </Source>
             <StorageMode>Molap</StorageMode>
             <ProcessingMode>Regular</ProcessingMode>
