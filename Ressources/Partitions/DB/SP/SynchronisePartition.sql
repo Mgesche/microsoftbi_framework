@@ -181,6 +181,46 @@ SET PartitionTableGlobal = '[dbo].[DSVLigneTicketCRM]',
 PartitionTableUnitaire = 'DSVLigneTicketCRM'
 WHERE PartitionTableQuery = 'SELECT TIK.[DateEdition_id] ,TIK.[HeureEdition_id] ,TIK.[Societe_id] ,TIK.[Article_id] ,TIK.[QuantiteVendue] ,TIK.[CA] ,TIK.[MargeEntreeTheoriqueCentrale] ,TIK.[MargeEntreeTheoriqueMagasin] ,TIK.[MargeSortie] ,TIK.[MontantRemise] ,TIK.[FlagRetour] ,TIK.[FlagHorsCA] ,TIK.[PVGCHT] ,TIK.[PVKSHT] ,TIK.[TAXE] ,TIK.[client_id] ,TIK.[campagne_id] ,TIK.[enseigne_id] ,TIK.[fide],1 as Phase, COALESCE(TIK.IDT_Profil_Historisation, -1) AS IDT_Profil_Historisation, COALESCE(TIK.IDT_Classe_Historisation, -1) AS IDT_Classe_Historisation, CLI.datedebutadhesion_int, CLI.datefinadhesion_int, TIK.Nb_Achat_Carte, TIK.Nb_Nouvelles_Adhesion, TIK.Nb_Readhesion_Payante, TIK.Nb_Readhesion_Gratuite, CLI.datereadhesion_int   FROM [BotanicDW_MEC].[dbo].[DSVLigneTicketCRM] AS TIK LEFT JOIN dbo.DimClient AS CLI ON CLI.id = TIK.client_id '
 
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = 'dbo.DSVDebitUniversCRM',
+PartitionTableUnitaire = 'DSVDebitUniversCRM'
+WHERE PartitionTableQuery = 'SELECT       dbo.DSVDebitUniversCRM.debitfide,dbo.DSVDebitUniversCRM.Societe_id, dbo.DSVDebitUniversCRM.Temps_id, dbo.DSVDebitUniversCRM.client_id, dbo.DSVDebitUniversCRM.campagne_id,                        dbo.DSVDebitUniversCRM.DebitOpeCo, dbo.DSVDebitUniversCRM.Debit, dbo.DSVDebitUniversCRM.UniversArticle_id, dbo.DimSociete.enseigne_id, 1 AS Phase, COALESCE(IDT_Profil_Historisation, -1) AS IDT_Profil_Historisation, COALESCE(IDT_Classe_Historisation, -1) AS IDT_Classe_Historisation FROM         dbo.DSVDebitUniversCRM INNER JOIN                       dbo.DimSociete ON DimSociete.societe_id = DSVDebitUniversCRM.societe_id '
+
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = 'dbo.DSVDebitSousFamilleCRM',
+PartitionTableUnitaire = 'DSVDebitSousFamilleCRM'
+WHERE PartitionTableQuery = 'SELECT      dbo.DSVDebitSousFamilleCRM.debitfide, dbo.DSVDebitSousFamilleCRM.Societe_id, dbo.DSVDebitSousFamilleCRM.Temps_id, dbo.DSVDebitSousFamilleCRM.client_id,                        dbo.DSVDebitSousFamilleCRM.campagne_id, dbo.DSVDebitSousFamilleCRM.DebitOpeCo, dbo.DSVDebitSousFamilleCRM.Debit,                        dbo.DSVDebitSousFamilleCRM.SousFamilleArticle_id, dbo.DimSociete.enseigne_id, 1 AS Phase, COALESCE(IDT_Profil_Historisation, -1) AS IDT_Profil_Historisation, COALESCE(IDT_Classe_Historisation, -1) AS IDT_Classe_Historisation FROM         dbo.DSVDebitSousFamilleCRM INNER JOIN                       dbo.DimSociete ON DimSociete.societe_id = DSVDebitSousFamilleCRM.societe_id '
+
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = 'dbo.DSVDebitSousFamilleCRM',
+PartitionTableUnitaire = 'DSVDebitSousFamilleCRM'
+WHERE PartitionTableQuery = 'SELECT      dbo.DSVDebitSousFamilleCRM.debitfide,dbo.DSVDebitSousFamilleCRM.Societe_id, dbo.DSVDebitSousFamilleCRM.Temps_id, dbo.DSVDebitSousFamilleCRM.client_id,                        dbo.DSVDebitSousFamilleCRM.campagne_id, dbo.DSVDebitSousFamilleCRM.DebitOpeCo, dbo.DSVDebitSousFamilleCRM.Debit,                        dbo.DSVDebitSousFamilleCRM.SousFamilleArticle_id, dbo.DimSociete.enseigne_id, 1 AS Phase, COALESCE(IDT_Profil_Historisation, -1) AS IDT_Profil_Historisation, COALESCE(IDT_Classe_Historisation, -1) AS IDT_Classe_Historisation FROM         dbo.DSVDebitSousFamilleCRM INNER JOIN                       dbo.DimSociete ON DimSociete.societe_id = DSVDebitSousFamilleCRM.societe_id '
+
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = 'dbo.DSVDebitTotauxCRM',
+PartitionTableUnitaire = 'DSVDebitTotauxCRM'
+WHERE PartitionTableQuery = 'SELECT      dbo.DSVDebitTotauxCRM.debitfide, dbo.DSVDebitTotauxCRM.Societe_id, dbo.DSVDebitTotauxCRM.Temps_id, dbo.DSVDebitTotauxCRM.client_id, dbo.DSVDebitTotauxCRM.campagne_id,                        dbo.DSVDebitTotauxCRM.DebitOpeCo, dbo.DSVDebitTotauxCRM.Debit, dimsociete.enseigne_id, 1 AS Phase, COALESCE(IDT_Profil_Historisation, -1) AS IDT_Profil_Historisation, COALESCE(IDT_Classe_Historisation, -1) AS IDT_Classe_Historisation FROM         dbo.DSVDebitTotauxCRM INNER JOIN                       dbo.DimSociete ON dimsociete.societe_id = DSVDebitTotauxCRM.societe_id '
+
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = 'dbo.DSVDebitFamilleCRM',
+PartitionTableUnitaire = 'DSVDebitFamilleCRM'
+WHERE PartitionTableQuery = 'SELECT     dbo.DSVDebitFamilleCRM.debitfide, dbo.DSVDebitFamilleCRM.Societe_id, dbo.DSVDebitFamilleCRM.FamilleArticle_id, dbo.DSVDebitFamilleCRM.Temps_id, dbo.DSVDebitFamilleCRM.client_id,                        dbo.DSVDebitFamilleCRM.campagne_id, dbo.DSVDebitFamilleCRM.DebitOpeCo, dbo.DSVDebitFamilleCRM.Debit, dimsociete.enseigne_id, 1 AS Phase, COALESCE(IDT_Profil_Historisation, -1) AS IDT_Profil_Historisation, COALESCE(IDT_Classe_Historisation, -1) AS IDT_Classe_Historisation FROM         dbo.DSVDebitFamilleCRM INNER JOIN                       dbo.DimSociete ON dimsociete.societe_id = DSVDebitFamilleCRM.societe_id '
+
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = 'DSVStockCliche',
+PartitionTableUnitaire = 'DSVStockCliche'
+WHERE PartitionTableQuery = 'SELECT     DSVStockCliche.DateCliche_id,     DSVStockCliche.Article_id,    DSVStockCliche.Societe_id,    DSVStockCliche.QuantiteDisponible,   DSVStockCliche.ValeurDisponibleAuPMP,    DSVStockCliche.enseigne_id   FROM DSVStockCliche'
+
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = 'DSVStockCliche',
+PartitionTableUnitaire = 'DSVStockCliche'
+WHERE PartitionTableQuery = 'SELECT DSVStockCliche.DateCliche_id,   DSVStockCliche.Article_id, DSVStockCliche.Societe_id, DSVStockCliche.QuantiteDisponible,DSVStockCliche.ValeurDisponibleAuPMP, DSVStockCliche.enseigne_id FROM DSVStockCliche'
+
+UPDATE DSV.Partitions 
+SET PartitionTableGlobal = '[dbo].[DSVLigneTicketCRM]',
+PartitionTableUnitaire = 'DSVLigneTicketCRM'
+WHERE PartitionTableQuery = 'SELECT TIK.[DateEdition_id] ,TIK.[HeureEdition_id] ,TIK.[Societe_id] ,TIK.[Article_id] ,TIK.[QuantiteVendue] ,TIK.[CA] ,TIK.[MargeEntreeTheoriqueCentrale] ,TIK.[MargeEntreeTheoriqueMagasin] ,TIK.[MargeSortie] ,TIK.[MontantRemise] ,TIK.[FlagRetour] ,TIK.[FlagHorsCA] ,TIK.[PVGCHT] ,TIK.[PVKSHT] ,TIK.[TAXE] ,TIK.[client_id] ,TIK.[campagne_id] ,TIK.[enseigne_id] ,TIK.[fide],1 as Phase, COALESCE(TIK.IDT_Profil_Historisation, -1) AS IDT_Profil_Historisation, COALESCE(TIK.IDT_Classe_Historisation, -1) AS IDT_Classe_Historisation, CLI.datedebutadhesion_int, CLI.datefinadhesion_int, TIK.Nb_Achat_Carte, TIK.Nb_Nouvelles_Adhesion, TIK.Nb_Readhesion_Payante, TIK.Nb_Readhesion_Gratuite, CLI.datereadhesion_int   FROM [BotanicDW_MEC].[dbo].[DSVLigneTicketCRM] AS TIK LEFT  JOIN dbo.DimClient AS CLI ON CLI.id = TIK.client_id '
+
 /* Suppression des lignes non valides */
 DELETE FROM DSV.Partitions 
 WHERE PartitionTableGlobal IS NULL
