@@ -6,7 +6,11 @@
 	SELECT @AuditTraitement_id
 
 */
-ALTER  PROCEDURE [dbo].initTraitement 
+IF object_id(N'DSV.initTraitement ', N'P') IS NOT NULL
+    DROP PROCEDURE DSV.initTraitement 
+GO
+
+CREATE PROCEDURE [DSV].initTraitement 
     @AuditTraitement_id INTEGER OUTPUT
 ,	@id_Partition INTEGER  
 ,	@StrUser VARCHAR(50)

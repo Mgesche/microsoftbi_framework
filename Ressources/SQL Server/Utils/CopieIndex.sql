@@ -1,3 +1,8 @@
+/* Exemple 
+
+  EXECUTE [Utils].[copieIndex]('dbo', 'partitions', 'DSV', 'partitions)
+
+*/
 IF object_id(N'Utils.copieIndex', N'P') IS NOT NULL
     DROP PROCEDURE Utils.copieIndex
 GO

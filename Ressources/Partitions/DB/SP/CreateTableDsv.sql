@@ -1,11 +1,15 @@
 /* Exemple :
 
-	EXECUTE [dbo].ClotureTraitement 1
+	EXECUTE [dbo].CreateTableDsv 1
 	
 	SELECT * FROM DSV.AuditPartition
 
 */
-CREATE  PROCEDURE [dbo].CreateTableDsv 
+IF object_id(N'DSV.CreateTableDsv', N'P') IS NOT NULL
+    DROP PROCEDURE DSV.CreateTableDsv
+GO
+
+CREATE  PROCEDURE [DSV].CreateTableDsv 
     @id_Partition INTEGER
 
 AS

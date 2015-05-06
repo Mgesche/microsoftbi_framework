@@ -5,7 +5,11 @@
 	SELECT * FROM DSV.AuditPartition
 
 */
-CREATE  PROCEDURE [dbo].ErrorTraitement 
+IF object_id(N'DSV.ErrorTraitement', N'P') IS NOT NULL
+    DROP PROCEDURE DSV.ErrorTraitement
+GO
+
+CREATE  PROCEDURE [DSV].ErrorTraitement 
     @AuditTraitement_id INTEGER,
 	@ErrorMEssage VARCHAR(500)
 

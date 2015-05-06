@@ -5,7 +5,11 @@
 	SELECT * FROM DSV.AuditPartition
 
 */
-CREATE  PROCEDURE [dbo].ClotureTraitement 
+IF object_id(N'DSV.ClotureTraitement', N'P') IS NOT NULL
+    DROP PROCEDURE DSV.ClotureTraitement
+GO
+
+CREATE PROCEDURE DSV.ClotureTraitement 
     @AuditTraitement_id INTEGER
 
 AS

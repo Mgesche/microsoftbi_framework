@@ -5,7 +5,11 @@
 	SELECT * FROM DSV.AuditPartition
 
 */
-ALTER PROCEDURE [dbo].EtapeSuivante
+IF object_id(N'DSV.EtapeSuivante', N'P') IS NOT NULL
+    DROP PROCEDURE DSV.EtapeSuivante
+GO
+
+CREATE PROCEDURE [DSV].EtapeSuivante
 	@AuditTraitement_id INTEGER 
 ,	@id_Etape INTEGER  
 

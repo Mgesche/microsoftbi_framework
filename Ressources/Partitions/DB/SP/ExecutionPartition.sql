@@ -3,7 +3,11 @@
 	EXECUTE [dbo].ExecutionPartition 369
 
 */
-CREATE PROCEDURE [dbo].ExecutionPartition 
+IF object_id(N'DSV.ExecutionPartition ', N'P') IS NOT NULL
+    DROP PROCEDURE DSV.ExecutionPartition 
+GO
+
+CREATE PROCEDURE [DSV].ExecutionPartition 
     @id_Partition INTEGER
 
 AS
