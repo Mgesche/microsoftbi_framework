@@ -3,3 +3,5 @@ Tests unitaires
 Savoir quel composant est utilisé pour gérer les inutiles
 Automatisation
 
+Sur chaque fonction, on trace mais on prevoit une table de parametrage qui permet de desactiver sur l'environnement ou au contraire de debuger dans uen table
+

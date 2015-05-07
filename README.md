@@ -5,6 +5,7 @@ Microsoft Bi Framework
 ##Aide au chiffrage d'un projet BI
 ##Assistant évolution de son systéme décisionnel
 ##Exploitation
+[Exploitation](Expoitation.md "Exploitation")
 ##Utilitaires
 ##Scriplets
 ##Documentation
@@ -17,6 +18,8 @@ Microsoft Bi Framework
 ###Source OData
 ###Données non structurées
 ##Alimentation du Datawarehouse
+###Historisation des donnees
+###Regles metiers
 ##Qualité des données
 ###DQS
 ##Saisie de données
@@ -27,5 +30,6 @@ Microsoft Bi Framework
 ##Analyse
 ###Cubes SSAS
 ###PowerPivot
+###Previsionnel
 ##Export de fichiers
 ##Reporting mobile
