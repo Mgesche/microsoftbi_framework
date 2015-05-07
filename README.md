@@ -6,6 +6,7 @@ Microsoft Bi Framework
 ##Assistant évolution de son systéme décisionnel
 ##Exploitation
 [Exploitation](Exploitation.md "Pour plus d'infos")
+##Version
 ##Utilitaires
 ##Scriplets
 ##Documentation
