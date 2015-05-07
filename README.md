@@ -29,6 +29,9 @@ Microsoft Bi Framework
 ##Push reporting
 ##Analyse
 ###Cubes SSAS
+####Dynamic Management View
+* List all processed cubes
+* Process only the non processed partition
 ###PowerPivot
 ###Previsionnel
 ##Export de fichiers
