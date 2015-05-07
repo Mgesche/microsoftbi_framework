@@ -5,7 +5,7 @@ Microsoft Bi Framework
 ##Aide au chiffrage d'un projet BI
 ##Assistant évolution de son systéme décisionnel
 ##Exploitation
-[Exploitation](Expoitation.md "Exploitation")
+[Exploitation](Exploitation.md "Exploitation")
 ##Utilitaires
 ##Scriplets
 ##Documentation
