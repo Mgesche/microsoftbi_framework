@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>SOAP JavaScript Client Test</title>
+    <script type="text/javascript">
+        function soap() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'http://tempuri.org/hello_world', true);
+
+            // build SOAP request
+            var sr =
+                '<?xml version="1.0" encoding="utf-8"?>' +
+				'<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">'+
+				   '<SOAP-ENV:Body>'+
+      					'<hello_world xmlns="http://tempuri.org/">'+
+          					'<msg>Hello World!</msg> '+
+      					'</hello_world>'+
+   					'</SOAP-ENV:Body>'+
+				'</SOAP-ENV:Envelope>';
+
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4) {
+                    if (xmlhttp.status == 200) {
+
+                        alert('done use firebug to see response');
+                    }
+                    else {
+                        alert('status : '+xmlhttp.status);
+                    }
+                }
+                else {
+                    alert('readyState : '+xmlhttp.readyState);
+                }
+            }
+            // Send the POST request
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+            xmlhttp.send(sr);
+            // send request
+            // ...
+        }
+    </script>
+</head>
+<body>
+    <form name="Demo" action="" method="post">
+        <div>
+            <input type="button" value="Soap" onclick="soap();" />
+        </div>
+    </form>
+</body>
+<html>
