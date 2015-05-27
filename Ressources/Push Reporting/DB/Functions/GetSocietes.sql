@@ -51,7 +51,7 @@ BEGIN
   INSERT INTO @ListeSociete
   SELECT Societe_Id
   FROM DimSociete
-  WHERE Societe_Id = @strFiltre
+  WHERE CodeSociete = @strFiltre
 END
 
 RETURN
