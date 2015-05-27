@@ -6,7 +6,7 @@ END
 CREATE TABLE Version.Audit_Info
 (
        Audit_Id             bigint IDENTITY(1,1),
-       EventTime            DATETIME,
+       EventTime            VARCHAR(50),
        LoginName            VARCHAR(255),
        UserName             VARCHAR(255),
        HostName             VARCHAR(255),
@@ -14,6 +14,7 @@ CREATE TABLE Version.Audit_Info
        DatabaseName         VARCHAR(255),
        SchemaName           VARCHAR(255),
        ObjectName           VARCHAR(255),
-       ObjectType           VARCHAR(255),      
+       ObjectType           VARCHAR(255),    
+       Action               VARCHAR(50),
        DDLCommand           VARCHAR(MAX)
 )
