@@ -3,12 +3,13 @@ FN = Scalar Function
 IF = Inlined Table Function
 TF = Table Function
 */
-IF object_id(N'push_reporting.GetCAEffectif', N'FN') IS NOT NULL
-    DROP FUNCTION push_reporting.GetCAEffectif
+IF object_id(N'Webservices.GetCAEffectif', N'FN') IS NOT NULL
+    DROP FUNCTION Webservices.GetCAEffectif
 GO
 
-CREATE FUNCTION [push_reporting].[GetCAEffectif](
-	@iDate int = 0,
+CREATE FUNCTION [Webservices].[GetCAEffectif](
+	@iDateFrom VARCHAR(10) = '0',
+  @iDateTo VARCHAR(10) = '0',
   @strTypeFiltre varchar(50),
 	@strFiltre varchar(500)
 ) RETURNS int
@@ -16,7 +17,8 @@ as
   /* =============================================================================== */
   /* Recupere le CA remonte sur le perimetre magasin                                 */
   /*                                                                                 */
-  /* @iDate : Date de remontee a teter (par defaut, date de la veille)               */
+  /* @iDateFrom : Date de remontee a tester (par defaut, date de la veille) : borne inf  */
+  /* @iDateTo : Date de remontee a tester (par defaut, date de la veille) : borne sup  */
   /* @strTypeFiltre  : Enseigne, Region ou Magasin                                   */
   /* @strFiltre  : Domaine a filtrer                                                 */
   /*																			                                        	 */
@@ -26,7 +28,7 @@ as
 USE [BotanicDW_MEC]
 GO
 
-SELECT [BotanicDW_MEC].[push_reporting].[GetCAEffectif] (0, 'Enseigne', 1);
+SELECT [BotanicDW_MEC].[Webservices].[GetCAEffectif] (0, 'Enseigne', 1);
 
 GO
 */
@@ -34,18 +36,33 @@ BEGIN
 
 DECLARE @CAEffectif INT
 
+DECLARE @iDateFrom_Int INT
+DECLARE @iDateTo_Int INT
+
 /* Valeur par defaut de la date */
-IF @iDate = 0
+IF @iDateFrom = '0'
 BEGIN
-  SET @iDate = dbo.DateToInt(GETDATE()-1);
+  SET @iDateFrom_Int = dbo.DateToInt(GETDATE()-1);
+END
+ELSE
+BEGIN
+  SET @iDateFrom_Int = dbo.DateToInt(@iDateFrom);
+END
+IF @iDateTo = '0'
+BEGIN
+  SET @iDateTo_Int = dbo.DateToInt(GETDATE()-1);
+END
+ELSE
+BEGIN
+  SET @iDateTo_Int = dbo.DateToInt(@iDateTo);
 END
 
 SET @CAEffectif = (
 SELECT SUM(Somme_CATTC) 
-FROM [BotanicDW_MEC].[suivi_tickets].[FactTicketLocalisation] TIK
-JOIN [push_reporting].[GetSocietes] (@strTypeFiltre, @strFiltre) SOC
+FROM [suivi_tickets].[FactTicketLocalisation] TIK
+JOIN [Webservices].[ListSocietes] (@strTypeFiltre, @strFiltre) SOC
   ON SOC.Societe_id = TIK.Societe_id
-WHERE DateRemontee_int = @iDate
+WHERE DateTicket_int BETWEEN @iDateFrom_Int AND @iDateTo_Int
 )
 
 RETURN @CAEffectif
