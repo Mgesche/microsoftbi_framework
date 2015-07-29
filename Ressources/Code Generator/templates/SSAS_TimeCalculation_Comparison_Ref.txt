@@ -30,10 +30,7 @@ SCOPE([Measures].[Date Ref N-1]);
     /* A journee comparable : Cas des jours => Base sur TempsDecalage si renseignee, AnneDecalage sinon */
     SCOPE([Temps].[Annee Commerciale - Date].[Date]);
         [Dim Comparaison].[A journee comparable] = GENERATE(
-    ParallelPeriod([Temps].[Annee Commerciale - Date].[Date],SUM(
-        [Annee Decalage].[Annee Commerciale - Date].[Annee Commerciale], IIF([Temps].[Annee Commerciale - Date].currentmember.member_key = 
-    [Annee Decalage].[Annee Commerciale - Date].currentmember.member_key,
-    [Annee Decalage].[Annee Commerciale - Date].currentmember.Properties('Decalage'), null)), [Temps].[Annee Commerciale - Date].currentmember),
+    ParallelPeriod([Temps].[Annee Commerciale - Date].[Date],364, [Temps].[Annee Commerciale - Date].currentmember),
     [Temps].[Annee Commerciale - Date].currentmember.member_caption);
     END SCOPE;
     SCOPE([Temps].[Bimestre].[Bimestre]);
@@ -45,10 +42,7 @@ SCOPE([Measures].[Date Ref N-1]);
     /* A journee comparable : Cas des jours => Base sur TempsDecalage si renseignee, AnneDecalage sinon */
     SCOPE([Temps].[Date].[Date]);
         [Dim Comparaison].[A journee comparable] = GENERATE(
-    ParallelPeriod([Temps].[Date].[Date],SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Date].currentmember),
+    ParallelPeriod([Temps].[Date].[Date],364, [Temps].[Date].currentmember),
     [Temps].[Date].currentmember.member_caption);
     END SCOPE;
     SCOPE([Temps].[Mois].[Mois]);
@@ -100,10 +94,7 @@ SUM(
         [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Date].currentmember.member_key = 
     [Temps Decalage].[Temps Id].currentmember.member_key,
     [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null)),
-SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)))
+    364)
 , [Temps].[Date].currentmember),
     [Temps].[Date].currentmember.member_caption);
     END SCOPE;
@@ -124,10 +115,7 @@ SUM(
         [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Date].currentmember.member_key = 
     [Temps Decalage].[Temps Id].currentmember.member_key,
     [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null)),
-SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)))
+364)
 , [Temps].[Date].currentmember),
     [Temps].[Date].currentmember.member_caption);
     END SCOPE;
@@ -218,79 +206,43 @@ SCOPE([Measures].[Date Deb N-1]);
 
     /* A journee comparable : Decalage suivant Annee Decalage dans tout les cas */
     SCOPE([Temps].[Annee].[Annee]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.Firstchild.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.Firstchild.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Annee Commerciale]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee Commerciale - Date].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 364, [Temps].[Annee Commerciale - Date].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Date]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee Commerciale - Date].currentmember).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 364, [Temps].[Annee Commerciale - Date].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Bimestre].[Bimestre]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Bimestre - Mois].currentmember.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Date].[Date]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Mois].[Mois]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Semaine].[Semaine]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Semaine].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Semaine].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Semaine].[Date], 364, [Temps].[Annee - Semaine].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Trimestre].[Trimestre]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.Firstchild.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.Firstchild.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Bimestre - Mois].[Mois]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Date].[Mois]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Date].currentmember.Parent.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.Firstchild).member_caption;
     END SCOPE;
 
     /* Specifique : Cas semaine, mois ou annee => Decalage suivant Annee Decalage */
     /* Specifique : Cas des jours => Base sur TempsDecalage si renseignee, AnneDecalage sinon */
     SCOPE([Temps].[Annee].[Annee]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.Firstchild.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.Firstchild.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Annee Commerciale]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee Commerciale - Date].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 364, [Temps].[Annee Commerciale - Date].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Date]);
         [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 
@@ -302,17 +254,11 @@ SUM(
         [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Annee Commerciale - Date].currentmember.member_key = 
     [Temps Decalage].[Temps Id].currentmember.member_key,
     [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null)),
-SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.Parent.Parent.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)))
+364)
 , [Temps].[Annee Commerciale - Date].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Bimestre].[Bimestre]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Bimestre - Mois].currentmember.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Date].[Date]);
         [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date],
@@ -324,41 +270,23 @@ SUM(
         [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Date].currentmember.member_key = 
     [Temps Decalage].[Temps Id].currentmember.member_key,
     [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null)),
-SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)))
+364)
 , [Temps].[Annee - Mois].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Mois].[Mois]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Semaine].[Semaine]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Semaine].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Semaine].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Semaine].[Date], 364, [Temps].[Annee - Semaine].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Trimestre].[Trimestre]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.Firstchild.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.Firstchild.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Bimestre - Mois].[Mois]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.Firstchild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Date].[Mois]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Date].currentmember.Parent.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.Firstchild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.Firstchild).member_caption;
     END SCOPE;
 
     /* N - 1 => A-1 */
@@ -396,79 +324,43 @@ SCOPE([Measures].[Date Fin N-1]);
 
     /* A journee comparable : Decalage suivant Annee Decalage dans tout les cas */
     SCOPE([Temps].[Annee].[Annee]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.LastChild.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.LastChild.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Annee Commerciale]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee Commerciale - Date].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 364, [Temps].[Annee Commerciale - Date].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Date]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee Commerciale - Date].currentmember).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 364, [Temps].[Annee Commerciale - Date].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Bimestre].[Bimestre]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Bimestre - Mois].currentmember.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.LastChild.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.LastChild.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Date].[Date]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Mois].[Mois]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Semaine].[Semaine]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Semaine].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Semaine].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Semaine].[Date], 364, [Temps].[Annee - Semaine].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Trimestre].[Trimestre]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.LastChild.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.LastChild.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Bimestre - Mois].[Mois]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Date].[Mois]);
-        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Date].currentmember.Parent.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[A journee comparable] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.LastChild).member_caption;
     END SCOPE;
 
     /* Specifique : Cas semaine, mois ou annee => Decalage suivant Annee Decalage */
     /* Specifique : Cas des jours => Base sur TempsDecalage si renseignee, AnneDecalage sinon */
     SCOPE([Temps].[Annee].[Annee]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.LastChild.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.LastChild.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Annee Commerciale]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee Commerciale - Date].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 364, [Temps].[Annee Commerciale - Date].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee Commerciale - Date].[Date]);
         [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee Commerciale - Date].[Date], 
@@ -480,17 +372,11 @@ SUM(
         [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Annee Commerciale - Date].currentmember.member_key = 
     [Temps Decalage].[Temps Id].currentmember.member_key,
     [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null)),
-SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee Commerciale - Date].currentmember.Parent.Parent.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)))
+364)
 , [Temps].[Annee Commerciale - Date].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Bimestre].[Bimestre]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Bimestre - Mois].currentmember.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.LastChild.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.LastChild.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Date].[Date]);
         [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date],
@@ -502,41 +388,23 @@ SUM(
         [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Date].currentmember.member_key = 
     [Temps Decalage].[Temps Id].currentmember.member_key,
     [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null)),
-SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)))
+364)
 , [Temps].[Annee - Mois].currentmember).member_caption;
     END SCOPE;
     SCOPE([Temps].[Mois].[Mois]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Mois].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Mois].[Date], 364, [Temps].[Annee - Mois].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Semaine].[Semaine]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Semaine].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Semaine].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Semaine].[Date], 364, [Temps].[Annee - Semaine].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Trimestre].[Trimestre]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.LastChild.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.LastChild.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Bimestre - Mois].[Mois]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Bimestre - Mois].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Bimestre - Mois].[Date], 364, [Temps].[Annee - Bimestre - Mois].currentmember.LastChild).member_caption;
     END SCOPE;
     SCOPE([Temps].[Annee - Date].[Mois]);
-        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee - Date].currentmember.Parent.Parent.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Annee - Date].currentmember.LastChild).member_caption;
+        [Dim Comparaison].[Specifique] = ParallelPeriod([Temps].[Annee - Date].[Date], 364, [Temps].[Annee - Date].currentmember.LastChild).member_caption;
     END SCOPE;
 
     /* N - 1 => A-1 */
