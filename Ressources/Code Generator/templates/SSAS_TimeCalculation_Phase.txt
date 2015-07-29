@@ -1,0 +1,22 @@
+/* Gestion de la dimension Phase */
+
+CREATE MEMBER CURRENTCUBE.[Phase].[Phase].[Prev] AS Null;
+CREATE MEMBER CURRENTCUBE.[Phase].[Phase].[Suiv] AS Null;
+CREATE MEMBER CURRENTCUBE.[Phase].[Phase].[Cumul] AS Null;
+CREATE MEMBER CURRENTCUBE.[Phase].[Phase].[Evolution] AS Null, FORMAT_STRING = 'Percent';
+
+SCOPE([Temps].[Annee - Mois].allmembers);
+    [Phase].[Prev] = 
+        ([Temps].[Annee - Mois].currentmember.prevmember, [Phase].[Actuel]);
+    [Phase].[Suiv] = 
+        ([Temps].[Annee - Mois].currentmember.nextmember, [Phase].[Actuel]);
+    [Phase].[Cumul] = AGGREGATE(
+        [Phase].[Actuel]*
+        PERIODSTODATE([Temps].[Annee - Mois].CURRENTMEMBER.Parent.Level, [Temps].[Annee - Mois].CURRENTMEMBER));
+    SCOPE([Temps].[Annee - Mois].[All]);
+        [Phase].[Cumul] = AGGREGATE(
+            [Phase].[Actuel]*
+            PERIODSTODATE([Temps].[Annee - Mois].CURRENTMEMBER.Level, [Temps].[Annee - Mois].CURRENTMEMBER));
+    END SCOPE;
+    [Phase].[Evolution] = IIF([Phase].[Prev] = 0, null, ([Phase].[Actuel]-[Phase].[Prev]) / [Phase].[Prev]);
+END SCOPE; 
