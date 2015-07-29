@@ -1,4 +1,6 @@
 /* %PARAM2% */
+CREATE MEMBER CURRENTCUBE.%PARAM2% AS NULL;
+
 SCOPE(%PARAM2%);
 
     /* A journee comparable : Decalage suivant Annee Decalage dans tout les cas */
