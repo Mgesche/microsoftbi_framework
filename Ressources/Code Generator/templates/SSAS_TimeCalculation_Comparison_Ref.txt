@@ -14,22 +14,6 @@ CREATE MEMBER CURRENTCUBE.Measures.[Date Fin] AS NULL;
 
 SCOPE([Measures].[Date Ref N-1]);
 
-    /*
-    /* A journee comparable : Cas semaine, mois ou annee => A-1 */
-    [Dim Comparaison].[A journee comparable] = GENERATE(
-ParallelPeriod([Temps].[Annee - Mois].[Annee], 1, [Temps].[Annee - Mois].currentmember),
-[Temps].[Annee - Mois].currentmember.member_caption);
-    /* A journee comparable : Cas des jours => Base sur TempsDecalage si renseignee, AnneDecalage sinon */
-    SCOPE([Temps].[Date].[Date]);
-        [Dim Comparaison].[A journee comparable] = GENERATE(
-    ParallelPeriod([Temps].[Date].[Date],SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)), [Temps].[Date].currentmember),
-    [Temps].[Date].currentmember.member_caption);
-    END SCOPE;
-    */
-
     /* A journee comparable : Cas semaine, mois ou annee => A-1 */
     SCOPE([Temps].[Annee].[Annee]);
         [Dim Comparaison].[A journee comparable] = GENERATE(
@@ -91,31 +75,6 @@ ParallelPeriod([Temps].[Annee - Mois].[Annee], 1, [Temps].[Annee - Mois].current
     [Temps].[Annee - Bimestre - Mois].currentmember),
     [Temps].[Annee - Bimestre - Mois].currentmember.member_caption);
     END SCOPE;
-
-    /* Specifique : Cas semaine, mois ou annee => A-1 */
-/*
-    [Dim Comparaison].[Specifique] = GENERATE(
-ParallelPeriod([Temps].[Annee - Mois].[Annee], 1, [Temps].[Annee - Mois].currentmember),
-[Temps].[Annee - Mois].currentmember.member_caption);
-    /* Specifique : Cas des jours => Base sur TempsDecalage si renseignee, AnneDecalage sinon */
-    SCOPE([Temps].[Date].[Date]);
-        [Dim Comparaison].[Specifique] = GENERATE(
-    ParallelPeriod([Temps].[Date].[Date],IIF(SUM(
-        [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Date].currentmember.member_key = 
-    [Temps Decalage].[Temps Id].currentmember.member_key,
-    [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null))>0,
-SUM(
-        [Temps Decalage].[Temps Id].[Temps Id], IIF([Temps].[Date].currentmember.member_key = 
-    [Temps Decalage].[Temps Id].currentmember.member_key,
-    [Temps Decalage].[Temps Id].currentmember.Properties('Decalage'), null)),
-SUM(
-        [Annee Decalage].[Annee].[Annee], IIF([Temps].[Annee].currentmember.member_key = 
-    [Annee Decalage].[Annee].currentmember.member_key,
-    [Annee Decalage].[Annee].currentmember.Properties('Decalage'), null)))
-, [Temps].[Date].currentmember),
-    [Temps].[Date].currentmember.member_caption);
-    END SCOPE;
-*/
 
     /* Specifique : Cas semaine, mois ou annee => A-1 */
     SCOPE([Temps].[Annee].[Annee]);
