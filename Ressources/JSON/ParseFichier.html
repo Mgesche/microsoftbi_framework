@@ -1,0 +1,33 @@
+<html>
+	
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf8" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		Utils = {
+			
+		    getInfos: function() {
+	
+				$.get('ps_product_tous_champs_Mini.json', function(data) {
+					console.log(data);
+				})
+				.done(function() {
+					$("#infos").html("");
+					$("#infos").append("Achats");
+				})
+				.fail(function() {
+				    alert('woops');
+				});
+
+		        return "";
+		    }
+		}
+	</script>
+</head>
+
+<body onload="Utils.getInfos();">
+	<H1>Resultat</H1>
+	<DIV id="infos"></DIV>
+</body>
+
+</html>

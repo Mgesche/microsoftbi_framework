@@ -1,0 +1,8 @@
+SELECT *
+FROM sys.sql_modules
+
+voir un rapport avec les diff prod / dev 
+jaune : modif
+vert : ok
+rouge a créer
+et on fait un clique dessus pour migrer et on rappelle le rapport
