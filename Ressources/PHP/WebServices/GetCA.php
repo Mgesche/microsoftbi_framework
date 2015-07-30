@@ -1,7 +1,7 @@
 <?php
 
-$serverName = "decsqldev,1433";
-$connectionInfo = array( "Database"=>"BotanicDW_MEC", "UID"=>"login", "PWD"=>"Promethe6337");
+$serverName = ",1433";
+$connectionInfo = array( "Database"=>"", "UID"=>"", "PWD"=>"");
 
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 if( $conn === false ) {
