@@ -106,20 +106,24 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Référence Comparaison</h1>
+                    <h1 class="page-header">Parametrages</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
-                    <!-- /.panel -->
-                    <label for="calculations">Code MDX pour l'ongle "Calculation" :</label>
-                    <div class="panel panel-default">
-                        <textarea class="form-control" rows="50" id="calculations"></textarea>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
+					<label>Serveur</label>
+					<input class="form-control" id="serveur">
+					<label>Database</label>
+					<input class="form-control" id="database">
+					<label>Login</label>
+					<input class="form-control" id="login">
+					<label>Mot de passe</label>
+					<input class="form-control" id="motpasse">
+                    <P>
+                    <P>
+                    <button type="button" class="btn btn-success" id="saveParam">Sauvegarder</button>
                 </div>
                 <!-- /.col-lg-4 -->
             </div>
@@ -150,12 +154,24 @@
         
         $(document).ready(function() {
             
-            $('#secondLevelSSAS').show();
+            if(localStorage['serveur'] != "") {
+                $('#serveur').val(localStorage['serveur']);
+            }
+            if(localStorage['database'] != "") {
+                $('#database').val(localStorage['database']);
+            }
+            if(localStorage['login'] != "") {
+                $('#login').val(localStorage['login']);
+            }
+            if(localStorage['motpasse'] != "") {
+                $('#motpasse').val(localStorage['motpasse']);
+            }
             
-            $.get("templates/SSAS_TimeCalculation_Comparison_Ref.txt", function(data) {
-
-                  $('#calculations').html(data);
-     
+            $('#saveParam').click(function() {
+                localStorage["serveur"] = $('#serveur').val();
+                localStorage["database"] = $('#database').val();
+                localStorage["login"] = $('#login').val();
+                localStorage["motpasse"] = $('#motpasse').val();
             });
         
         });

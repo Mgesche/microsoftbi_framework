@@ -1,0 +1,16 @@
+/* Definir norme */
+
+Soit IHM, on ajouter parametre, type de parametre, requete et on crée le WebServices
+Soit il stocke les pages PHP et on regenere les manquantes, soit on 
+
+SELECT *
+FROM INFORMATION_SCHEMA.ROUTINES
+WHERE ROUTINE_SCHEMA = 'WebServices'
+  AND ROUTINE_TYPE = 'FUNCTION'
+  
+SELECT RIGHT(Parameter_Name, LEN(Parameter_Name)-1) as Parameter_Name
+FROM INFORMATION_SCHEMA.PARAMETERS
+WHERE SPECIFIC_SCHEMA = 'WebServices'
+  AND SPECIFIC_NAME = 'GetCA'
+
+SELECT Utils.[GetListColonnes] ('WebServices', 'GetCA', ', ');
