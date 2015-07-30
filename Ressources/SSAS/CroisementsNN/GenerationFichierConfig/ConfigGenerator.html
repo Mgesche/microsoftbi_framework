@@ -1,0 +1,162 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Générer le fichier de configuration N*N</title>
+		<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		
+		<style>
+			#DIMENSION {
+				position: absolute; 
+				top: 40px; 
+				left: 30px; 
+			}
+			#Dest_PRINCIPAL {
+				position: absolute; 
+				top: 460px; 
+				left: 30px; 
+			}
+			#Dest_ANNEXE {
+				position: absolute; 
+				top: 40px; 
+				left: 230px; 
+			}
+			#CHAMP_FONC_PRINCIPAL {
+				position: absolute; 
+				top: 340px; 
+				left: 140px; 
+			}
+			#CHAMP_CLE_DIM {
+				position: absolute; 
+				top: 150px; 
+				left: 100px; 
+			}
+			#CHAMP_CLE_FONC {
+				position: absolute; 
+				top: 100px; 
+				left: 180px; 
+			}
+			
+			
+		</style>
+
+	</head>
+	<body>
+		<img src="ManyToMany.jpg" WIDTH='25%'>
+		<form action="#">
+			<b>Serveur SQL</b>
+			<div>
+			Quelle est l'adresse du serveur SQL sous la forme SERVER\INSTANCE (s'il y en a plusieurs) ? <input type="textbox" id="VE_DB_Server" value="localhost" />
+			</div>
+			<div>
+			Quelle est le user SQL utilisé en lecture ? <input type="textbox" id="VE_DB_User" value="sa" />
+			</div>
+			<div>
+			Quelle est le mot de passe ? <input type="textbox" id="VE_DB_Password" value="sa" />
+			</div>
+			<b>Arborescence fichiers</b>
+			<div>
+			Quel est le chemin ou sont présent les fichiers exe de calcul ?<input type="textbox" id="VE_Dossier_Exe" value="D:\Projets\SSIS\Exe\" />
+			</div>
+			<div>
+			Quel est le répertoire de travail de calcul ?<input type="textbox" id="VE_Dossier_Exe_MatrixTransformation" value="D:\Projets\SSIS\Exe\MatrixTransformation\" />
+			</div>
+			<b>Identification des schemas</b>
+			<div>
+			Nom de la DB DWH ?<input type="textbox" id="DB_DWH" value="DWH" />
+			</div>
+			<div>
+			Schéma ou sont présent les données ?<input type="textbox" id="SCHEMA_DBO" value="dbo." />
+			</div>
+			<div>
+			Schéma pour stocker les tables de travail ?<input type="textbox" id="SCHEMA_MTX" value="mtx." />
+			</div>
+			<input type="textbox" id="Dest_PRINCIPAL" value="" size="16"/>
+			<input type="textbox" id="Dest_ANNEXE" value="" size="16"/>
+			<input type="textbox" id="DIMENSION" value="" size="16"/>
+			<input type="textbox" id="CHAMP_CLE_DIM" value="ID_YYY" size="12"/>
+			<input type="textbox" id="CHAMP_CLE_FONC" value="ANNEXE.ID_YYY" size="12"/>
+			<div>
+			Champ ou sera stocké l'id matriciel ?<input type="textbox" id="CHAMP_FONC_PRINCIPAL" value="IDT_XXX" size="12"/>
+			</div>
+			<div>
+			Type du champ ou sera stocké l'id matriciel ?<input type="textbox" id="TYPE_CHAMP_FONC" value="int" />
+			</div>
+			<div>
+			Est ce que l'id matriciel sera alimenté en update ou en insert (U ou I) ?<input type="textbox" id="MODE_ALIM" value="U" />
+			</div>
+			<div>
+			Alias de l'id matriciel (utilisé dans le nom des tables au cas ou plusieurs traitements sont sur la même table de relation) ?<input type="textbox" id="ALIAS_IDT" value="" />
+			</div>
+			<b>Description des clés</b>
+			<div>
+			Nombre de champs de la clé primaire de la table de relation (hors table de dimension) (1-3) ?<input type="textbox" id="NB_CHAMP_CLE" value="1" />
+			</div>
+			<div>
+			Champ clé n°1 : <input type="textbox" id="CHAMP_CLE1" value="ID_XXX" />
+			</div>
+			<div>
+			Type du champ clé n°1 : <input type="textbox" id="TYPE_CHAMP_CLE1" value="Int" />
+			</div>
+			<div>
+			Champ clé n°2 : <input type="textbox" id="CHAMP_CLE2" value="" />
+			</div>
+			<div>
+			Type du champ clé n°2 : <input type="textbox" id="TYPE_CHAMP_CLE2" value="" />
+			</div>
+			<div>
+			Champ clé n°3 : <input type="textbox" id="CHAMP_CLE3" value="" />
+			</div>
+			<div>
+			Type du champ clé n°3 : <input type="textbox" id="TYPE_CHAMP_CLE3" value="" />
+			</div>
+			<div>
+			Clé entre la table de relation et la table de dimension (vision table de dimension) : 
+			</div>
+			<div>
+			Clé entre la table de relation et la table de dimension (vision table de relation, l'alias de la table de relation est ANNEXE) : 
+			</div>
+			<div>
+			Clé entre la table de faits et la table de relation : <input type="textbox" id="CHAMP_CLE_ALL" value="" />
+			</div>
+			<div>
+				<Button type="button" id="valider">Valider</Button>
+			</div>
+		</form>
+		<div>
+			<textarea id="FichierConfig" rows="25" cols="190"></textarea>
+		</div>
+		<script>
+			$("#valider").click(function() {
+				var contenu = "";
+				contenu = contenu + "<?xml version=\"1.0\"?><DTSConfiguration><DTSConfigurationHeading><DTSConfigurationFileInfo GeneratedBy=\"\" GeneratedFromPackageName=\"PAK_TEC_MatrixLoad_GENERIC_1Cle\" GeneratedFromPackageID=\"{43A2C4F3-DFC0-40C5-8976-8B8F71BC159A}\" GeneratedDate=\"28/07/2014 15:45:58\"/></DTSConfigurationHeading>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_CLE_ALL].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_CLE_ALL").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_CLE_DIM].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_CLE_DIM").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_CLE_FONC].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_CLE_FONC").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_CLE1].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_CLE1").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_CLE2].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_CLE2").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_CLE3].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_CLE3").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_FONC_PRINCIPAL].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_FONC_PRINCIPAL").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::ALIAS_IDT].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#ALIAS_IDT").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::MODE_ALIM].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#MODE_ALIM").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::Dest_ANNEXE].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#Dest_ANNEXE").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::Dest_PRINCIPAL].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#Dest_PRINCIPAL").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::DIMENSION].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#DIMENSION").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::NB_CHAMP_CLE].Properties[Value]\" ValueType=\"Int32\"><ConfiguredValue>"+$("#NB_CHAMP_CLE").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::SCHEMA_DBO].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#SCHEMA_DBO").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::SCHEMA_MTX].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#SCHEMA_MTX").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::DB_DWH].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#DB_DWH").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TYPE_CHAMP_CLE1].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TYPE_CHAMP_CLE1").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TYPE_CHAMP_CLE2].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TYPE_CHAMP_CLE2").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TYPE_CHAMP_CLE3].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TYPE_CHAMP_CLE3").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TYPE_CHAMP_FONC].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TYPE_CHAMP_FONC").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_DB_Password].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_DB_Password").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_DB_Server].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_DB_Server").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_DB_User].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_DB_User").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_Dossier_Exe].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_Dossier_Exe").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_Dossier_Exe_MatrixTransformation].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_Dossier_Exe_MatrixTransformation").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n</DTSConfiguration>";
+				$("#FichierConfig").val(contenu);
+			});
+		</script>
+	</body>
+</html>

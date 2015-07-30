@@ -1,0 +1,396 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Générer le fichier de configuration N*N</title>
+		<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		
+		<style>
+			#TABLE_DIMENSION {
+				position: absolute; 
+				top: 40px; 
+				left: 30px; 
+			}
+			#TABLE_FAIT {
+				position: absolute; 
+				top: 460px; 
+				left: 30px; 
+			}
+			#TABLE_RELATION {
+				position: absolute; 
+				top: 40px; 
+				left: 230px; 
+			}
+			#TABLE_DIMENSION_INTERMEDIAIRE {
+				position: absolute; 
+				top: 460px; 
+				left: 230px; 
+			}
+			#CLE_DEFAUT_DIMENSION_INTERMEDIAIRE {
+				position: absolute; 
+				top: 380px; 
+				left: 380px; 
+			}
+			#CLE_FAIT_DIM_INTER {
+				position: absolute; 
+				top: 390px; 
+				left: 100px; 
+			}
+			#CLE_DIM_INTER_FAIT {
+				position: absolute; 
+				top: 340px; 
+				left: 180px; 
+			}
+			#CLE_DIM_INTER_RELA {
+				position: absolute; 
+				top: 270px; 
+				left: 190px; 
+			}
+			#CLE_RELA_DIM_INTER {
+				position: absolute; 
+				top: 210px; 
+				left: 290px; 
+			}
+			#CLE_RELA_DIM {
+				position: absolute; 
+				top: 100px; 
+				left: 180px; 
+			}
+			#CLE_DIM_RELA {
+				position: absolute; 
+				top: 150px; 
+				left: 100px; 
+			}
+			
+			a {color:#aaa;text-decoration:none;cursor:pointer;cursor:hand}
+			a:hover {color:#000;text-decoration:none;}
+
+			/* Infobulle */
+			 
+			#tooltip {
+				position:absolute;
+				z-index:9999;
+				color:#fff;
+				font-size:12px;
+				width:270px;
+			 
+			}
+			 
+			#tooltip .tipHeader {
+				height:8px;
+				background:url(images/tipHeader.gif) no-repeat;
+			}
+			 
+			/* hack IE */
+			*html #tooltip .tipHeader {margin-bottom:-6px;}
+			 
+			#tooltip .tipBody {
+				background-color:#000;
+				padding:5px;
+			}
+			 
+			#tooltip .tipFooter {
+				height:8px;
+				background:url(images/tipFooter.gif) no-repeat;
+			}
+
+		</style>
+		
+		<script type="text/javascript">
+ 
+		$(document).ready(function() {
+		 
+			// Sélectionner tous les liens ayant l'attribut rel valant tooltip
+			$('a[rel=tooltip]').mouseover(function(e) {
+		 
+				// Récupérer la valeur de l'attribut title et l'assigner à une variable
+				var tip = $(this).attr('title');   
+		 
+				// Supprimer la valeur de l'attribut title pour éviter l'infobulle native
+				$(this).attr('title','');
+		 
+				// Insérer notre infobulle avec son texte dans la page
+				$(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');    
+		 
+				// Ajuster les coordonnées de l'infobulle
+				$('#tooltip').css('top', e.pageY + 10 );
+				$('#tooltip').css('left', e.pageX + 20 );
+		 
+				// Faire apparaitre l'infobulle avec un effet fadeIn
+				$('#tooltip').fadeIn('500');
+				$('#tooltip').fadeTo('10',0.8);
+		 
+			}).mousemove(function(e) {
+		 
+				// Ajuster la position de l'infobulle au déplacement de la souris
+				$('#tooltip').css('top', e.pageY + 10 );
+				$('#tooltip').css('left', e.pageX + 20 );
+		 
+			}).mouseout(function() {
+		 
+				// Réaffecter la valeur de l'attribut title
+				$(this).attr('title',$('.tipBody').html());
+		 
+				// Supprimer notre infobulle
+				$(this).children('div#tooltip').remove();
+		 
+			});
+		 
+		});
+		 
+		</script>
+		
+		<script type="text/javascript">
+			// Sauvegarde
+			localStorage.setItem("listPerso", strListPerso);
+			strListPerso = localStorage.getItem("listPerso");
+		</script>
+				
+
+	</head>
+	<body>
+		<div>
+			<a rel="tooltip" title="Nom de la sauvegarde"><input type="textbox" id="nomSauvegarde" value="Save" /></a>
+			<Button type="button" id="Sauvegarde">Sauvegarde</Button>
+		</div>
+		<P>
+		<div>
+			<a rel="tooltip" title="Nom de la sauvegarde a recharger"><input type="textbox" id="nomReprise" value="Save" /></a>
+			<Button type="button" id="Reprise">Reprise</Button>
+		</div>
+		<P>
+		<img src="ManyToMany.jpg" WIDTH='25%'>
+		<form action="#">
+			<b>Serveur SQL</b>
+			<div>
+			Quelle est l'adresse du serveur SQL sous la forme SERVER\INSTANCE (s'il y en a plusieurs) ? <a rel="tooltip" title="VE_DB_Server"><input type="textbox" id="VE_DB_Server" value="localhost" /></a>
+			</div>
+			<div>
+			Quelle est le user SQL utilisé en lecture ? <a rel="tooltip" title="VE_DB_User"><input type="textbox" id="VE_DB_User" value="SQL2008" /></a>
+			</div>
+			<div>
+			Quelle est le mot de passe ? <a rel="tooltip" title="VE_DB_Password"><input type="textbox" id="VE_DB_Password" value="SQL2008#" /></a>
+			</div>
+			<b>Arborescence fichiers</b>
+			<div>
+			Quel est le chemin ou sont présent les fichiers exe de calcul ?<a rel="tooltip" title="VE_Dossier_Exe"><input type="textbox" id="VE_Dossier_Exe" value="G:\SSIS\Exe\" /></a>
+			</div>
+			<div>
+			Quel est le répertoire de travail de calcul ?<a rel="tooltip" title="VE_Dossier_Exe_MatrixTransformation"><input type="textbox" id="VE_Dossier_Exe_MatrixTransformation" value="G:\SSIS\Exe\MatrixTransformation\" /></a>
+			</div>
+			<b>Identification des schemas</b>
+			<div>
+			Nom de la DB DWH ?<a rel="tooltip" title="DB_DWH"><input type="textbox" id="DB_DWH" value="BotanicDW_MEC" /></a>
+			</div>
+			<div>
+			Schéma ou sont présent les données ?<a rel="tooltip" title="SCHEMA_DBO"><input type="textbox" id="SCHEMA_DBO" value="dbo." /></a>
+			</div>
+			<div>
+			Schéma pour stocker les tables de travail ?<a rel="tooltip" title="SCHEMA_MTX"><input type="textbox" id="SCHEMA_MTX" value="mtx." /></a>
+			</div>
+			<div>
+			Champ ou sera stocké l'id matriciel ?<a rel="tooltip" title="CHAMP_FONC_PRINCIPAL"><input type="textbox" id="CHAMP_FONC_PRINCIPAL" value="IDT_XXX" size="12"/></a>
+			</div>
+			<div>
+			Type du champ ou sera stocké l'id matriciel ?<a rel="tooltip" title="TYPE_CHAMP_FONC"><input type="textbox" id="TYPE_CHAMP_FONC" value="int" /></a>
+			</div>
+			<div>
+			Est ce que l'id matriciel sera alimenté en update ou en insert (U ou I) ?<a rel="tooltip" title="MODE_ALIM"><input type="textbox" id="MODE_ALIM" value="U" /></a>
+			</div>
+			<div>
+			Alias de l'id matriciel (utilisé dans le nom des tables au cas ou plusieurs traitements sont sur la même table de relation) ?<a rel="tooltip" title="ALIAS_IDT"><input type="textbox" id="ALIAS_IDT" value="" /></a>
+			</div>
+			<div>
+			Alias de la table de fait (utilisé comme l'alias de l'id matriciel mais pour plusieurs tables de fait utilisant la même table de relation) ?<a rel="tooltip" title="ALIAS_IDT_FAIT"><input type="textbox" id="ALIAS_IDT_FAIT" value="" /></a>
+			</div>
+			<a rel="tooltip" title="TABLE_DIMENSION : Table correspondant à la dimension avec laquelle on a une relation N*N">
+				<input type="textbox" id="TABLE_DIMENSION" value="DimSalesReason" size="16"/>
+			</a>
+			<a rel="tooltip" title="TABLE_FAIT : Table correspondant au groupe de mesure utilisant la relation N*N">
+				<input type="textbox" id="TABLE_FAIT" value="FactInternetSales" size="16"/>
+			</a>
+			<a rel="tooltip" title="TABLE_RELATION : Table permettant de faire le lien entre le groupe de mesure et la dimension">
+				<input type="textbox" id="TABLE_RELATION" value="FactInternetSalesReason" size="16"/>
+			</a>
+			<a rel="tooltip" title="TABLE_DIMENSION_INTERMEDIAIRE : Table correspondant a la dimension faisant le lien entre la table de fait et la table de relation">
+				<input type="textbox" id="TABLE_DIMENSION_INTERMEDIAIRE" value="FactInternetSales" size="16"/>
+			</a>
+			<a rel="tooltip" title="CLE_DEFAUT_DIMENSION_INTERMEDIAIRE : Valeur par defaut de la table de dimension intermediaire (clé)">
+				<input type="textbox" id="CLE_DEFAUT_DIMENSION_INTERMEDIAIRE" value="-1" size="12"/>
+			</a>
+			<a rel="tooltip" title="CLE_FAIT_DIM_INTER : Clé de la table de fait vers la dimension intermediaire">
+				<input type="textbox" id="CLE_FAIT_DIM_INTER" value="SalesOrderLineNumber" size="12"/>
+			</a>
+			<a rel="tooltip" title="CLE_DIM_INTER_FAIT : Clé de la dimension intermediaire vers la table de fait">
+				<input type="textbox" id="CLE_DIM_INTER_FAIT" value="SalesOrderLineNumber" size="12"/>
+			</a>
+			<a rel="tooltip" title="CLE_DIM_INTER_RELA : Clé de la dimension intermediaire vers la table de relation">
+				<input type="textbox" id="CLE_DIM_INTER_RELA" value="SalesOrderLineNumber" size="12"/>
+			</a>
+			<a rel="tooltip" title="CLE_RELA_DIM_INTER : Clé de la table de relation vers la dimension intermediaire">
+				<input type="textbox" id="CLE_RELA_DIM_INTER" value="SalesOrderLineNumber" size="12"/>
+			</a>
+			<a rel="tooltip" title="CLE_RELA_DIM : Clé de la table de relation vers la dimension">
+				<input type="textbox" id="CLE_RELA_DIM" value="ANNEXE.SalesReasonKey" size="12"/>
+			</a>
+			<a rel="tooltip" title="CLE_DIM_RELA : Clé de la dimension vers la table de relation">
+				<input type="textbox" id="CLE_DIM_RELA" value="SalesReasonKey" size="12"/>
+			</a>
+			<div>
+				<Button type="button" id="valider">Valider</Button>
+			</div>
+		</form>
+		<div>
+			<textarea id="FichierConfig" rows="25" cols="190"></textarea>
+			<textarea id="ScriptDB" rows="25" cols="190"></textarea>
+		</div>
+		<script>
+			$("#valider").click(function() {
+				var contenu = "";
+				contenu = contenu + "<?xml version=\"1.0\"?><DTSConfiguration><DTSConfigurationHeading><DTSConfigurationFileInfo GeneratedBy=\"\" GeneratedFromPackageName=\"PAK_TEC_MatrixLoad_GENERIC_1Cle\" GeneratedFromPackageID=\"{43A2C4F3-DFC0-40C5-8976-8B8F71BC159A}\" GeneratedDate=\"28/07/2014 15:45:58\"/></DTSConfigurationHeading>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_DB_Server].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_DB_Server").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_DB_User].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_DB_User").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_DB_Password].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_DB_Password").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_Dossier_Exe].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_Dossier_Exe").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::VE_Dossier_Exe_MatrixTransformation].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#VE_Dossier_Exe_MatrixTransformation").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::DB_DWH].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#DB_DWH").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::SCHEMA_DBO].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#SCHEMA_DBO").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::SCHEMA_MTX].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#SCHEMA_MTX").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CHAMP_FONC_PRINCIPAL].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CHAMP_FONC_PRINCIPAL").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TYPE_CHAMP_FONC].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TYPE_CHAMP_FONC").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::MODE_ALIM].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#MODE_ALIM").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::ALIAS_IDT].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#ALIAS_IDT").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::ALIAS_IDT_FAIT].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#ALIAS_IDT_FAIT").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TABLE_DIMENSION].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TABLE_DIMENSION").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TABLE_FAIT].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TABLE_FAIT").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TABLE_RELATION].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TABLE_RELATION").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::TABLE_DIMENSION_INTERMEDIAIRE].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#TABLE_DIMENSION_INTERMEDIAIRE").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CLE_DEFAUT_DIMENSION_INTERMEDIAIRE].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CLE_DEFAUT_DIMENSION_INTERMEDIAIRE").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CLE_FAIT_DIM_INTER].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CLE_FAIT_DIM_INTER").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CLE_DIM_INTER_FAIT].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CLE_DIM_INTER_FAIT").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CLE_DIM_INTER_RELA].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CLE_DIM_INTER_RELA").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CLE_RELA_DIM_INTER].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CLE_RELA_DIM_INTER").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CLE_RELA_DIM].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CLE_RELA_DIM").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n  <Configuration ConfiguredType=\"Property\" Path=\"\\Package.Variables[User::CLE_DIM_RELA].Properties[Value]\" ValueType=\"String\"><ConfiguredValue>"+$("#CLE_DIM_RELA").val()+"</ConfiguredValue></Configuration>";
+				contenu = contenu + "\n</DTSConfiguration>";
+				$("#FichierConfig").val(contenu);
+				
+				var scriptDB = "";
+				
+				var WRK = ""
+				WRK = $("#SCHEMA_MTX").val()+$("#TABLE_RELATION").val();
+				if($("#ALIAS_IDT").val()!="") {
+					WRK = WRK + "_"+$("#ALIAS_IDT").val();
+				}
+				WRK = WRK + "_WRK";
+				
+				var MTX_WRK = ""
+				MTX_WRK = $("#SCHEMA_MTX").val()+$("#TABLE_RELATION").val();
+				if($("#ALIAS_IDT").val()!="") {
+					MTX_WRK = MTX_WRK + "_"+$("#ALIAS_IDT").val();
+				}
+				if($("#ALIAS_IDT_FAIT").val()!="") {
+					MTX_WRK = MTX_WRK + "_"+$("#ALIAS_IDT_FAIT").val();
+				}
+				MTX_WRK = MTX_WRK + "_MTX_WRK";
+
+				var MTX_Lookup = ""
+				MTX_Lookup = $("#SCHEMA_MTX").val()+$("#TABLE_RELATION").val();
+				if($("#ALIAS_IDT").val()!="") {
+					MTX_Lookup = MTX_Lookup + "_"+$("#ALIAS_IDT").val();
+				}
+				if($("#ALIAS_IDT_FAIT").val()!="") {
+					MTX_Lookup = MTX_Lookup + "_"+$("#ALIAS_IDT_FAIT").val();
+				}
+				MTX_Lookup = MTX_Lookup + "_MTX_Lookup";
+				
+				var MTX = ""
+				MTX = $("#SCHEMA_MTX").val()+$("#TABLE_RELATION").val();
+				if($("#ALIAS_IDT").val()!="") {
+					MTX = MTX + "_"+$("#ALIAS_IDT").val();
+				}
+				MTX = MTX + "_MTX";
+				
+				var MTX_liste_cle = ""
+				MTX_liste_cle = $("#SCHEMA_MTX").val()+$("#TABLE_DIMENSION").val();
+				MTX_liste_cle = MTX_liste_cle + "_INT";
+
+				scriptDB = scriptDB + "USE ["+$("#DB_DWH").val()+"]";
+				scriptDB = scriptDB + "\n ";
+				scriptDB = scriptDB + "\n GO";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n IF  NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS";
+				scriptDB = scriptDB + "\n                WHERE COLUMN_NAME='"+$("#CHAMP_FONC_PRINCIPAL").val()+"'";
+				scriptDB = scriptDB + "\n                  AND TABLE_NAME='"+$("#TABLE_FAIT").val()+"')";
+				scriptDB = scriptDB + "\n BEGIN";
+				scriptDB = scriptDB + "\n ALTER TABLE "+$("#SCHEMA_DBO").val()+$("#TABLE_FAIT").val();
+				scriptDB = scriptDB + "\n ADD "+$("#CHAMP_FONC_PRINCIPAL").val()+" [int] NULL;";
+				scriptDB = scriptDB + "\n END";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'"+WRK+"') AND type in (N'U'))";
+				scriptDB = scriptDB + "\n BEGIN";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n CREATE TABLE "+WRK+"(";
+				scriptDB = scriptDB + "\n        [MATRIX_KEY] [int] NOT NULL,";
+				scriptDB = scriptDB + "\n        [DIMENTION_KEY] int NOT NULL";
+				scriptDB = scriptDB + "\n ) ON [PRIMARY]";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n ALTER TABLE "+WRK+" ";
+				scriptDB = scriptDB + "\n ADD CONSTRAINT UQ_"+$("#TABLE_RELATION").val()+"_WRK ";
+  				scriptDB = scriptDB + "\n UNIQUE (MATRIX_KEY, DIMENTION_KEY) ";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n INSERT INTO "+WRK;
+				scriptDB = scriptDB + "\n SELECT -1, '"+$("#CLE_DEFAUT_DIMENSION_INTERMEDIAIRE").val()+"'";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n END";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'"+MTX_WRK+"') AND type in (N'U'))";
+				scriptDB = scriptDB + "\n CREATE TABLE "+MTX_WRK+"(";
+				scriptDB = scriptDB + "\n        [CLE] int NULL,";
+				scriptDB = scriptDB + "\n        [LINEAR_MATRIX_STRING] [varchar](4000) NOT NULL";
+				scriptDB = scriptDB + "\n ) ON [PRIMARY]";
+				scriptDB = scriptDB + "\n GO";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'"+MTX_Lookup+"') AND type in (N'U'))";
+				scriptDB = scriptDB + "\n CREATE TABLE "+MTX_Lookup+"(";
+				scriptDB = scriptDB + "\n        [MATRIX_KEY] [int] NULL,";
+				scriptDB = scriptDB + "\n        [CLE] int NULL";
+				scriptDB = scriptDB + "\n ) ON [PRIMARY]";
+				scriptDB = scriptDB + "\n GO";
+				scriptDB = scriptDB + "\n";
+				scriptDB = scriptDB + "\n IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'"+MTX+"') AND type in (N'U'))";
+				scriptDB = scriptDB + "\n CREATE TABLE "+MTX+"(";
+				scriptDB = scriptDB + "\n        [MATRIX_KEY] [int] IDENTITY(1,1) NOT NULL,";
+				scriptDB = scriptDB + "\n        [LINEAR_MATRIX_STRING] [varchar](4000) NOT NULL,";
+				scriptDB = scriptDB + "\n        CONSTRAINT [PK_"+MTX+"] PRIMARY KEY CLUSTERED ";
+				scriptDB = scriptDB + "\n (";
+				scriptDB = scriptDB + "\n     [MATRIX_KEY] ASC";
+				scriptDB = scriptDB + "\n )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]";
+				scriptDB = scriptDB + "\n ) ON [PRIMARY]";
+				scriptDB = scriptDB + "\n GO";
+				scriptDB = scriptDB + "\n";
+				if($("#TYPE_CHAMP_FONC").val()!="int") {
+					if($("#TYPE_CHAMP_FONC").val()!="Int") {
+						scriptDB = scriptDB + "\n IF NOT  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'"+MTX_liste_cle+"') AND type in (N'U'))";
+						scriptDB = scriptDB + "\n BEGIN";
+						scriptDB = scriptDB + "\n";
+						scriptDB = scriptDB + "\n CREATE TABLE "+MTX_liste_cle+"(";
+						scriptDB = scriptDB + "\n        [ID_KEY] [int] IDENTITY(1,1) NOT NULL,";
+						scriptDB = scriptDB + "\n        [ID_VALUE] "+$("#TYPE_CHAMP_FONC").val()+" NULL,";
+						scriptDB = scriptDB + "\n PRIMARY KEY CLUSTERED ";
+						scriptDB = scriptDB + "\n (";
+						scriptDB = scriptDB + "\n 	[ID_KEY] ASC";
+						scriptDB = scriptDB + "\n )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]";
+						scriptDB = scriptDB + "\n ) ON [PRIMARY]";
+						scriptDB = scriptDB + "\n GO";
+						scriptDB = scriptDB + "\n";
+						scriptDB = scriptDB + "\n SET IDENTITY_INSERT "+MTX_liste_cle+" ON;";
+						scriptDB = scriptDB + "/* TODO : Gestion valeur par defaut : insert into mtx.DimClient_INT(ID_KEY, ID_VALUE) select -1, ID from dbo.DimClient as ANNEXE where ANNEXE.ID = '#' */";
+						scriptDB = scriptDB + "\n END";
+						scriptDB = scriptDB + "\n";
+					}
+				}
+				$("#ScriptDB").val(scriptDB);
+			});
+		</script>
+	</body>
+</html>

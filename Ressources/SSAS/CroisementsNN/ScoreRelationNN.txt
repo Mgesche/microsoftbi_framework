@@ -1,0 +1,1 @@
+Score pour relation N*N : Log(NbLignes-NbNouvelleLigne)

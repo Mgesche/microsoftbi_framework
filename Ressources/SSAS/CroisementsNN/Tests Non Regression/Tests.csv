@@ -1,0 +1,5 @@
+Requête
+SELECT [Measures].[CA ticket HT] ON 0, NONEMPTY([Dim Historisation Classe].[Annee - Mois].allmembers) ON 1 FROM [CRM] WHERE [Dim Classe Client].[Hierarchie Classes].&[0]
+SELECT [Measures].[CA ticket HT] ON 0, NONEMPTY([Dim Historisation Classe].[Annee - Mois].allmembers) ON 1 FROM [CRM] WHERE [Dim Classe Client].[Hierarchie Classes].&[3]
+SELECT [Measures].[CA ticket HT] ON 0, NONEMPTY([Dim Historisation Classe].[Annee - Mois].allmembers) ON 1 FROM [CRM] WHERE [Dim Classe Client].[Hierarchie Classes].&[18]
+SELECT [Measures].[CA ticket HT] ON 0, NONEMPTY([Dim Historisation Classe].[Annee - Mois].allmembers) ON 1 FROM [CRM] WHERE [Dim Classe Client].[Hierarchie Classes].&[36]

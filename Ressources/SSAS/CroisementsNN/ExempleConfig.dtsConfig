@@ -1,0 +1,24 @@
+<?xml version="1.0"?><DTSConfiguration><DTSConfigurationHeading><DTSConfigurationFileInfo GeneratedBy="" GeneratedFromPackageName="PAK_TEC_MatrixLoad_GENERIC_1Cle" GeneratedFromPackageID="{43A2C4F3-DFC0-40C5-8976-8B8F71BC159A}" GeneratedDate="28/07/2014 15:45:58"/></DTSConfigurationHeading>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_CLE_ALL].Properties[Value]" ValueType="String"><ConfiguredValue>IDT_PMSI_MCO</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_CLE_DIM].Properties[Value]" ValueType="String"><ConfiguredValue>CD_UM</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_CLE_FONC].Properties[Value]" ValueType="String"><ConfiguredValue>ANNEXE.[CD_UM]</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_CLE1].Properties[Value]" ValueType="String"><ConfiguredValue>IDT_PMSI_MCO</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_CLE2].Properties[Value]" ValueType="String"><ConfiguredValue></ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_CLE3].Properties[Value]" ValueType="String"><ConfiguredValue></ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_FONC_PRINCIPAL].Properties[Value]" ValueType="String"><ConfiguredValue>IDT_UM</ConfiguredValue>
+</Configuration><Configuration ConfiguredType="Property" Path="\Package.Variables[User::Dest_ANNEXE].Properties[Value]" ValueType="String"><ConfiguredValue>F_PMSI_MCO_RUM</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::Dest_PRINCIPAL].Properties[Value]" ValueType="String"><ConfiguredValue>F_PMSI_MCO_RSA</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::DIMENSION].Properties[Value]" ValueType="String"><ConfiguredValue>D_PMSI_UM</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::NB_CHAMP_CLE].Properties[Value]" ValueType="Int32"><ConfiguredValue>1</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::SCHEMA_DBO].Properties[Value]" ValueType="String"><ConfiguredValue>DBO.</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::SCHEMA_MTX].Properties[Value]" ValueType="String"><ConfiguredValue>MTX.</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TYPE_CHAMP_CLE1].Properties[Value]" ValueType="String"><ConfiguredValue>numeric(23,0)</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TYPE_CHAMP_CLE2].Properties[Value]" ValueType="String"><ConfiguredValue></ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TYPE_CHAMP_CLE3].Properties[Value]" ValueType="String"><ConfiguredValue></ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TYPE_CHAMP_FONC].Properties[Value]" ValueType="String"><ConfiguredValue>NVARCHAR(9)</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_DB_Password].Properties[Value]" ValueType="String"><ConfiguredValue>DIAMant01</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_DB_Server].Properties[Value]" ValueType="String"><ConfiguredValue>f6d315p01dbw\PRODBDD</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_DB_User].Properties[Value]" ValueType="String"><ConfiguredValue>sa</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_Dossier_Exe].Properties[Value]" ValueType="String"><ConfiguredValue>D:\DIAMANT\SSIS\Projet\Exe\</ConfiguredValue></Configuration>
+<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_Dossier_Exe_MatrixTransformation].Properties[Value]" ValueType="String"><ConfiguredValue>D:\DIAMANT\SSIS\Projet\Exe\MatrixTransformation\</ConfiguredValue></Configuration>
+</DTSConfiguration>

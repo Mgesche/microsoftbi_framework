@@ -1,0 +1,31 @@
+<?xml version="1.0"?><DTSConfiguration><DTSConfigurationHeading><DTSConfigurationFileInfo GeneratedBy="" GeneratedFromPackageName="POC_PAK_TEC_MatrixLoad_GENERIC V3" GeneratedFromPackageID="{7E7F363A-7535-4614-82E6-5FC02CC2574A}" GeneratedDate="24/11/2014 16:24:18"/></DTSConfigurationHeading>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::ALIAS_IDT].Properties[Value]" ValueType="String"><ConfiguredValue>Profil</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::ALIAS_IDT_FAIT].Properties[Value]" ValueType="String"><ConfiguredValue>Fait1</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CHAMP_FONC_PRINCIPAL].Properties[Value]" ValueType="String"><ConfiguredValue>IDT_Profil_Historisation</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_DEFAUT_DIMENSION_INTERMEDIAIRE].Properties[Value]" ValueType="String"><ConfiguredValue>-1</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_DEFAUT_DIMENSION1].Properties[Value]" ValueType="String"><ConfiguredValue>1</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_DEFAUT_DIMENSION2].Properties[Value]" ValueType="String"><ConfiguredValue>20201231</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_DIM_INTER_FAIT].Properties[Value]" ValueType="String"><ConfiguredValue>id</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_DIM_INTER_RELA].Properties[Value]" ValueType="String"><ConfiguredValue>id</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_DIM1_RELA].Properties[Value]" ValueType="String"><ConfiguredValue>profil_id</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_DIM2_RELA].Properties[Value]" ValueType="String"><ConfiguredValue>temps_id</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_FAIT_DIM_INTER].Properties[Value]" ValueType="String"><ConfiguredValue>Client_id</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_RELA_DIM_INTER].Properties[Value]" ValueType="String"><ConfiguredValue>Client_id</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_RELA_DIM1].Properties[Value]" ValueType="String"><ConfiguredValue>ANNEXE.profil_id</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::CLE_RELA_DIM2].Properties[Value]" ValueType="String"><ConfiguredValue>ANNEXE.temps_histo</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::DB_DWH].Properties[Value]" ValueType="String"><ConfiguredValue>BotanicDW_MEC</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::MODE_ALIM].Properties[Value]" ValueType="String"><ConfiguredValue>I</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::SCHEMA_DBO].Properties[Value]" ValueType="String"><ConfiguredValue>dbo.</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::SCHEMA_MTX].Properties[Value]" ValueType="String"><ConfiguredValue>mtx.</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TABLE_DIMENSION_INTERMEDIAIRE].Properties[Value]" ValueType="String"><ConfiguredValue>DimClient</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TABLE_DIMENSION1].Properties[Value]" ValueType="String"><ConfiguredValue>DimProfilClient</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TABLE_DIMENSION2].Properties[Value]" ValueType="String"><ConfiguredValue>DimTemps</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TABLE_FAIT].Properties[Value]" ValueType="String"><ConfiguredValue>DSVTicketCRM</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TABLE_RELATION].Properties[Value]" ValueType="String"><ConfiguredValue>FactProfilClient</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::TYPE_CHAMP_FONC].Properties[Value]" ValueType="String"><ConfiguredValue>int</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_DB_Password].Properties[Value]" ValueType="String"><ConfiguredValue>SQL2008#</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_DB_Server].Properties[Value]" ValueType="String"><ConfiguredValue>localhost</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_DB_User].Properties[Value]" ValueType="String"><ConfiguredValue>SQL2008</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_Dossier_Exe].Properties[Value]" ValueType="String"><ConfiguredValue>D:\SSIS\Exe\</ConfiguredValue></Configuration>
+	<Configuration ConfiguredType="Property" Path="\Package.Variables[User::VE_Dossier_Exe_MatrixTransformation].Properties[Value]" ValueType="String"><ConfiguredValue>D:\SSIS\Exe\MatrixTransformation\</ConfiguredValue></Configuration>
+</DTSConfiguration>

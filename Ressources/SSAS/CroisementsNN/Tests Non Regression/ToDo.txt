@@ -1,0 +1,6 @@
+1) Remplir le xls des requêtes de tests
+2) Exporter en CSV
+2) Lancer la création de la base : DB.sql
+3) Lancer le profiler sur SSAS en stockant les données résultats dans la table SQL Server Temps_NN en overwrite
+4) Lancer le package Test_ValidationCroisementsNN, qui lancera les requetes a la chaine en nettoyant le cache avant chacune
+A la fin, il fait la compoarion des données et l'esort des temps et stocke tout dans une table
